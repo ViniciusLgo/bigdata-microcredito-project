@@ -1,0 +1,13 @@
+# os zips originais do scr.data sao muito grandes (quase 1GB no total)
+data/zip/*.zip
+
+# o recorte filtrado tambem e grande (uns 140MB), fica so local
+data/raw/*.csv
+
+# anotacoes pessoais e documento de entrega (word) ficam fora do repo
+TUTORIAL.md
+entrega/
+
+__pycache__/
+*.pyc
+.env
