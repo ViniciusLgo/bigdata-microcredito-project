@@ -1,13 +1,15 @@
--- schema do banco (PostgreSQL / Aiven)
--- Tema 05: Acesso a Microcredito e Inclusao Financeira Regional
---
--- Escolhemos um esquema estrela (poucas tabelas de dimensao + tabelas fato)
--- porque e simples de consultar no dashboard depois (filtro por ano, UF,
--- modalidade) e o volume de dados ja ta agregado, entao nao precisa de um
--- modelo totalmente normalizado.
---
--- esse arquivo so cria o que ainda nao existe (IF NOT EXISTS), ele nao
--- apaga nada. se eu quiser apagar as tabelas, uso o sql/limpar.sql
+/*
+schema do banco (PostgreSQL / Aiven)
+Tema 05: Acesso a Microcredito e Inclusao Financeira Regional
+
+Escolhemos um esquema estrela (poucas tabelas de dimensao e tabelas fato)
+porque e simples de consultar no dashboard depois (filtro por ano, UF e
+modalidade) e o volume de dados ja ta agregado, entao nao precisa de um
+modelo totalmente normalizado.
+
+Esse arquivo so cria o que ainda nao existe (IF NOT EXISTS), ele nao apaga
+nada. Pra apagar as tabelas, uso o sql/limpar.sql.
+*/
 
 CREATE TABLE IF NOT EXISTS dim_uf (
     uf_id      SERIAL PRIMARY KEY,
@@ -33,11 +35,13 @@ CREATE TABLE IF NOT EXISTS fato_microcredito_nacional (
     UNIQUE (serie_id, data_referencia)
 );
 
--- dados regionais, vem do SCR.data (Brasil todo (27 UFs), submodalidade
--- Microcredito, a partir de 2021 - ver etl/filtrar_scr.py)
--- obs: o arquivo do bcb nao traz "quantidade de clientes", so numero de
--- operacoes, por isso essa coluna nao existe aqui (diferente do que a gente
--- tinha imaginado na etapa 1 antes de ver os dados de verdade)
+/*
+Dados regionais, vem do SCR.data (27 UFs, submodalidade Microcredito, a
+partir de 2021, ver etl/filtrar_scr.py).
+Obs: o arquivo do bcb nao traz "quantidade de clientes", so numero de
+operacoes, por isso essa coluna nao existe aqui (diferente do que a gente
+tinha imaginado na etapa 1 antes de ver os dados de verdade).
+*/
 CREATE TABLE IF NOT EXISTS fato_credito_regional (
     id                      SERIAL PRIMARY KEY,
     uf_id                   INTEGER NOT NULL REFERENCES dim_uf (uf_id),

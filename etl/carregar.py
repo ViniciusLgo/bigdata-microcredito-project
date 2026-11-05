@@ -1,19 +1,22 @@
-# carregar.py
-# Ultima etapa: sobe os csvs tratados pro Postgres da Aiven. A connection
-# string fica numa variavel de ambiente (AIVEN_PG_URL) pra ninguem deixar
-# senha espalhada no codigo/no git.
-#
-# antes esse script apagava e recriava as tabelas toda vez que rodava, e isso
-# era perigoso. agora cada coisa tem a sua flag:
-#   sem flag        so carrega os dados (as tabelas ja precisam existir)
-#   --criar-schema  cria as tabelas que faltam (sql/schema.sql) e depois carrega
-#   --limpar        apaga as 4 tabelas (sql/limpar.sql) e para, nao carrega nada
-#
-# uso:
-#   export AIVEN_PG_URL="postgres://usuario:senha@host:porta/defaultdb?sslmode=require"
-#   python etl/carregar.py
-#   python etl/carregar.py --criar-schema
-#   python etl/carregar.py --limpar
+"""
+carregar.py
+
+Ultima etapa: sobe os csvs tratados pro Postgres da Aiven. A connection
+string fica na variavel de ambiente AIVEN_PG_URL pra ninguem deixar senha
+espalhada no codigo ou no git.
+
+Antes esse script apagava e recriava as tabelas toda vez que rodava, e isso
+era perigoso. Agora cada coisa tem a sua flag:
+    sem flag        so carrega os dados (as tabelas ja precisam existir)
+    --criar-schema  cria as tabelas que faltam (sql/schema.sql) e depois carrega
+    --limpar        apaga as 4 tabelas (sql/limpar.sql) e para, nao carrega nada
+
+Uso:
+    export AIVEN_PG_URL="postgres://usuario:senha@host:porta/defaultdb?sslmode=require"
+    python etl/carregar.py
+    python etl/carregar.py --criar-schema
+    python etl/carregar.py --limpar
+"""
 
 import argparse
 import os
@@ -50,8 +53,7 @@ def parar(mensagem):
 
 
 def ler_csv(caminho, colunas_obrigatorias):
-    # eu confiro o csv ANTES de abrir conexao com o banco, assim se tiver
-    # algum problema nada foi escrito la
+    # confiro o csv antes de abrir a conexao, assim nada e escrito se der erro
     if not os.path.exists(caminho):
         parar(f"nao achei o arquivo {caminho}. rode o tratar.py antes")
     df = pd.read_csv(caminho)
@@ -177,9 +179,7 @@ def carregar_fato_regional(conn, df):
             r["valor_carteira_ativa"], r["taxa_inadimplencia"], r["quantidade_operacoes"],
         ))
 
-    # sobe em lotes de 200 com commit a cada um: o plano gratis da aiven
-    # derrubou a conexao uma vez numa carga grande de uma vez so, assim se
-    # cair da pra rodar de novo (o ON CONFLICT pula o que ja entrou)
+    # lotes de 200 com commit em cada um, se a conexao cair da pra rodar de novo
     for i in range(0, len(linhas), 200):
         execute_values(
             cur,
