@@ -4,9 +4,9 @@ data/zip/*.zip
 # o recorte filtrado tambem e grande (uns 140MB), fica so local
 data/raw/*.csv
 
-# anotacoes pessoais e documento de entrega (word) ficam fora do repo
-TUTORIAL.md
-entrega/
+# a pasta docs sobe vazia, so com o .gitkeep. o que tem dentro nao vai pro git por enquanto
+docs/*
+!docs/.gitkeep
 
 __pycache__/
 *.pyc
