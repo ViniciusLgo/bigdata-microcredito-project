@@ -15,7 +15,7 @@ python -m venv .venv
 
 Depois uso o Python desse ambiente (`.\.venv\Scripts\python.exe`) para rodar os scripts. Os CSVs finais, os JSONs da SGS e as amostras já estão no Git. Os ZIPs e o CSV filtrado do SCR não estão, porque são muito grandes. Mesmo sem eles dá para estudar o código e escrever testes usando as amostras.
 
-**Não rodar o `etl/carregar.py` no banco do grupo por enquanto.** A versão atual roda o `DROP TABLE ... CASCADE` do `sql/schema.sql` e apaga as quatro tabelas antes de carregar. A correção disso é a parte do Vinicius. Enquanto isso, para olhar o que tem no banco, a gente usa só o `etl/verificar_banco.py`, que apenas lê.
+**Cuidado com o `etl/carregar.py` no banco do grupo.** Ele já não apaga mais as tabelas sozinho: o `DROP` saiu do `sql/schema.sql` e foi para o `sql/limpar.sql`, que só roda com `--limpar` e depois de digitar APAGAR. Mesmo assim, ainda estamos terminando a parte de registros repetidos e falhas da carga, então só rodamos no banco do grupo depois da revisão do PR, e testamos antes em um Postgres descartável. Para olhar o que tem no banco, usamos só o `etl/verificar_banco.py`, que apenas lê.
 
 Esse script lê a conexão da variável de ambiente `AIVEN_PG_URL`. O código ainda não lê o `.env` sozinho, então eu defino a variável no terminal, só naquela sessão:
 

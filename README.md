@@ -50,7 +50,13 @@ python -m venv .venv
 
 Para repetir o tratamento com a mesma versão dos dados, usamos os JSONs que já estão no repositório e colocamos os mesmos ZIPs anuais em `data/zip/` (eles não vêm no clone). O download dos ZIPs é manual, e por isso a lista de fontes acima ainda faz falta. Se a gente rodar a extração da SGS de novo, ela busca até o último dado disponível e o recorte pode mudar.
 
-**Cuidado com a carga:** o `etl/carregar.py` hoje roda um `DROP TABLE ... CASCADE` pelo schema e recria as quatro tabelas. Por isso a sequência abaixo **não deve ser rodada inteira no banco do grupo** até a correção que está no nosso plano. Para só olhar um banco que já foi carregado, usamos apenas o `verificar_banco.py`.
+**Sobre a carga:** antes o `etl/carregar.py` apagava e recriava as quatro tabelas toda vez que rodava. Eu separei isso em flags, e agora cada coisa é explícita:
+
+- `python etl/carregar.py` só carrega os dados. Se as tabelas não existirem, ele para e avisa, sem escrever nada;
+- `python etl/carregar.py --criar-schema` cria só as tabelas que faltam (o `sql/schema.sql` não apaga nada) e depois carrega;
+- `python etl/carregar.py --limpar` é a única que apaga as tabelas (o `sql/limpar.sql`), pede para digitar APAGAR e não carrega nada.
+
+Os CSVs também são conferidos antes de abrir a conexão (arquivo, colunas, UF, PF/PJ e campos da chave vazios). Ainda falta tratar o caso de registro repetido (hoje ele só pula o que já existe) e contar o que entrou de verdade.
 
 ```bash
 pip install -r requirements.txt
@@ -60,8 +66,8 @@ python etl/filtrar_scr.py
 python etl/tratar.py
 
 export AIVEN_PG_URL="postgres://usuario:senha@host:porta/defaultdb?sslmode=require"
-# a carga atual apaga as tabelas: só rodar em banco descartável ou depois da correção
-# python etl/carregar.py
+python etl/carregar.py --criar-schema   # primeira vez, cria as tabelas que faltam
+# python etl/carregar.py                # depois, só carrega os dados
 python etl/verificar_banco.py
 ```
 
