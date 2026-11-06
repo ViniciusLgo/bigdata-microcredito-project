@@ -237,9 +237,9 @@ congelar um número desatualizado.
 O guia do trabalho cita OpenSearch como **opcional**. O projeto **não** implementou camada
 não relacional: a base está só no PostgreSQL da Aiven.
 
-Decisão a confirmar com a professora: manter assim e declarar a opção, ou incluir a camada.
-Enquanto não houver definição, o texto da entrega diz "não implementada (opcional)" em vez
-de omitir o item.
+Decisão do grupo: manter assim e **declarar explicitamente** na entrega — "camada não
+relacional não implementada, por ser opcional no guia" — em vez de omitir o item. Omitir
+pareceria esquecimento; declarar é uma escolha de escopo.
 
 ---
 
@@ -275,7 +275,25 @@ publicamente em novembro de 2024, sob coordenação do Ministério da Igualdade 
 um dos 17 ODS globais da Agenda 2030 — é um acréscimo brasileiro, e isso precisa estar
 escrito na entrega.
 
-#### Pergunta de pesquisa proposta
+#### Análise executada
+
+Esta decisão **saiu do papel**: o cruzamento foi feito em 05/11/2026.
+
+- Script: `analise/ods_cruzamento.py`
+- Base do IBGE: `data/ibge_ocupacao_uf_2022.csv` (tabela SIDRA 10261)
+- Resultado por UF: `docs/evidencias/ods_cruzamento_uf.csv`
+- Gráfico: `docs/evidencias/ods_cruzamento.png`
+- **Leitura completa: [`ODS_ANALISE.md`](ODS_ANALISE.md)**
+
+Em resumo: há associação territorial positiva entre a participação de pessoas pretas e
+pardas e a carteira de microcrédito por ocupado (Spearman ρ = 0,455, p = 0,017), mas ela
+perde significância ao excluir o Nordeste (ρ = 0,358, p = 0,145) — e o Nordeste sozinho
+concentra 62,1% da carteira nacional. O que a correlação capta é onde a oferta está
+concentrada, não acesso por grupo racial. Para gênero não há associação detectável
+(ρ = −0,227, p = 0,255). A relação mais forte da análise não é sobre nenhum dos dois ODS:
+é entre densidade de microcrédito e inadimplência (ρ = −0,871, p < 0,0001).
+
+#### Pergunta de pesquisa
 
 > **UFs com maior participação de mulheres e de pessoas pretas e pardas entre os
 > trabalhadores por conta própria e empregadores apresentam maior ou menor volume de
@@ -307,12 +325,19 @@ Desenho:
 - Juntar as bases linha a linha. O IBGE entra como **tabela separada no nível de UF**.
 - Afirmar causalidade ("o microcrédito reduziu a desigualdade de gênero em X").
 
-#### Pendência com a professora
+#### Decisão do grupo, sem consulta prévia à professora
 
-Confirmar: (a) se a análise territorial de associação atende à exigência de ODS 5 e/ou 18,
-ou se ela espera uma fonte com o atributo no nível do indivíduo; (b) se o ODS 18, por ser
-proposta brasileira fora dos 17 ODS globais, é aceito; (c) o prazo da fase 3 — a cópia do
-enunciado da fase 2 mostra 17/out/2027 e a da fase 3 mostra 31/out sem ano.
+O grupo seguiu com a análise territorial de associação por ser a única leitura que os dados
+sustentam: a alternativa seria atribuir sexo ou raça a operações que não os têm. O recorte,
+o método e os limites estão escritos em `docs/ODS_ANALISE.md` para que a escolha possa ser
+avaliada. Se a professora exigir fonte com o atributo no nível do indivíduo, a base atual
+não atende e isso precisaria de outra fonte — não de outro tratamento desta.
+
+O ODS 18 é usado nomeando-se expressamente sua condição: acréscimo voluntário brasileiro,
+fora dos 17 ODS globais da Agenda 2030.
+
+Fica em aberto apenas o prazo da fase 3: a cópia do enunciado da fase 2 mostra 17/out/2027
+e a da fase 3 mostra 31/out sem ano. Conferir no Classroom.
 
 ---
 
@@ -325,6 +350,6 @@ enunciado da fase 2 mostra 17/out/2027 e a da fase 3 mostra 31/out sem ano.
 | 3 | Critério dos valores negativos em `numero_de_operacoes` | grupo / BCB | aberta — declarada como lacuna |
 | 4 | Hashes SHA-256 dos ZIPs do SCR.data | quem tiver os arquivos | aberta |
 | 5 | Unidade monetária oficial de `carteira_ativa` | grupo / BCB | inferida como reais |
-| 6 | Camada não relacional (OpenSearch) | grupo / professora | a confirmar |
-| 7 | Aceite do recorte das ODS 5 e 18 | professora | a confirmar |
-| 8 | Prazo oficial da fase 3 | professora | a confirmar |
+| 6 | Camada não relacional (OpenSearch) | grupo | **fechada** — não implementada, declarada como opcional |
+| 7 | Recorte das ODS 5 e 18 | grupo | **fechada** — análise territorial executada, ver `ODS_ANALISE.md` |
+| 8 | Prazo oficial da fase 3 | grupo | aberta — conferir no Classroom |

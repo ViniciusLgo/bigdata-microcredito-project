@@ -22,7 +22,7 @@ fechar a sua branch.
 | **AI04.5** | Segurança e credenciais | 🟡 | `.gitignore` já ignora `.env`; `AIVEN_PG_URL` é lida de variável de ambiente | `.env.example`, regras de ignore para `.terraform/`, `*.tfstate`, `*.tfvars`, e o `docs/SEGURANCA.md` (Guilherme) |
 | **AI04.6** | Repositório organizado | ✅ | `etl/`, `sql/`, `data/`, `docs/`, `README.md`, `requirements.txt` | incorporar a documentação revisada e a pasta `terraform/` quando existir |
 | **AI04.7** | README | 🟡 | `README.md` atualizado com fontes, estrutura, execução, modelo e limitações | comandos de Terraform realmente testados e links para as evidências |
-| **ODS** | Vínculo com ODS 5 e/ou 18 | 🟡 | `docs/DECISOES_TECNICAS.md`, seção 5 (decisão D-16): fonte pública definida, pergunta de pesquisa proposta e limitação declarada | aval da professora sobre o recorte territorial e execução do cruzamento com o IBGE |
+| **ODS** | Vínculo com ODS 5 e/ou 18 | ✅ | `docs/ODS_ANALISE.md` (resultados, método e ressalva); `analise/ods_cruzamento.py`; `data/ibge_ocupacao_uf_2022.csv`; evidências `docs/evidencias/ods_cruzamento_uf.csv` e `ods_cruzamento.png`; decisão D-16 | repetir a ressalva de falácia ecológica no relatório e no dashboard |
 
 ---
 
@@ -42,6 +42,8 @@ fechar a sua branch.
 | `quantidade_operacoes` negativa | **1.084 linhas (15,3%)**, mínimo −32 — lacuna declarada, ver D-07 |
 | Total esperado no banco | 7.247 linhas (27 + 4 + 7.080 + 136) |
 | SHA-256 dos CSVs finais | registrados em `data/manifesto-fontes.csv` |
+| Cruzamento ODS: UFs com par completo | 27 de 27 |
+| Nordeste na carteira nacional de 2022 | 62,1% |
 
 ---
 
@@ -52,6 +54,9 @@ fechar a sua branch.
 | `data/manifesto-fontes.csv` | fonte, URL oficial, arquivo, período, tamanho, SHA-256 e data conhecida de cada insumo |
 | `docs/DICIONARIO_DADOS.md` | campos, tipos, chaves, origem, unidade e nulos de cada camada; o que a base **não** tem |
 | `docs/DECISOES_TECNICAS.md` | 16 decisões registradas, semântica dos campos, limites e o encaminhamento das ODS |
+| `docs/ODS_ANALISE.md` | cruzamento territorial com o IBGE: método, resultados, leitura e limitações |
+| `analise/ods_cruzamento.py` | script que reproduz o cruzamento, a tabela e o gráfico |
+| `data/ibge_ocupacao_uf_2022.csv` | base do IBGE por UF (tabela SIDRA 10261) |
 | `docs/CHECKLIST_ENTREGA.md` | este arquivo |
 
 ---

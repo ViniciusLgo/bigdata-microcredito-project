@@ -54,14 +54,18 @@ etl/
 sql/
   schema.sql           # estrutura do banco
 data/
-  manifesto-fontes.csv # procedência e versão de cada insumo
-  zip/                 # ZIPs originais do SCR.data (fora do Git, muito grandes)
-  raw/                 # JSONs da SGS e o CSV filtrado (o CSV fica fora do Git)
-  processed/           # CSVs finais, prontos para a carga
-  amostra/             # 20 linhas antes e depois do tratamento
+  manifesto-fontes.csv       # procedência e versão de cada insumo
+  ibge_ocupacao_uf_2022.csv  # base do IBGE por UF usada na análise das ODS
+  zip/                       # ZIPs originais do SCR.data (fora do Git, muito grandes)
+  raw/                       # JSONs da SGS e o CSV filtrado (o CSV fica fora do Git)
+  processed/                 # CSVs finais, prontos para a carga
+  amostra/                   # 20 linhas antes e depois do tratamento
+analise/
+  ods_cruzamento.py    # cruzamento territorial com o IBGE para as ODS 5 e 18
 docs/
   DICIONARIO_DADOS.md  # campos, tipos, chaves, origem, unidades e o que a base não tem
   DECISOES_TECNICAS.md # decisões de tratamento e modelagem, limites e encaminhamento das ODS
+  ODS_ANALISE.md       # resultado do cruzamento com o IBGE, com método e ressalvas
   CHECKLIST_ENTREGA.md # cada item do enunciado e o arquivo que o comprova
   evidencias/          # saídas datadas das execuções, sem credenciais
 ```
@@ -94,6 +98,13 @@ python etl/verificar_banco.py
 > `sql/schema.sql` em toda execução, e o schema começa com `DROP TABLE ... CASCADE`: a
 > carga apaga e recria as tabelas. A separação entre criação e carga é uma correção em
 > andamento. Até lá, use um banco descartável para testar.
+
+Análise das ODS 5 e 18 (não precisa de banco, só dos CSVs versionados):
+
+```bash
+pip install scipy matplotlib
+python analise/ods_cruzamento.py
+```
 
 Conferência rápida dos CSVs versionados, sem precisar de banco:
 
@@ -139,12 +150,33 @@ as duas séries, alinhe a competência e restrinja ao período comum (jan/2021 a
 
 ---
 
+## O que a análise territorial mostrou
+
+Resumo de [`docs/ODS_ANALISE.md`](docs/ODS_ANALISE.md), referente a 2022:
+
+- **O microcrédito do país é concentrado:** as 9 UFs do Nordeste respondem por **62,1%** da
+  carteira nacional, com mediana de R$ 1.236 por ocupado por conta própria ou empregador,
+  contra R$ 167 a R$ 240 nas demais regiões.
+- **ODS 18:** UFs com maior participação de pessoas pretas e pardas têm mais microcrédito
+  por ocupado (Spearman ρ = 0,455, p = 0,017) — mas a relação perde significância ao
+  excluir o Nordeste (ρ = 0,358, p = 0,145). A correlação reflete **onde a oferta está**,
+  não acesso por grupo racial.
+- **ODS 5:** não há associação detectável com a participação de mulheres (ρ = −0,227,
+  p = 0,255). A base não tem sexo, então o que se mede é o território, e nele nada aparece.
+- **Achado mais forte, fora dos ODS:** quanto maior a densidade de microcrédito, menor a
+  inadimplência (ρ = −0,871, p < 0,0001) — Piauí tem R$ 2.297 por ocupado e 5,9% de
+  inadimplência; Rio de Janeiro, R$ 113 e 22,4%.
+
+---
+
 ## Limitações conhecidas
 
 - A base **não contém sexo, gênero, cor ou raça**. Nenhuma afirmação sobre desigualdade de
-  acesso por esses grupos pode ser sustentada só com estes dados. O encaminhamento para as
-  ODS 5 e 18 — fonte pública do IBGE, pergunta de pesquisa e ressalva obrigatória — está em
-  [`docs/DECISOES_TECNICAS.md`](docs/DECISOES_TECNICAS.md), decisão D-16.
+  acesso por esses grupos pode ser sustentada só com estes dados. A saída adotada foi uma
+  análise **territorial** cruzando a carteira por UF com o Censo 2022 do IBGE — ver
+  [`docs/ODS_ANALISE.md`](docs/ODS_ANALISE.md). Ela descreve territórios, não o perfil de
+  quem tomou crédito; concluir sobre indivíduos a partir de médias por UF é falácia
+  ecológica.
 - **1.084 das 7.080 linhas (15,3%) têm `quantidade_operacoes` negativa** (mínimo −32). A
   metodologia do BCB não publica regra de supressão para esse campo. Os valores foram
   mantidos como vieram e o indicador principal do trabalho é a carteira ativa, não a
@@ -166,6 +198,7 @@ as duas séries, alinhe a competência e restrinja ao período comum (jan/2021 a
 | [`data/manifesto-fontes.csv`](data/manifesto-fontes.csv) | de onde veio cada arquivo, qual versão e com qual hash |
 | [`docs/DICIONARIO_DADOS.md`](docs/DICIONARIO_DADOS.md) | o que é cada campo, em cada camada |
 | [`docs/DECISOES_TECNICAS.md`](docs/DECISOES_TECNICAS.md) | por que o tratamento é assim e o que ele impede de afirmar |
+| [`docs/ODS_ANALISE.md`](docs/ODS_ANALISE.md) | cruzamento com o IBGE para as ODS 5 e 18: método, resultados e limites |
 | [`docs/CHECKLIST_ENTREGA.md`](docs/CHECKLIST_ENTREGA.md) | item do enunciado × arquivo que comprova |
 
 Infraestrutura como código (Terraform) e o guia de credenciais entram neste README quando

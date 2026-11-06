@@ -1,3 +1,7 @@
 pandas
 requests
 psycopg2-binary
+
+# so para a analise das ODS (analise/ods_cruzamento.py)
+scipy
+matplotlib
