@@ -1,10 +1,4 @@
-# Como a gente trabalha no projeto
-
-Somos em quatro no grupo: Vinicius, Roberto, Guilherme e Maria Fernanda. Combinamos que cada um pega uma parte, faz na sua própria branch, testa e só junta depois que outra pessoa revisou. Assim ninguém sobrescreve o trabalho do outro e a gente consegue explicar tudo na apresentação.
-
-A divisão das tarefas da fase 3 está no PDF que o Vinicius mandou. Quem ainda não recebeu pede pra ele. A pasta `docs/` do repositório fica vazia por enquanto, então os documentos de apoio não vêm junto com o clone.
-
-## Preparando o ambiente
+# Preparando o ambiente
 
 Depois de clonar, eu abro o PowerShell na pasta do projeto e rodo:
 
@@ -36,7 +30,7 @@ git pull --ff-only
 git switch -c nome-da-minha-branch
 ```
 
-Os nomes que combinamos são `fix/carga-banco` (Vinicius), `feat/infra-terraform` (Roberto), `fix/tratamento-seguranca` (Guilherme) e `docs/entrega-fase3` (Maria Fernanda). Se eu tiver mudanças soltas, resolvo isso antes de trocar de branch. Se o `git pull` falhar, eu não forço nada: pergunto no grupo o que aconteceu. Se a branch já existe no meu computador, só volto para ela com `git switch nome-da-branch`.
+Os nomes que combinamos são `fix/carga-banco` (Vinicius), `feat/infra-terraform` (Roberto), `fix/tratamento-seguranca` (Guilherme) e `docs/entrega-fase3` (Maria Fernanda). 
 
 Cada um configura o próprio nome e e-mail no seu clone, o mesmo e-mail da conta do GitHub:
 
@@ -67,8 +61,6 @@ git diff --cached
 git diff --cached --check
 git commit -m "fix: separa conversao dos numeros do scr e sgs"
 ```
-
-Não colocamos "Co-authored-by" nas mensagens. Cada commit fica no nome de quem fez.
 
 ## Mandando para revisão
 
