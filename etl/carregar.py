@@ -11,6 +11,13 @@ era perigoso. Agora cada coisa tem a sua flag:
     --criar-schema  cria as tabelas que faltam (sql/schema.sql) e depois carrega
     --limpar        apaga as 4 tabelas (sql/limpar.sql) e para, nao carrega nada
 
+A carga pode rodar quantas vezes precisar. Se o registro ainda nao existe ele
+e inserido, se existe e o valor mudou ele e atualizado, e se e igual nao muda
+nada. No final o script mostra quantos foram de cada tipo.
+
+Se a conexao cair no meio, o que ja foi salvo fica no banco. E so rodar de
+novo que ele continua sem duplicar nada.
+
 Uso:
     export AIVEN_PG_URL="postgres://usuario:senha@host:porta/defaultdb?sslmode=require"
     python etl/carregar.py
@@ -46,10 +53,46 @@ UFS_BRASIL = {
 
 TABELAS = ["dim_uf", "dim_modalidade", "fato_credito_regional", "fato_microcredito_nacional"]
 
+# quantas linhas vao em cada lote (cada lote tem o seu commit)
+TAMANHO_LOTE = 200
+
+# o (xmax = 0) e um truque do postgres que da True se inseriu e False se atualizou
+SQL_NACIONAL = """
+    INSERT INTO fato_microcredito_nacional (serie_id, descricao_serie, data_referencia, valor)
+    VALUES %s
+    ON CONFLICT (serie_id, data_referencia) DO UPDATE
+    SET descricao_serie = EXCLUDED.descricao_serie, valor = EXCLUDED.valor
+    WHERE (fato_microcredito_nacional.descricao_serie, fato_microcredito_nacional.valor)
+          IS DISTINCT FROM (EXCLUDED.descricao_serie, EXCLUDED.valor)
+    RETURNING (xmax = 0)
+"""
+
+SQL_REGIONAL = """
+    INSERT INTO fato_credito_regional
+        (uf_id, modalidade_id, data_referencia, valor_carteira_ativa, taxa_inadimplencia, quantidade_operacoes)
+    VALUES %s
+    ON CONFLICT (uf_id, modalidade_id, data_referencia) DO UPDATE
+    SET valor_carteira_ativa = EXCLUDED.valor_carteira_ativa,
+        taxa_inadimplencia = EXCLUDED.taxa_inadimplencia,
+        quantidade_operacoes = EXCLUDED.quantidade_operacoes
+    WHERE (fato_credito_regional.valor_carteira_ativa, fato_credito_regional.taxa_inadimplencia,
+           fato_credito_regional.quantidade_operacoes)
+          IS DISTINCT FROM (EXCLUDED.valor_carteira_ativa, EXCLUDED.taxa_inadimplencia,
+                            EXCLUDED.quantidade_operacoes)
+    RETURNING (xmax = 0)
+"""
+
 
 def parar(mensagem):
     print("erro:", mensagem)
     sys.exit(1)
+
+
+def conferir_chaves_repetidas(df, chave, nome):
+    # se a mesma chave aparece duas vezes o banco nao sabe qual valor vale
+    repetidas = df.duplicated(subset=chave, keep=False).sum()
+    if repetidas:
+        parar(f"{nome} tem {repetidas} linhas com a chave {chave} repetida")
 
 
 def ler_csv(caminho, colunas_obrigatorias):
@@ -72,14 +115,19 @@ def validar_arquivos():
     ])
     nacional = ler_csv(CSV_NACIONAL, ["serie_id", "descricao_serie", "data_referencia", "valor"])
 
-    # as colunas que formam a chave nao podem ter vazio
+    chave_regional = ["uf", "segmento", "modalidade", "data_referencia"]
+    chave_nacional = ["serie_id", "data_referencia"]
+
+    # as colunas que formam a chave nao podem ter vazio nem repetir
     for nome, df, chave in [
-        ("fato_credito_regional.csv", regional, ["uf", "segmento", "modalidade", "data_referencia"]),
-        ("fato_microcredito_nacional.csv", nacional, ["serie_id", "data_referencia", "valor"]),
+        ("fato_credito_regional.csv", regional, chave_regional),
+        ("fato_microcredito_nacional.csv", nacional, chave_nacional + ["valor"]),
     ]:
         vazios = df[chave].isna().any(axis=1).sum()
         if vazios:
             parar(f"{nome} tem {vazios} linhas com campo da chave vazio")
+    conferir_chaves_repetidas(regional, chave_regional, "fato_credito_regional.csv")
+    conferir_chaves_repetidas(nacional, chave_nacional, "fato_microcredito_nacional.csv")
 
     ufs_invalidas = sorted(set(regional["uf"]) - set(UFS_BRASIL))
     if ufs_invalidas:
@@ -126,71 +174,96 @@ def tabelas_que_faltam(conn):
     return [t for t in TABELAS if t not in existentes]
 
 
+def ou_nulo(valor):
+    # valor vazio do pandas (NaN) vira NULL no banco, e numpy vira numero normal
+    if pd.isna(valor):
+        return None
+    return valor.item() if hasattr(valor, "item") else valor
+
+
+def gravar_em_lotes(conn, nome, sql, linhas):
+    # grava lote por lote, cada um com o seu commit, e conta o que aconteceu
+    cur = conn.cursor()
+    inseridas = 0
+    atualizadas = 0
+    for i in range(0, len(linhas), TAMANHO_LOTE):
+        lote = linhas[i:i + TAMANHO_LOTE]
+        try:
+            retorno = execute_values(cur, sql, lote, page_size=len(lote), fetch=True)
+            conn.commit()
+        except psycopg2.Error as erro:
+            conn.rollback()
+            motivo = str(erro).strip().splitlines()[0]
+            parar(f"{nome}: o lote que comeca na linha {i + 1} deu erro ({motivo}). "
+                  f"as primeiras {i} linhas ja ficaram salvas. corrija e rode de novo, "
+                  "que o script continua sem duplicar nada")
+        inseridas += sum(1 for (novo,) in retorno if novo)
+        atualizadas += sum(1 for (novo,) in retorno if not novo)
+    iguais = len(linhas) - inseridas - atualizadas
+    print(f"{nome}: {len(linhas)} no csv | {inseridas} novas | {atualizadas} atualizadas | {iguais} iguais")
+    return inseridas, atualizadas, iguais
+
+
 def carregar_dim_uf(conn):
     cur = conn.cursor()
     linhas = [(sigla, nome, regiao) for sigla, (nome, regiao) in UFS_BRASIL.items()]
-    execute_values(
+    novas = execute_values(
         cur,
-        "INSERT INTO dim_uf (sigla_uf, nome_uf, regiao) VALUES %s ON CONFLICT (sigla_uf) DO NOTHING",
+        "INSERT INTO dim_uf (sigla_uf, nome_uf, regiao) VALUES %s "
+        "ON CONFLICT (sigla_uf) DO NOTHING RETURNING sigla_uf",
         linhas,
+        fetch=True,
     )
     conn.commit()
+    print(f"dim_uf: {len(linhas)} no codigo | {len(novas)} novas")
 
 
 def carregar_fato_nacional(conn, df):
-    cur = conn.cursor()
-    colunas = ["serie_id", "descricao_serie", "data_referencia", "valor"]
-    execute_values(
-        cur,
-        """INSERT INTO fato_microcredito_nacional
-           (serie_id, descricao_serie, data_referencia, valor)
-           VALUES %s ON CONFLICT (serie_id, data_referencia) DO NOTHING""",
-        list(df[colunas].itertuples(index=False, name=None)),
-    )
-    conn.commit()
-    print(f"fato_microcredito_nacional: {len(df)} linhas carregadas")
+    linhas = [
+        (int(r.serie_id), r.descricao_serie, r.data_referencia, ou_nulo(r.valor))
+        for r in df.itertuples(index=False)
+    ]
+    return gravar_em_lotes(conn, "fato_microcredito_nacional", SQL_NACIONAL, linhas)
 
 
 def carregar_fato_regional(conn, df):
     cur = conn.cursor()
 
     # cada combinacao modalidade + segmento (PF/PJ) vira uma linha da dimensao
-    for modalidade, segmento in df[["modalidade", "segmento"]].drop_duplicates().itertuples(index=False):
-        cur.execute(
-            "INSERT INTO dim_modalidade (nome_modalidade, segmento) VALUES (%s, %s) "
-            "ON CONFLICT (nome_modalidade, segmento) DO NOTHING",
-            (modalidade, segmento),
-        )
+    combinacoes = list(df[["modalidade", "segmento"]].drop_duplicates().itertuples(index=False, name=None))
+    novas = execute_values(
+        cur,
+        "INSERT INTO dim_modalidade (nome_modalidade, segmento) VALUES %s "
+        "ON CONFLICT (nome_modalidade, segmento) DO NOTHING RETURNING modalidade_id",
+        combinacoes,
+        fetch=True,
+    )
     conn.commit()
+    print(f"dim_modalidade: {len(combinacoes)} no csv | {len(novas)} novas")
 
     cur.execute("SELECT sigla_uf, uf_id FROM dim_uf")
     mapa_uf = dict(cur.fetchall())
     cur.execute("SELECT nome_modalidade, segmento, modalidade_id FROM dim_modalidade")
     mapa_modalidade = {(nome, seg): mid for nome, seg, mid in cur.fetchall()}
 
-    linhas = []
-    for _, r in df.iterrows():
-        uf_id = mapa_uf.get(r["uf"])
-        modalidade_id = mapa_modalidade.get((r["modalidade"], r["segmento"]))
-        if uf_id is None or modalidade_id is None:
-            continue
-        linhas.append((
-            uf_id, modalidade_id, r["data_referencia"],
-            r["valor_carteira_ativa"], r["taxa_inadimplencia"], r["quantidade_operacoes"],
-        ))
+    # antes eu pulava a linha em silencio quando faltava a dimensao, agora paro e digo qual
+    ufs_sem_dimensao = sorted(set(df["uf"]) - set(mapa_uf))
+    if ufs_sem_dimensao:
+        parar(f"essas UFs nao estao na dim_uf do banco: {ufs_sem_dimensao}")
+    pares = set(zip(df["modalidade"], df["segmento"]))
+    modalidades_sem_dimensao = sorted(pares - set(mapa_modalidade))
+    if modalidades_sem_dimensao:
+        parar(f"essas modalidades nao estao na dim_modalidade do banco: {modalidades_sem_dimensao}")
 
-    # lotes de 200 com commit em cada um, se a conexao cair da pra rodar de novo
-    for i in range(0, len(linhas), 200):
-        execute_values(
-            cur,
-            """INSERT INTO fato_credito_regional
-               (uf_id, modalidade_id, data_referencia, valor_carteira_ativa, taxa_inadimplencia, quantidade_operacoes)
-               VALUES %s
-               ON CONFLICT (uf_id, modalidade_id, data_referencia) DO NOTHING""",
-            linhas[i:i + 200],
+    linhas = [
+        (
+            mapa_uf[r.uf], mapa_modalidade[(r.modalidade, r.segmento)], r.data_referencia,
+            ou_nulo(r.valor_carteira_ativa), ou_nulo(r.taxa_inadimplencia),
+            None if pd.isna(r.quantidade_operacoes) else int(r.quantidade_operacoes),
         )
-        conn.commit()
-    print(f"fato_credito_regional: {len(linhas)} linhas carregadas")
+        for r in df.itertuples(index=False)
+    ]
+    return gravar_em_lotes(conn, "fato_credito_regional", SQL_REGIONAL, linhas)
 
 
 def main():
