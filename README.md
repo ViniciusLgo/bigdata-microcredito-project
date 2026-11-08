@@ -56,7 +56,15 @@ Para repetir o tratamento com a mesma versão dos dados, usamos os JSONs que já
 - `python etl/carregar.py --criar-schema` cria só as tabelas que faltam (o `sql/schema.sql` não apaga nada) e depois carrega;
 - `python etl/carregar.py --limpar` é a única que apaga as tabelas (o `sql/limpar.sql`), pede para digitar APAGAR e não carrega nada.
 
-Os CSVs também são conferidos antes de abrir a conexão (arquivo, colunas, UF, PF/PJ e campos da chave vazios). Ainda falta tratar o caso de registro repetido (hoje ele só pula o que já existe) e contar o que entrou de verdade.
+Os CSVs também são conferidos antes de abrir a conexão (arquivo, colunas, UF, PF/PJ, campos da chave vazios e chave repetida). A carga pode rodar mais de uma vez: registro novo é inserido, registro que mudou é atualizado e registro igual fica como está. No final o script mostra quantos foram de cada tipo. Se a conexão cair no meio, o que já foi salvo continua no banco e é só rodar de novo.
+
+Os testes da carga ficam em `tests/` e precisam de um Postgres descartável, porque apagam e recriam as tabelas. Eles só rodam se a variável `TESTE_PG_URL` apontar para `localhost`, então nunca encostam na Aiven:
+
+```powershell
+docker run -d --name pg-teste -e POSTGRES_PASSWORD=teste -p 55432:5432 postgres:17
+$env:TESTE_PG_URL = "postgres://postgres:teste@localhost:55432/postgres?sslmode=disable"
+python -m unittest discover -s tests -v
+```
 
 ```bash
 pip install -r requirements.txt
