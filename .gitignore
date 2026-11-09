@@ -4,7 +4,6 @@ data/zip/*.zip
 # o recorte filtrado tambem e grande (uns 140MB), fica so local
 data/raw/*.csv
 
-# a pasta docs sobe vazia, so com o .gitkeep. o que tem dentro nao vai pro git por enquanto
 docs/*
 !docs/.gitkeep
 

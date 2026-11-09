@@ -1,11 +1,15 @@
-# verificar_banco.py
-# Mostra o que de fato ficou guardado no postgres da Aiven: as tabelas, os
-# campos com o tipo de cada um, as chaves estrangeiras e a quantidade de
-# linhas. Serve de prova pro entregavel 3 (estrutura + quantidade de dados).
-#
-# uso:
-#   export AIVEN_PG_URL="postgres://usuario:senha@host:porta/defaultdb?sslmode=require"
-#   python etl/verificar_banco.py
+"""
+verificar_banco.py
+
+Mostra o que ficou guardado no postgres da Aiven: as tabelas, os campos com
+o tipo de cada um, as chaves estrangeiras e a quantidade de linhas.
+Serve de prova pro entregavel 3 (estrutura e quantidade de dados).
+Esse script so le o banco, ele nao escreve nada.
+
+Uso:
+    export AIVEN_PG_URL="postgres://usuario:senha@host:porta/defaultdb?sslmode=require"
+    python etl/verificar_banco.py
+"""
 
 import os
 import sys
