@@ -1,0 +1,3 @@
+aiven_project_name = "example-project"
+service_name       = "example-postgresql"
+postgresql_version = "18"
