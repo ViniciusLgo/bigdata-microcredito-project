@@ -65,9 +65,26 @@ class TestValidacaoSemBanco(unittest.TestCase):
         silencioso(carregar.conferir_chaves_repetidas, df_regional(),
                    ["uf", "segmento", "modalidade", "data_referencia"], "teste.csv")
 
+    def test_perfil_repetido_para_a_carga(self):
+        df = pd.concat([df_perfil(), df_perfil().head(1)])
+        with self.assertRaises(SystemExit):
+            silencioso(carregar.conferir_chaves_repetidas, df,
+                       ["uf", "ano", "sexo", "cor_raca"], "perfil.csv")
+
     def test_ou_nulo_troca_nan_por_none(self):
         self.assertIsNone(carregar.ou_nulo(float("nan")))
         self.assertEqual(carregar.ou_nulo(pd.Series([1.5]).iloc[0]), 1.5)
+
+
+def df_perfil(ocupados=(100, 200)):
+    # duas linhas de exemplo: mulheres e homens pretos na BA
+    return pd.DataFrame({
+        "uf": ["BA", "BA"],
+        "ano": [2022, 2022],
+        "sexo": ["Mulheres", "Homens"],
+        "cor_raca": ["Preta", "Preta"],
+        "ocupados": list(ocupados),
+    })
 
 
 @unittest.skipUnless(BANCO_LOCAL, "defina TESTE_PG_URL apontando pra um postgres em localhost")
@@ -132,6 +149,19 @@ class TestCargaNoBanco(unittest.TestCase):
         resultado = silencioso(carregar.carregar_fato_regional, self.conn, df)
         self.assertEqual(resultado, (1, 0, 2))
         self.assertEqual(self.contar(), 3)
+
+    def test_perfil_insere_atualiza_e_nao_repete(self):
+        self.assertEqual(silencioso(carregar.carregar_perfil, self.conn, df_perfil()), (2, 0, 0))
+        self.assertEqual(silencioso(carregar.carregar_perfil, self.conn, df_perfil()), (0, 0, 2))
+        self.assertEqual(silencioso(carregar.carregar_perfil, self.conn, df_perfil((100, 250))), (0, 1, 1))
+        self.assertEqual(self.contar("perfil_ocupados_uf"), 2)
+
+    def test_perfil_com_uf_que_falta_para_a_carga(self):
+        df = df_perfil()
+        df.loc[0, "uf"] = "ZZ"
+        with self.assertRaises(SystemExit):
+            silencioso(carregar.carregar_perfil, self.conn, df)
+        self.assertEqual(self.contar("perfil_ocupados_uf"), 0)
 
     def test_carga_nacional_insere_e_atualiza(self):
         df = pd.DataFrame({
