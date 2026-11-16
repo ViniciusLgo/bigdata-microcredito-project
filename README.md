@@ -8,7 +8,7 @@ Integrantes: Vinicius Lago Cruz, Roberto Luis Jr., Guilherme Chaves e Maria Fern
 
 A fase 2 está pronta: os scripts baixam e tratam os dados, os CSVs finais estão no repositório e o banco está modelado. A carga na Aiven já foi feita antes, mas ainda precisamos entrar de novo no banco e guardar uma conferência atual.
 
-Na fase 3 já entraram a carga que pode rodar mais de uma vez, os testes dela, o Terraform, o guia de segurança e a análise territorial das ODS 5 e 18. O serviço do banco foi criado pelo Terraform em 16/11/2026 (evidência em [docs/evidencias/terraform.txt](docs/evidencias/terraform.txt)) e conferido com a versão nova dos dados (7.518 linhas, evidência em [docs/evidencias/banco-fase3.txt](docs/evidencias/banco-fase3.txt)). Faltam o dashboard e testar o README do zero com alguém que não escreveu ele. O jeito de trabalhar com branches e revisão está no [CONTRIBUTING.md](CONTRIBUTING.md).
+Na fase 3 já entraram a carga que pode rodar mais de uma vez, os testes dela, o Terraform, o guia de segurança e a análise territorial das ODS 5 e 18. O serviço do banco foi criado pelo Terraform em 16/11/2026 (evidência em [docs/evidencias/terraform.txt](docs/evidencias/terraform.txt)) e conferido com a versão nova dos dados (7.518 linhas, evidência em [docs/evidencias/banco-fase3.txt](docs/evidencias/banco-fase3.txt)). O dashboard em Streamlit também já está feito. Faltam publicar o dashboard e testar o README do zero com alguém que não escreveu ele. O jeito de trabalhar com branches e revisão está no [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## O que o projeto faz
 
@@ -50,8 +50,10 @@ sql/
   schema.sql           cria as tabelas que faltam (não apaga nada)
   limpar.sql           apaga as tabelas, só usado com a flag --limpar
 terraform/             infraestrutura como código (serviço PostgreSQL na Aiven)
+dashboard/             painel em Streamlit (veja dashboard/README.md)
 tests/
   test_tratamento.py   testes da conversão dos números, rodam sem banco
+  test_dashboard.py    testes das contas do dashboard, rodam sem banco
   test_carga.py        testes da carga, precisam de um Postgres local
 analise/
   baixar_ibge.py       baixa do IBGE o perfil por UF, com sexo e raça cruzados
@@ -88,10 +90,10 @@ IBGE (Censo)    API em JSON --> analise/baixar_ibge.py             (tipos, PF/PJ
                                                                       PostgreSQL na Aiven (criado com Terraform)
                                                                                              |
                                                                                              v
-                                                                              dashboard (ainda não feito)
+                                                                              dashboard (Streamlit)
 ```
 
-O banco é o PostgreSQL gratuito da Aiven, descrito em `terraform/`. O dashboard vai ler direto dele.
+O banco é o PostgreSQL gratuito da Aiven, descrito em `terraform/`. O dashboard lê direto dele.
 
 ## Tratamento dos dados
 
@@ -222,6 +224,17 @@ Para conferir se os CSVs do repositório são os mesmos que usamos, compare os h
 ```bash
 sha256sum data/processed/*.csv data/raw/*.json
 ```
+
+## Dashboard
+
+O painel fica em `dashboard/app.py` e lê do banco da Aiven (ou dos CSVs, se não houver a variável `AIVEN_PG_URL`). Ele tem 6 indicadores (dois deles de gênero e raça), filtros por período, região, UF, segmento, modalidade e perfil do IBGE, um seletor de métrica, detalhe por região e UF e a aba das ODS 5 e 18 com a ressalva. Para rodar:
+
+```powershell
+python -m pip install -r dashboard/requirements.txt
+python -m streamlit run dashboard/app.py
+```
+
+O passo a passo para publicar no Streamlit Cloud, com a URL do banco nos segredos da plataforma, está em [dashboard/README.md](dashboard/README.md).
 
 ## Como ler os números
 
