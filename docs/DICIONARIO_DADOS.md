@@ -1,250 +1,208 @@
 # Dicionário de dados
 
-Tema 05 — Acesso a Microcrédito e Inclusão Financeira Regional.
+Tema 05: acesso a microcrédito e inclusão financeira regional.
 
-Este documento descreve os campos de cada camada do pipeline: a origem (SCR.data e API SGS),
-o arquivo intermediário, os CSVs tratados e as tabelas do PostgreSQL.
-
-Os números de conferência citados aqui foram apurados em **05/11/2026** sobre os CSVs
-versionados no repositório (hashes no `data/manifesto-fontes.csv`). Eles descrevem os
-arquivos locais, **não** uma consulta ao banco da Aiven.
-
----
+Aqui estão os campos de cada etapa do pipeline: a origem (SCR.data e API SGS), o arquivo intermediário, os CSVs tratados e as tabelas do PostgreSQL. Os números de conferência foram apurados em 15/11/2026 nos CSVs do repositório (hashes em `data/manifesto-fontes.csv`). Eles descrevem os arquivos locais, e não uma consulta ao banco da Aiven.
 
 ## 1. Convenções
 
-| Convenção | Valor adotado |
+| Item | Valor |
 |---|---|
 | Separador do CSV de origem (SCR.data) | `;` |
 | Separador dos CSVs tratados | `,` |
-| Separador decimal na origem SCR.data | vírgula (`1.234,56`) |
-| Separador decimal na origem SGS (JSON) | ponto (`123.45`) |
+| Decimal na origem SCR.data | vírgula (`1.234,56`) |
+| Decimal na origem SGS (JSON) | ponto (`123.45`) |
 | Codificação de leitura dos CSVs do SCR | `utf-8-sig` |
-| Formato de data nos CSVs tratados | `AAAA-MM-DD` (ISO) |
-| Fuso / referência temporal | data-base de fechamento mensal |
+| Data nos CSVs tratados | `AAAA-MM-DD` |
 
-> **Atenção à palavra "segmento".** No arquivo original do SCR.data, `segmento` é o
-> **segmento da instituição financeira** (Banco, Cooperativa, Financeira, Fintech etc.).
-> Neste projeto, a coluna chamada `segmento` nos CSVs tratados e no banco é outra coisa:
-> ela vem da coluna **`cliente`** do SCR.data e guarda **PF ou PJ**. O campo `segmento`
-> original do BCB **não é usado** em nenhuma etapa. Quem for comparar o nosso resultado com
-> o arquivo do BCB precisa saber disso.
+Cuidado com a palavra segmento. No arquivo original do SCR.data, `segmento` é o tipo da instituição financeira (banco, cooperativa, financeira, fintech). No nosso projeto, a coluna `segmento` dos CSVs tratados e do banco vem da coluna `cliente` do SCR e guarda PF ou PJ. O campo `segmento` do BCB não é usado em nenhuma etapa.
 
----
+## 2. Origem
 
-## 2. Camada de origem
+### 2.1 SCR.data versão 2
 
-### 2.1 SCR.data versão 2 — CSVs mensais dentro dos ZIPs anuais
+Fonte: Banco Central do Brasil, ZIPs anuais em `https://www.bcb.gov.br/pda/desig/scrdata_{ANO}.zip`, com um CSV por mês. Metodologia em `https://www.bcb.gov.br/pda/desig/metodologia_versao2.pdf`. Licença Open Data Commons ODbL. Atualização mensal, com cerca de 30 dias de atraso.
 
-Fonte: Banco Central do Brasil, conjunto *SCR.data*, versão 2.
-URL dos arquivos: `https://www.bcb.gov.br/pda/desig/scrdata_{ANO}.zip`
-Metodologia: `https://www.bcb.gov.br/pda/desig/metodologia_versao2.pdf`
-Licença: Open Data Commons ODbL. Periodicidade mensal, divulgação cerca de 30 dias após o
-fechamento do período.
-
-Campos do arquivo, conforme a metodologia versão 2:
-
-| Campo | Tipo lido | Descrição | Usado no projeto |
-|---|---|---|---|
-| `data_base` | texto `AAAA-MM-DD` | Data de referência (fechamento do mês) | Sim — vira `data_referencia` |
-| `uf` | texto (2) | UF de residência (PF) ou da sede (PJ) | Sim — filtro e chave |
-| `segmento` | texto | Segmento da **instituição financeira** | Não |
-| `cliente` | texto | Tipo de cliente: `PF` ou `PJ` | Sim — vira a coluna `segmento` do projeto |
-| `cnae_ocupacao` | texto | Seção do CNAE (PJ) ou natureza da ocupação (PF) | Não |
-| `porte` | texto | Porte do cliente (faixas de salário mínimo para PF; Micro/Pequeno/Médio/Grande para PJ; Indisponível) | Não |
-| `modalidade` | texto | Modalidade da operação (Empréstimos, Financiamentos, Outros créditos…) | Sim |
-| `submodalidade` | texto | Submodalidade da operação — é aqui que aparece `Microcrédito` | Sim — filtro e parte do rótulo |
-| `origem` | texto | Origem dos recursos (com ou sem destinação específica) | Não |
-| `indexador` | texto | Indexador da operação | Não |
-| `numero_de_operacoes` | numérico | Número de operações de crédito no recorte | Sim — somado |
-| `a_vencer_ate_90_dias` … `a_vencer_acima_de_5400_dias` | numérico | Faixas de créditos a vencer | Não |
-| `carteira_a_vencer` | numérico | Soma das faixas a vencer | Não |
-| `vencido_de_15_ate_90_dias`, `vencido_acima_de_90_dias` | numérico | Faixas de créditos vencidos | Não |
-| `carteira_vencida` | numérico | Soma das faixas vencidas | Não |
-| `carteira_ativa` | numérico | `carteira_a_vencer` + `carteira_vencida` | Sim — somado |
-| `carteira_inadimplencia` | numérico | Operações a vencer e vencidas com alguma parcela vencida há mais de 90 dias | Sim — usado só para calcular a taxa |
-| `ativo_problematico` | numérico | Operações classificadas como ativo problemático | Não |
-
-**Pendências de metadado da origem (declarar na entrega, não inventar):**
-
-1. **Unidade monetária.** A metodologia versão 2 **não declara** a unidade de
-   `carteira_ativa` e `carteira_inadimplencia`. Pela ordem de grandeza dos valores
-   observados, o projeto trata os campos como **reais**. Isso é uma inferência, não um
-   metadado oficial.
-2. **Valores negativos em `numero_de_operacoes`.** Nos dados tratados há **1.084 linhas
-   (15,3% de 7.080) com quantidade de operações negativa**, mínimo **−32**. A metodologia
-   versão 2 não descreve regra de supressão, mascaramento ou valor sentinela para esse
-   campo. Enquanto o critério não for confirmado junto ao BCB, a leitura do projeto é:
-   *valor não interpretável como contagem*. Ver `docs/DECISOES_TECNICAS.md`, decisão D-07.
-3. **Escopo de registro.** O SCR só recebe operações acima de R$ 1.000 até maio/2016 e
-   acima de R$ 200 a partir de junho/2016. Como o recorte começa em 2021, vale o piso de
-   R$ 200 — operações menores que isso não estão na base.
-
-### 2.2 API SGS — séries 20618 e 20712
-
-Fonte: Banco Central do Brasil, Sistema Gerenciador de Séries Temporais (SGS).
-Endpoint: `https://api.bcb.gov.br/dados/serie/bcdata.sgs.{serie}/dados?formato=json&dataInicial=01/01/2021`
-
-| Série | Nome oficial | Unidade | Periodicidade | Início da série |
-|---|---|---|---|---|
-| 20618 | Saldo da carteira de crédito com recursos direcionados — Pessoas físicas — Microcrédito destinado a microempreendedores | Milhões de reais | Mensal | 03/2011 |
-| 20712 | Concessões de crédito com recursos direcionados — Pessoas físicas — Microcrédito total | Milhões de reais | Mensal | 03/2011 |
-
-Formato do JSON: lista de objetos com `data` (`DD/MM/AAAA`) e `valor` (texto, ponto decimal).
-
-| Campo do JSON | Tipo | Descrição |
+| Campo | Descrição | Usado |
 |---|---|---|
-| `data` | texto `DD/MM/AAAA` | Mês de referência, sempre no **dia 01** |
-| `valor` | texto | Valor da série em milhões de reais |
+| `data_base` | data de referência (fechamento do mês) | sim, vira `data_referencia` |
+| `uf` | UF de residência (PF) ou da sede (PJ) | sim, filtro e chave |
+| `segmento` | tipo da instituição financeira | não |
+| `cliente` | `PF` ou `PJ` | sim, vira o `segmento` do projeto |
+| `cnae_ocupacao` | seção do CNAE (PJ) ou natureza da ocupação (PF) | não |
+| `porte` | porte do cliente | não |
+| `modalidade` | Empréstimos, Financiamentos, Outros créditos | sim |
+| `submodalidade` | é aqui que aparece `Microcrédito` | sim, filtro e parte do rótulo |
+| `origem` | origem dos recursos | não |
+| `indexador` | indexador da operação | não |
+| `numero_de_operacoes` | número de operações de crédito | sim, somado |
+| faixas `a_vencer_*` e `vencido_*` | créditos a vencer e vencidos por prazo | não |
+| `carteira_ativa` | carteira a vencer mais carteira vencida | sim, somado |
+| `carteira_inadimplencia` | operações com parcela vencida há mais de 90 dias | sim, só para calcular a taxa |
+| `ativo_problematico` | operações classificadas como ativo problemático | não |
 
----
+Três lacunas da origem, que declaramos em vez de inventar:
 
-## 3. Camada intermediária
+1. Unidade monetária. A metodologia não diz a unidade de `carteira_ativa` e `carteira_inadimplencia`. Pela ordem de grandeza, tratamos como reais. É uma inferência.
+2. Valores negativos em `numero_de_operacoes`. São 1.085 linhas de 7.081 (15,3%), com mínimo de −32. A metodologia não descreve regra de supressão ou valor especial. Até confirmar com o BCB, o campo não vale como contagem (ver `DECISOES_TECNICAS.md`).
+3. Piso de registro. O SCR só recebe operações acima de R$ 200 desde junho/2016. Como o recorte começa em 2021, operações menores que isso não estão na base.
 
-### 3.1 `data/raw/scr_microcredito_brasil_raw.csv`
+### 2.2 API SGS, séries 20618 e 20712
 
-Gerado por `etl/filtrar_scr.py`. Não vai para o Git (tamanho). Mantém **todas** as colunas
-originais do SCR.data; só as linhas são filtradas (27 UFs e `submodalidade == "Microcrédito"`).
-Separador `;`, todas as colunas lidas como texto.
+Fonte: Banco Central, Sistema Gerenciador de Séries Temporais. Endereço: `https://api.bcb.gov.br/dados/serie/bcdata.sgs.{serie}/dados?formato=json&dataInicial=01/01/2021`.
 
-Conferência da fase 2: 598.002 linhas, 67 datas-base, de 31/01/2021 a 31/07/2026.
+| Série | Nome oficial | Unidade | Periodicidade |
+|---|---|---|---|
+| 20618 | Saldo da carteira de crédito com recursos direcionados, pessoas físicas, microcrédito destinado a microempreendedores | milhões de reais | mensal |
+| 20712 | Concessões de crédito com recursos direcionados, pessoas físicas, microcrédito total | milhões de reais | mensal |
 
----
+O JSON é uma lista com `data` (texto `DD/MM/AAAA`, sempre dia 01) e `valor` (texto com ponto decimal, em milhões de reais).
+
+### 2.3 IBGE, tabela SIDRA 10261
+
+Fonte: Censo Demográfico 2022, amostra de trabalho e rendimento. Pessoas de 14 anos ou mais ocupadas por posição na ocupação, sexo e cor ou raça, por UF. Usada só na análise das ODS (ver `ODS_ANALISE.md`).
+
+Arquivo `data/ibge_sexo_raca_uf_2022.csv` (270 linhas, feito por `analise/baixar_ibge.py`):
+
+| Campo | Descrição |
+|---|---|
+| `uf` | sigla da UF |
+| `ano` | 2022 |
+| `sexo` | Homens ou Mulheres |
+| `cor_raca` | Branca, Preta, Amarela, Parda ou Indígena |
+| `ocupados` | pessoas ocupadas como empregador ou conta própria |
+
+## 3. Arquivo intermediário
+
+`data/raw/scr_microcredito_brasil_raw.csv`, gerado por `etl/filtrar_scr.py`. Não vai para o Git por causa do tamanho. Mantém todas as colunas do SCR e só filtra as linhas (27 UFs e `submodalidade == "Microcrédito"`). Separador `;`, tudo lido como texto. Tem 598.000 linhas e 67 datas-base, de 31/01/2021 a 31/07/2026.
 
 ## 4. CSVs tratados (`data/processed/`)
 
-### 4.1 `fato_credito_regional.csv` — 7.080 linhas + cabeçalho
+### 4.1 `fato_credito_regional.csv`, 7.081 linhas
 
-Grão: **uma linha por UF × segmento (PF/PJ) × modalidade × mês**.
+Cada linha é uma UF, um segmento (PF ou PJ), uma modalidade e um mês.
 
-| Campo | Tipo | Unidade | Origem | Nulos | Observações |
-|---|---|---|---|---|---|
-| `uf` | texto (2) | — | `uf` do SCR.data | 0 | 27 valores distintos |
-| `segmento` | texto (2) | — | **`cliente`** do SCR.data | 0 | `PF` (3.618 linhas) e `PJ` (3.462) |
-| `modalidade` | texto | — | `modalidade` + `" - "` + `submodalidade` | 0 | `Empréstimos - Microcrédito` (3.618) e `Financiamentos - Microcrédito` (3.462) |
-| `data_referencia` | data ISO | — | `data_base` | 0 | 67 datas, 31/01/2021 a 31/07/2026, sempre **último dia do mês** |
-| `valor_carteira_ativa` | decimal | reais (inferido) | soma de `carteira_ativa` | 0 | mínimo R$ 505,88; máximo R$ 2,295 bi; nenhum valor ≤ 0 |
-| `quantidade_operacoes` | decimal com parte fracionária zero | operações | soma de `numero_de_operacoes` | 0 | mínimo **−32**; máximo 1.140.446; 1.084 linhas negativas |
-| `taxa_inadimplencia` | decimal 0–1 | fração | `carteira_inadimplencia / carteira_ativa`, arredondada em 4 casas | 0 | todos entre 0 e 1; 39 linhas com taxa igual a 1,0 (carteira 100% inadimplida) |
+| Campo | Tipo | Origem | Observações |
+|---|---|---|---|
+| `uf` | texto (2) | `uf` | 27 valores |
+| `segmento` | texto (2) | `cliente` | PF (3.618 linhas) e PJ (3.463) |
+| `modalidade` | texto | `modalidade` + " - " + `submodalidade` | Empréstimos (3.618) e Financiamentos (3.463) |
+| `data_referencia` | data | `data_base` | 67 datas, sempre o último dia do mês |
+| `valor_carteira_ativa` | decimal | soma de `carteira_ativa` | reais (inferido); de R$ 488,12 a R$ 2,295 bi; nenhum valor menor ou igual a zero |
+| `quantidade_operacoes` | decimal sem parte fracionária | soma de `numero_de_operacoes` | de −32 a 1.140.446; 1.085 linhas negativas |
+| `taxa_inadimplencia` | decimal de 0 a 1 | `carteira_inadimplencia / carteira_ativa`, 4 casas | 39 linhas com taxa 1,0 |
 
-Cruzamento modalidade × segmento observado:
+Nenhum campo tem valor vazio e a chave (UF, segmento, modalidade, data) não tem duplicata.
 
-| modalidade | PF | PJ |
+Cruzamento modalidade por segmento:
+
+| Modalidade | PF | PJ |
 |---|---|---|
-| Empréstimos - Microcrédito | 1.809 | 1.809 |
-| Financiamentos - Microcrédito | 1.809 | 1.653 |
+| Empréstimos, Microcrédito | 1.809 | 1.809 |
+| Financiamentos, Microcrédito | 1.809 | 1.654 |
 
-Cobertura: as 54 combinações UF × segmento têm as 67 datas-base. A combinação
-`Financiamentos - Microcrédito` × PJ é a única incompleta (1.653 em vez de 1.809), ou seja,
-há UFs/meses sem operações dessa modalidade para PJ. **Ausência de linha significa ausência
-de registro na origem, não zero.**
+As 54 combinações de UF e segmento têm as 67 datas. Só Financiamentos para PJ é incompleta, porque há UFs e meses sem operação dessa modalidade. Linha ausente quer dizer que não houve registro na origem, e não que o valor é zero.
 
-Chave de negócio (`uf`, `segmento`, `modalidade`, `data_referencia`): **sem duplicatas**.
+O `valor_carteira_ativa` sai no CSV com a precisão do ponto flutuante (por exemplo, `1050230.3699999999`), e no banco é arredondado para 2 casas. Ao comparar CSV com banco, use tolerância.
 
-> O campo `valor_carteira_ativa` é gravado no CSV com a precisão do ponto flutuante
-> (ex.: `1050230.3699999999`). No banco a coluna é `DECIMAL(15,2)`, então o valor é
-> arredondado na carga. Comparações CSV × banco devem usar tolerância, não igualdade exata.
+### 4.2 `fato_microcredito_nacional.csv`, 136 linhas
 
-### 4.2 `fato_microcredito_nacional.csv` — 136 linhas + cabeçalho
+Cada linha é uma série e um mês.
 
-Grão: **uma linha por série × mês**.
+| Campo | Tipo | Origem | Observações |
+|---|---|---|---|
+| `serie_id` | inteiro | chave no script | 20618 (68 linhas) e 20712 (68 linhas) |
+| `descricao_serie` | texto | rótulo do script | texto nosso, o nome oficial está na seção 2.2 |
+| `data_referencia` | data | `data` do JSON | de 01/01/2021 a 01/08/2026, sempre dia 01 |
+| `valor` | decimal | `valor` do JSON | milhões de reais; 20618 vai de 6.237 a 11.093 e 20712 de 1.041 a 1.879 |
 
-| Campo | Tipo | Unidade | Origem | Nulos | Observações |
-|---|---|---|---|---|---|
-| `serie_id` | inteiro | — | chave do dicionário no script | 0 | `20618` (68 linhas) e `20712` (68 linhas) |
-| `descricao_serie` | texto | — | rótulo escrito no próprio script | 0 | texto do projeto, **não** é o nome oficial da série — o nome oficial está na seção 2.2 |
-| `data_referencia` | data ISO | — | `data` do JSON | 0 | 01/01/2021 a 01/08/2026, sempre **dia 01** |
-| `valor` | decimal | **milhões de reais** | `valor` do JSON | 0 | 20618: 6.237 a 11.093; 20712: 1.041 a 1.879 |
+## 5. Banco de dados (`sql/schema.sql`)
 
----
+Modelo dimensional simplificado, com duas dimensões, duas fatos e uma tabela de perfil. A fato regional se liga às dimensões. A nacional é independente, sem grão nem chave em comum. A tabela de perfil vem do IBGE e se liga só à `dim_uf`.
 
-## 5. Banco de dados (PostgreSQL / Aiven) — `sql/schema.sql`
+### `dim_uf`
 
-Modelo dimensional simplificado: duas dimensões e duas fatos. A fato regional se liga às
-dimensões; a fato nacional é **independente** (não compartilha grão nem chave com a regional).
+| Campo | Tipo | Chave | Descrição |
+|---|---|---|---|
+| `uf_id` | SERIAL | PK | identificador |
+| `sigla_uf` | VARCHAR(2) | único | AC a TO |
+| `nome_uf` | VARCHAR(40) | | nome por extenso |
+| `regiao` | VARCHAR(20) | | Norte, Nordeste, Centro-Oeste, Sudeste ou Sul |
 
-### 5.1 `dim_uf`
+27 linhas, carregadas de uma lista fixa em `etl/carregar.py`, e não dos dados.
 
-| Campo | Tipo | Chave | Nulo | Origem | Descrição |
-|---|---|---|---|---|---|
-| `uf_id` | SERIAL | PK | não | gerado | Identificador da UF |
-| `sigla_uf` | VARCHAR(2) | UNIQUE | não | lista fixa em `etl/carregar.py` | Sigla (AC…TO) |
-| `nome_uf` | VARCHAR(40) | — | não | lista fixa em `etl/carregar.py` | Nome por extenso |
-| `regiao` | VARCHAR(20) | — | não | lista fixa em `etl/carregar.py` | Norte, Nordeste, Centro-Oeste, Sudeste, Sul |
+### `dim_modalidade`
 
-27 linhas. A dimensão é carregada da lista do script, não dos dados, então ela existe
-mesmo para UFs sem fato no período.
+| Campo | Tipo | Chave | Descrição |
+|---|---|---|---|
+| `modalidade_id` | SERIAL | PK | identificador |
+| `nome_modalidade` | VARCHAR(150) | único com `segmento` | por exemplo, `Empréstimos - Microcrédito` |
+| `segmento` | VARCHAR(2) | único com `nome_modalidade` | PF ou PJ |
 
-### 5.2 `dim_modalidade`
+4 linhas, tiradas das combinações que aparecem no CSV.
 
-| Campo | Tipo | Chave | Nulo | Origem | Descrição |
-|---|---|---|---|---|---|
-| `modalidade_id` | SERIAL | PK | não | gerado | Identificador |
-| `nome_modalidade` | VARCHAR(150) | UNIQUE (com `segmento`) | não | `modalidade` do CSV tratado | Ex.: `Empréstimos - Microcrédito` |
-| `segmento` | VARCHAR(2) | UNIQUE (com `nome_modalidade`) | não | `segmento` do CSV tratado | `PF` ou `PJ` (coluna `cliente` do SCR.data) |
+### `fato_credito_regional`
 
-Carregada a partir das combinações distintas presentes no CSV: **4 linhas** na versão atual.
+| Campo | Tipo | Chave | Descrição |
+|---|---|---|---|
+| `id` | SERIAL | PK | |
+| `uf_id` | INTEGER | FK para `dim_uf` | |
+| `modalidade_id` | INTEGER | FK para `dim_modalidade` | |
+| `data_referencia` | DATE | único com as duas chaves | último dia do mês |
+| `valor_carteira_ativa` | DECIMAL(15,2) | | reais (inferido) |
+| `taxa_inadimplencia` | DECIMAL(6,4) | | fração de 0 a 1: 0,05 é 5% |
+| `quantidade_operacoes` | INTEGER | | o CSV traz decimal e o banco arredonda |
 
-### 5.3 `fato_credito_regional`
+Índices em `data_referencia` e `uf_id`.
 
-| Campo | Tipo | Chave | Nulo | Origem | Descrição |
-|---|---|---|---|---|---|
-| `id` | SERIAL | PK | não | gerado | — |
-| `uf_id` | INTEGER | FK → `dim_uf.uf_id` | não | `uf` resolvida na dimensão | — |
-| `modalidade_id` | INTEGER | FK → `dim_modalidade.modalidade_id` | não | (`modalidade`, `segmento`) resolvidos na dimensão | — |
-| `data_referencia` | DATE | UNIQUE (com as duas FKs) | não | CSV tratado | Último dia do mês |
-| `valor_carteira_ativa` | DECIMAL(15,2) | — | sim | CSV tratado | Reais (inferido) |
-| `taxa_inadimplencia` | DECIMAL(6,4) | — | sim | CSV tratado | Fração de 0 a 1 — **0,05 significa 5%**, não 0,05% |
-| `quantidade_operacoes` | INTEGER | — | sim | CSV tratado | O CSV traz decimal; o PostgreSQL arredonda na carga |
+### `fato_microcredito_nacional`
 
-Índices: `data_referencia`, `uf_id`. Restrição de unicidade:
-(`uf_id`, `modalidade_id`, `data_referencia`).
+| Campo | Tipo | Chave | Descrição |
+|---|---|---|---|
+| `id` | SERIAL | PK | |
+| `serie_id` | INTEGER | único com a data | 20618 ou 20712 |
+| `descricao_serie` | VARCHAR(200) | | rótulo do projeto |
+| `data_referencia` | DATE | único com `serie_id` | primeiro dia do mês |
+| `valor` | DECIMAL(15,2) | | milhões de reais, não aceita vazio |
 
-### 5.4 `fato_microcredito_nacional`
+Índice em `data_referencia`. O `valor` não aceita vazio, mas a função `numero_sgs()` devolve `None` para valor vazio. Hoje as duas séries não têm vazios. Se a API devolver um mês sem valor, a carga falha naquela linha.
 
-| Campo | Tipo | Chave | Nulo | Origem | Descrição |
-|---|---|---|---|---|---|
-| `id` | SERIAL | PK | não | gerado | — |
-| `serie_id` | INTEGER | UNIQUE (com a data) | não | CSV tratado | 20618 ou 20712 |
-| `descricao_serie` | VARCHAR(200) | — | não | CSV tratado | Rótulo do projeto |
-| `data_referencia` | DATE | UNIQUE (com `serie_id`) | não | CSV tratado | Primeiro dia do mês |
-| `valor` | DECIMAL(15,2) | — | **não** | CSV tratado | **Milhões de reais** |
+### `perfil_ocupados_uf`
 
-Índice: `data_referencia`.
+| Campo | Tipo | Chave | Descrição |
+|---|---|---|---|
+| `id` | SERIAL | PK | |
+| `uf_id` | INTEGER | FK para `dim_uf` | |
+| `ano` | INTEGER | único com UF, sexo e raça | 2022 (ano do Censo) |
+| `sexo` | VARCHAR(10) | | Homens ou Mulheres |
+| `cor_raca` | VARCHAR(10) | | Branca, Preta, Amarela, Parda ou Indígena |
+| `ocupados` | INTEGER | | pessoas de 14 anos ou mais ocupadas como empregador ou conta própria |
 
-> `valor` é `NOT NULL`, mas a função `numero_br()` devolve `None` para valor vazio. Hoje
-> não há vazios nas duas séries; se a API passar a devolver um mês sem valor, a carga vai
-> falhar nessa linha. Está registrado como risco.
+270 linhas (27 UFs, 2 sexos e 5 cores ou raças). Vem do `data/ibge_sexo_raca_uf_2022.csv`. Os valores cruzados vêm arredondados pelo IBGE, então a soma pode diferir em até 0,1% dos totais por sexo ou por raça.
 
-### 5.5 Totais esperados
+### Totais esperados
 
-| Tabela | Linhas esperadas |
+| Tabela | Linhas |
 |---|---|
 | `dim_uf` | 27 |
 | `dim_modalidade` | 4 |
-| `fato_credito_regional` | 7.080 |
+| `fato_credito_regional` | 7.081 |
 | `fato_microcredito_nacional` | 136 |
-| **Total** | **7.247** |
+| `perfil_ocupados_uf` | 270 |
+| Total | 7.518 |
 
----
+## 6. O que a base não tem
 
-## 6. O que a base **não** tem
+Para não extrapolar na análise nem no dashboard:
 
-Importante para não extrapolar nas análises e no dashboard:
+- Não tem pessoas. O menor nível é uma soma por UF, tipo de cliente, modalidade e mês.
+- Não tem quantidade de clientes, só de operações. Uma pessoa pode ter várias.
+- Não tem sexo, gênero, cor ou raça (ver a seção de ODS em `DECISOES_TECNICAS.md`).
+- Não tem concessão por UF. `carteira_ativa` é saldo no fim do mês. A única série de concessão é nacional (SGS 20712).
+- Não tem identificação da instituição financeira.
+- Não tem renda, idade, escolaridade ou porte do tomador. `porte` e `cnae_ocupacao` existem na origem, mas são somados fora na agregação.
 
-- **Não tem pessoas.** O grão mínimo é um agregado de UF × tipo de cliente × modalidade × mês.
-- **Não tem quantidade de clientes**, só **quantidade de operações**. Uma pessoa pode ter
-  várias operações; somar operações não é contar tomadores.
-- **Não tem sexo/gênero nem cor/raça.** Ver `docs/DECISOES_TECNICAS.md`, seção ODS.
-- **Não tem concessão por UF.** `carteira_ativa` é **saldo** (estoque no fim do mês), não
-  valor concedido no mês. A única série de concessão é nacional (SGS 20712).
-- **Não tem identificação de instituição financeira.**
-- **Não tem renda, idade, escolaridade ou porte do tomador** no recorte agregado do projeto
-  (os campos `porte` e `cnae_ocupacao` existem na origem, mas são somados fora na agregação).
-
----
-
-## 7. Como conferir estes números
+## 7. Como conferir
 
 ```bash
 python - <<'PY'

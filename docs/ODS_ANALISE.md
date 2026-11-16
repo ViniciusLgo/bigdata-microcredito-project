@@ -1,174 +1,110 @@
-# Microcrédito, gênero e raça: análise territorial — ODS 5 e ODS 18
+# Microcrédito, gênero e raça: análise territorial para as ODS 5 e 18
 
-Tema 05 — Acesso a Microcrédito e Inclusão Financeira Regional.
-Execução da decisão **D-16** (`docs/DECISOES_TECNICAS.md`). Análise feita em **05/11/2026**.
+Tema 05: acesso a microcrédito e inclusão financeira regional. Análise feita em 05/11/2026 e ampliada em 15/11/2026 com o cruzamento de sexo e raça juntos.
 
----
+## O que esta análise é e o que ela não é
 
-## Antes de qualquer número: o que esta análise é e o que ela não é
+A base de microcrédito do SCR.data não tem sexo, gênero, cor ou raça. Nenhum desses atributos foi atribuído a operação de crédito nenhuma, e não existe junção entre pessoas: o menor nível dos nossos dados é a soma por UF, tipo de cliente, modalidade e mês.
 
-A base de microcrédito do SCR.data **não contém sexo, gênero, cor ou raça**. Nenhum
-atributo demográfico foi imputado a nenhuma operação de crédito, e não há junção entre
-pessoas: o grão mínimo dos nossos dados é um agregado de UF × tipo de cliente × modalidade
-× mês.
+O que fazemos é comparar dois indicadores por estado: o microcrédito, que vem do Banco Central, e o perfil de quem trabalha por conta própria ou como empregador, que vem do IBGE. A unidade de análise é a UF, e não a pessoa.
 
-O que se faz aqui é comparar **dois indicadores territoriais**: o volume de microcrédito por
-UF, que vem do Banco Central, e o perfil demográfico de quem trabalha por conta própria ou
-como empregador na mesma UF, que vem do IBGE. A unidade de análise é **a UF**, não a pessoa.
+> Ressalva obrigatória. Concluir algo sobre pessoas a partir de médias por estado é falácia ecológica. Se um estado com muitas pessoas pretas e pardas tem muito microcrédito, isso não significa que pessoas pretas e pardas pegaram esse crédito. A análise descreve territórios, não tomadores.
 
-> **Ressalva obrigatória.** Concluir algo sobre indivíduos a partir de médias territoriais é
-> **falácia ecológica**. Se uma UF com muitas pessoas pretas e pardas tem muito microcrédito,
-> isso **não** significa que pessoas pretas e pardas tomaram esse crédito. Esta análise
-> descreve territórios, não tomadores.
+Essa ressalva tem que aparecer no relatório e no dashboard, com essas palavras.
 
-Essa ressalva deve aparecer no relatório e no dashboard, nestes termos.
+## Como foi feito
 
----
+Microcrédito (nosso banco). Para cada UF, a carteira ativa média dos 12 meses de 2022, somando PF e PJ. Usamos a média porque carteira é um saldo, e somar saldos de meses diferentes não quer dizer nada. A taxa de inadimplência por UF é ponderada pela carteira, nunca uma média simples das taxas.
 
-## Método
+Perfil demográfico (IBGE). Censo 2022, tabela SIDRA 10261: pessoas de 14 anos ou mais ocupadas como empregador (com pelo menos um empregado) ou conta própria (sem empregados). Dessa tabela saem três indicadores por UF:
 
-**Indicador de microcrédito (nosso banco).** Para cada UF, a carteira ativa média mensal de
-2022 — a média dos 12 meses, porque carteira é estoque e somar estoques mensais não
-significa nada (decisão D-12). A taxa de inadimplência por UF é **ponderada pela carteira**,
-nunca média simples das taxas (decisão D-09). Soma PF e PJ.
+- participação de mulheres;
+- participação de pessoas pretas e pardas;
+- participação de mulheres pretas e pardas, que usa sexo e raça cruzados (o `analise/baixar_ibge.py` busca isso direto da API).
 
-**Indicador demográfico (IBGE).** Censo Demográfico 2022, Amostra — Trabalho e Rendimento,
-**tabela SIDRA 10261**, variável 4090, nível N3 (UF). Recorte: pessoas de 14 anos ou mais
-ocupadas como **empregador com pelo menos um empregado** (categoria 79377) ou **conta
-própria sem empregados** (categoria 79378). Desse recorte saem duas participações por UF:
-de mulheres, e de pessoas pretas e pardas somadas.
+Normalização. Dividimos a carteira pelo número de ocupados por conta própria e empregadores da UF, para não medir só o tamanho da economia do estado. O resultado é "reais de carteira por pessoa ocupada por conta própria ou como empregadora".
 
-**Normalização.** A carteira é dividida pelo número de ocupados por conta própria e
-empregadores da UF, para não medir apenas o tamanho da economia estadual. O resultado é
-"reais de carteira ativa por pessoa ocupada por conta própria ou como empregadora".
+Estatística. Correlação de postos de Spearman, porque a carteira por pessoa é muito desigual (de R$ 104 a R$ 2.297). Com 27 UFs o poder estatístico é baixo, então o valor de p serve para calibrar a leitura e não para decidir nada.
 
-**Estatística.** Correlação de postos de Spearman, escolhida porque a carteira per capita é
-muito assimétrica (de R$ 104 a R$ 2.297). Com **n = 27**, o poder estatístico é baixo: os
-valores-p servem para calibrar a leitura, não para decidir nada.
+O ano é 2022, o do Censo, para que o numerador e o denominador sejam do mesmo período. Julho/2026 entra como checagem.
 
-Ano de referência: 2022, o ano do Censo, para que numerador e denominador sejam
-contemporâneos. Julho de 2026, o último mês disponível, entra como checagem de robustez.
-
-Reprodução: `python analise/ods_cruzamento.py`.
-
----
+Para repetir: `python analise/baixar_ibge.py` e depois `python analise/ods_cruzamento.py`.
 
 ## Resultados
 
-### Correlações (Spearman, n = 27 UFs)
+Correlações de Spearman com 27 UFs:
 
 | Relação | ρ | p |
 |---|---:|---:|
-| **ODS 5** — mulheres × carteira per capita (2022) | −0,227 | 0,255 |
-| **ODS 5** — mulheres × inadimplência (2022) | 0,133 | 0,508 |
-| **ODS 18** — pretas e pardas × carteira per capita (2022) | **0,455** | **0,017** |
-| **ODS 18** — pretas e pardas × inadimplência (2022) | −0,218 | 0,275 |
-| *controle* — carteira per capita × inadimplência (2022) | **−0,871** | **<0,0001** |
-| *robustez* — mulheres × carteira per capita (jul/2026) | −0,155 | 0,440 |
-| *robustez* — pretas e pardas × carteira per capita (jul/2026) | 0,370 | 0,058 |
+| ODS 5: mulheres e carteira por pessoa (2022) | −0,227 | 0,255 |
+| ODS 5: mulheres e inadimplência (2022) | 0,133 | 0,508 |
+| ODS 18: pretas e pardas e carteira por pessoa (2022) | 0,455 | 0,017 |
+| ODS 18: pretas e pardas e inadimplência (2022) | −0,218 | 0,275 |
+| ODS 5 e 18: mulheres pretas e pardas e carteira por pessoa (2022) | 0,501 | 0,008 |
+| ODS 5 e 18: mulheres pretas e pardas e inadimplência (2022) | −0,261 | 0,189 |
+| Controle: carteira por pessoa e inadimplência (2022) | −0,871 | menor que 0,0001 |
+| Checagem: mulheres e carteira por pessoa (jul/2026) | −0,155 | 0,440 |
+| Checagem: pretas e pardas e carteira por pessoa (jul/2026) | 0,370 | 0,058 |
 
-### Medianas por região (2022)
+Sem as 9 UFs do Nordeste (18 UFs):
 
-| Região | UFs | Carteira por ocupado | Inadimplência | Mulheres | Pretas e pardas |
-|---|---:|---:|---:|---:|---:|
-| Nordeste | 9 | R$ 1.236 | 6,1% | 34,7% | 71,2% |
-| Norte | 7 | R$ 240 | 12,8% | 31,4% | 76,5% |
-| Sul | 3 | R$ 228 | 11,5% | 37,9% | 18,6% |
-| Sudeste | 4 | R$ 198 | 12,9% | 37,9% | 54,3% |
-| Centro-Oeste | 4 | R$ 167 | 14,5% | 35,6% | 60,0% |
+| Relação | ρ | p |
+|---|---:|---:|
+| Pretas e pardas e carteira por pessoa | 0,358 | 0,145 |
+| Mulheres e carteira por pessoa | −0,410 | 0,091 |
+| Mulheres pretas e pardas e carteira por pessoa | 0,319 | 0,197 |
+
+Medianas por região em 2022:
+
+| Região | UFs | Carteira por pessoa | Inadimplência | Mulheres | Pretas e pardas | Mulheres pretas e pardas |
+|---|---:|---:|---:|---:|---:|---:|
+| Nordeste | 9 | R$ 1.236 | 6,1% | 34,7% | 71,2% | 24,6% |
+| Norte | 7 | R$ 240 | 12,8% | 31,4% | 76,5% | 23,1% |
+| Sul | 3 | R$ 228 | 11,5% | 37,9% | 18,6% | 6,4% |
+| Sudeste | 4 | R$ 198 | 12,9% | 37,9% | 54,3% | 19,0% |
+| Centro-Oeste | 4 | R$ 167 | 14,5% | 35,6% | 60,0% | 20,0% |
 
 ![Dispersão por UF](evidencias/ods_cruzamento.png)
 
-Tabela completa por UF: `docs/evidencias/ods_cruzamento_uf.csv`.
+A tabela completa por UF está em `docs/evidencias/ods_cruzamento_uf.csv`.
 
----
+## O que os resultados querem dizer
 
-## Leitura dos resultados
+### ODS 18 e ODS 5 e 18 juntas: tem associação, mas é sobre onde a oferta está
 
-### ODS 18 — há associação territorial, mas ela não é sobre raça
+Estados com mais pessoas pretas e pardas entre os conta própria e empregadores têm mais carteira por pessoa (ρ = 0,455). Com as mulheres pretas e pardas, a relação é um pouco mais forte (ρ = 0,501, p = 0,008).
 
-A correlação é positiva e significativa a 5%: UFs com maior participação de pessoas pretas
-e pardas entre conta própria e empregadores têm **mais** carteira de microcrédito por
-ocupado, não menos.
+Antes de ler isso como inclusão, testamos a explicação mais óbvia, e ela se confirma: as 9 UFs do Nordeste ficam com 62,1% de toda a carteira de microcrédito do país em 2022, com mediana de R$ 1.236 por pessoa, contra R$ 167 a R$ 240 nas outras regiões. O Nordeste também tem alta participação de pessoas pretas e pardas. As duas variáveis sobem juntas porque o Nordeste é alto nas duas.
 
-Antes de celebrar isso como inclusão, vale testar a explicação concorrente mais óbvia — e
-ela se confirma. **As 9 UFs do Nordeste concentram 62,1% de toda a carteira de microcrédito
-do país em 2022**, com mediana de R$ 1.236 por ocupado contra R$ 167 a R$ 240 nas demais
-regiões. O Nordeste também é a região com alta participação de pessoas pretas e pardas
-(mediana 71,2%). Ou seja, as duas variáveis sobem juntas porque o Nordeste é alto nas duas.
+Sem o Nordeste, as duas relações perdem significância (ρ = 0,358 com p = 0,145 para pretas e pardas, e ρ = 0,319 com p = 0,197 para mulheres pretas e pardas). Então o que a correlação mostra é a concentração regional da oferta, e não o acesso de um grupo. Por que o Nordeste concentra tanto pode ter a ver com programas de microcrédito de alcance regional, mas isso é hipótese: a nossa base não identifica instituição nem programa.
 
-Excluindo o Nordeste, a correlação **perde significância**: ρ = 0,358 com p = 0,145 (n = 18).
+O gráfico mostra contraexemplos. Santa Catarina tem só 18,6% de pretas e pardas (6,4% de mulheres pretas e pardas) e mesmo assim R$ 1.023 por pessoa, com 9,9% da carteira nacional. O Rio de Janeiro tem 55,8% de pretas e pardas e só R$ 113 por pessoa.
 
-A leitura honesta: o que a correlação capta é **onde a oferta de microcrédito está
-concentrada**, não o acesso de um grupo racial. A concentração regional é compatível com a
-existência de programas de microcrédito de alcance regional, mas essa explicação é
-**hipótese**, não resultado — nossa base não identifica instituição financeira nem programa,
-e testá-la exigiria outra fonte.
+### ODS 5: sem associação detectável
 
-Há contraexemplos claros no gráfico. **Santa Catarina** tem a segunda menor participação de
-pessoas pretas e pardas do país (18,6%) e mesmo assim R$ 1.023 de carteira por ocupado,
-9,9% do total nacional. **Rio de Janeiro** tem 55,8% de pretas e pardas e apenas R$ 113 por
-ocupado, uma das menores do país. A relação está longe de ser determinística.
+A correlação com a participação de mulheres é fraca e não significativa (ρ = −0,227, p = 0,255), e continua assim em julho/2026. Isso é um resultado, e não uma falha. O que dá para dizer é que, com estes dados e no nível de estado, não há sinal de relação entre a presença de mulheres entre os pequenos empreendedores e o volume de microcrédito. Não dá para dizer que não existe desigualdade de gênero no acesso, porque a base não tem sexo para observá-la.
 
-### ODS 5 — não há associação detectável
+Também ajuda saber que esse indicador varia pouco: de 30,3% (Acre) a 40,7% (Distrito Federal). A participação de pretas e pardas vai de 17,0% (Rio Grande do Sul) a 80,2% (Pará). Faixa estreita dificulta achar qualquer relação.
 
-A correlação com a participação de mulheres é fraca, negativa e não significativa
-(ρ = −0,227, p = 0,255), e continua assim em julho de 2026. Excluindo o Nordeste ela fica
-em −0,410 com p = 0,091 — ainda não significativa a 5%, e com n = 18.
+### O achado mais forte não é de nenhuma das duas ODS
 
-**Isso é um resultado, não uma falha.** A conclusão correta é: *com estes dados, no nível de
-UF, não há evidência de associação entre a presença de mulheres entre pequenos
-empreendedores e o volume de microcrédito do estado.* O que não se pode dizer é que não
-existe desigualdade de gênero no acesso — a base simplesmente não permite observá-la,
-porque não tem sexo. Ausência de evidência aqui é consequência do desenho da fonte.
+A relação mais nítida é entre a densidade de microcrédito e a inadimplência (ρ = −0,871, p menor que 0,0001): onde há mais microcrédito por pessoa, a inadimplência é bem menor. O Piauí tem R$ 2.297 por pessoa e 5,9% de inadimplência, e o Rio de Janeiro tem R$ 113 e 22,4%.
 
-Note também que a variação entre UFs é pequena nesse indicador: a participação de mulheres
-vai de 31,4% (Acre) a 40,6% (Distrito Federal), uma faixa estreita se comparada à de
-pretas e pardas, que vai de 17,0% a 80,2%. Faixa estreita dificulta detectar qualquer
-relação.
+Cuidado ao interpretar. Pode ser que operações em escala, com metodologia própria, inadimplam menos. Pode ser também que carteiras pequenas sejam resíduos com mais casos problemáticos. A correlação é forte, mas a explicação não está nos dados.
 
-### O achado mais forte não é sobre nenhum dos dois ODS
+## Limitações
 
-A relação mais nítida de toda a análise é entre **densidade de microcrédito e
-inadimplência**: ρ = −0,871, p < 0,0001. Onde há mais microcrédito por ocupado, a
-inadimplência é muito menor — Piauí tem R$ 2.297 por ocupado e 5,9% de inadimplência,
-enquanto Rio de Janeiro tem R$ 113 e 22,4%.
-
-Isso merece cautela na interpretação. Pode significar que operações de microcrédito feitas
-em escala, com metodologia própria, inadimplem menos; pode significar que carteiras
-pequenas são residuais e concentram casos problemáticos; pode ser as duas coisas. A
-correlação é forte, a explicação não está nos dados.
-
----
-
-## Limitações desta análise
-
-1. **Falácia ecológica.** Repetida no topo por ser a mais importante.
-2. **Universos diferentes.** A carteira soma PF e PJ; o denominador do IBGE conta pessoas
-   ocupadas por conta própria ou como empregadoras. São universos próximos, não idênticos —
-   o denominador é um normalizador razoável, não a população exata dos tomadores.
-3. **n = 27.** Poder estatístico baixo. Uma UF atípica move o resultado.
-4. **Um único ano no Censo.** A tabela 10261 só existe para 2022; não dá para acompanhar
-   mudança no perfil demográfico ao longo do período. Para série temporal por sexo existe a
-   tabela 7233 da PNAD Contínua, que não traz cor ou raça por UF.
-5. **Correlação não é causa.** Nada aqui identifica efeito de política.
-6. **Confundimento regional não controlado além da exclusão do Nordeste.** Com 27
-   observações, um modelo com controles não se sustenta.
-7. **A quantidade de operações não foi usada** como indicador, pelo motivo registrado em
-   D-07: 1.084 das 7.080 linhas têm valor negativo e o BCB não publica o critério.
-
----
+1. Falácia ecológica. Está no topo por ser a mais importante.
+2. Universos diferentes. A carteira soma PF e PJ, e o denominador do IBGE conta pessoas ocupadas por conta própria ou como empregadoras. São próximos, mas não idênticos.
+3. Só 27 observações. Um estado atípico muda o resultado.
+4. O Censo só tem 2022, então não dá para ver o perfil mudando ao longo dos anos.
+5. Correlação não é causa. Nada aqui mede efeito de política.
+6. O Nordeste confunde a leitura, e com 27 estados não dá para montar um modelo com controles.
+7. Os números cruzados de sexo e raça vêm arredondados pelo IBGE e diferem em até 0,1% dos totais por sexo ou por raça.
+8. Não usamos a quantidade de operações, porque 1.085 das 7.081 linhas têm valor negativo e o BCB não explica o critério.
 
 ## Fontes
 
-- Banco Central do Brasil. **SCR.data**, versão 2, submodalidade Microcrédito, 2021–2026.
-  <https://www.bcb.gov.br/pda/desig/scrdata_{ANO}.zip> · metodologia:
-  <https://www.bcb.gov.br/pda/desig/metodologia_versao2.pdf>
-- IBGE. **Censo Demográfico 2022**, Amostra — Trabalho e Rendimento. Tabela SIDRA **10261**:
-  pessoas de 14 anos ou mais ocupadas por posição na ocupação e categoria do emprego no
-  trabalho principal, sexo e cor ou raça. <https://sidra.ibge.gov.br/tabela/10261>
-- Sobre o **ODS 18 — Igualdade Étnico-Racial**: iniciativa voluntária brasileira, proposta
-  em setembro de 2023 na 78ª Assembleia Geral da ONU, com metas definidas pela Comissão
-  Nacional para os ODS (Decreto 11.704/2023; Resolução nº 2/CNODS, de 20/12/2023) e
-  lançamento público em novembro de 2024, sob coordenação do Ministério da Igualdade
-  Racial. Não integra os 17 ODS globais da Agenda 2030.
+- Banco Central do Brasil, SCR.data versão 2, submodalidade Microcrédito, 2021 a 2026. Metodologia em <https://www.bcb.gov.br/pda/desig/metodologia_versao2.pdf>.
+- IBGE, Censo Demográfico 2022, amostra de trabalho e rendimento. Tabela SIDRA 10261, em <https://sidra.ibge.gov.br/tabela/10261>.
+- ODS 18 (igualdade étnico-racial): iniciativa brasileira proposta na ONU em 2023, com metas definidas pela Comissão Nacional para os ODS e coordenada pelo Ministério da Igualdade Racial. Não faz parte dos 17 ODS globais da Agenda 2030.
