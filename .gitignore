@@ -4,8 +4,11 @@ data/zip/*.zip
 # o recorte filtrado tambem e grande (uns 140MB), fica so local
 data/raw/*.csv
 
-docs/*
-!docs/.gitkeep
+# papeis internos do grupo (planos, resumos, enunciados), nao fazem parte da entrega
+docs/interno/
+
+# documentos que o grupo envia para a professora (md e pdf), ficam so locais
+docs/entrega/
 
 __pycache__/
 *.pyc

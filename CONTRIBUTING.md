@@ -9,7 +9,9 @@ python -m venv .venv
 
 Depois uso o Python desse ambiente (`.\.venv\Scripts\python.exe`) para rodar os scripts. Os CSVs finais, os JSONs da SGS e as amostras já estão no Git. Os ZIPs e o CSV filtrado do SCR não estão, porque são muito grandes. Mesmo sem eles dá para estudar o código e escrever testes usando as amostras.
 
-**Cuidado com o `etl/carregar.py` no banco do grupo.** Ele já não apaga mais as tabelas sozinho: o `DROP` saiu do `sql/schema.sql` e foi para o `sql/limpar.sql`, que só roda com `--limpar` e depois de digitar APAGAR. Mesmo assim, ainda estamos terminando a parte de registros repetidos e falhas da carga, então só rodamos no banco do grupo depois da revisão do PR, e testamos antes em um Postgres descartável. Para olhar o que tem no banco, usamos só o `etl/verificar_banco.py`, que apenas lê.
+Sobre o `etl/carregar.py` no banco do grupo: ele não apaga mais as tabelas sozinho. O `DROP` saiu do `sql/schema.sql` e foi para o `sql/limpar.sql`, que só roda com `--limpar` e depois de digitar APAGAR. A carga também pode rodar mais de uma vez: registro novo entra, registro que mudou é atualizado e registro igual fica como está. Mesmo assim, antes de mexer no banco do grupo a gente testa em um Postgres descartável (o passo a passo está no README). Para só olhar o que tem no banco, usamos o `etl/verificar_banco.py`, que apenas lê.
+
+Os ZIPs do SCR ficam em `data/zip/`. O `scrdata_2025.zip` que a professora mandou é uma versão atualizada (só o mês de setembro/2025 mudou), então é essa que usamos. Quem for rodar o tratamento precisa dela, e o hash certo está no `data/manifesto-fontes.csv`.
 
 Esse script lê a conexão da variável de ambiente `AIVEN_PG_URL`. O código ainda não lê o `.env` sozinho, então eu defino a variável no terminal, só naquela sessão:
 
@@ -30,7 +32,7 @@ git pull --ff-only
 git switch -c nome-da-minha-branch
 ```
 
-Os nomes que combinamos são `fix/carga-banco` (Vinicius), `feat/infra-terraform` (Roberto), `fix/tratamento-seguranca` (Guilherme) e `docs/entrega-fase3` (Maria Fernanda). 
+Os nomes que combinamos são `fix/carga-banco` (Vinicius), `feat/infra-terraform` (Roberto), `fix/tratamento-seguranca` (Guilherme) e `docs/entrega-fase3` (Maria Fernanda). As duas primeiras e a de documentos já entraram na `main`. Para o que falta (dashboard, conversão dos números), cada um cria uma branch nova a partir da `main` atualizada.
 
 Cada um configura o próprio nome e e-mail no seu clone, o mesmo e-mail da conta do GitHub:
 
@@ -84,5 +86,6 @@ Quem revisa olha o diff, roda os comandos ou testes e confere se a documentaçã
 - Só uma pessoa mexe no estado do Terraform por vez. Os outros só revisam os arquivos.
 - Nunca vai para o Git: senha, token, string de conexão de verdade, `.env`, estado ou plano do Terraform. Isso vale também para prints e mensagens de erro que a gente cola em PR e no grupo.
 - Não mudamos o período dos dados no meio da conferência sem atualizar junto a lista de fontes e os resultados.
-- O conteúdo da pasta `docs/` e os arquivos de apoio de cada um ficam só na nossa máquina e não vão para o Git.
+- A pasta `docs/` vai para o Git, menos `docs/interno/` (planos e resumos do grupo) e `docs/entrega/` (os documentos que mandamos para a professora). Essas duas ficam só na nossa máquina e o `.gitignore` já cuida disso.
+- Antes de salvar uma evidência nova em `docs/evidencias/`, confiro se não tem `postgres://`, senha ou token no texto.
 - Cada um precisa conseguir explicar a parte que fez. Uma tarefa só está pronta quando o resultado foi conferido, e não só porque existe um arquivo com o nome certo.
