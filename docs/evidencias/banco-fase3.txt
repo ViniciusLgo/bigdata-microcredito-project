@@ -1,6 +1,6 @@
 Conferencia do banco na Aiven (somente leitura) - 16/11/2026
 Servico: (nome omitido) | projeto: bigdata-microcredito-project | banco: defaultdb
-Servico novo e vazio, carga feita com: python etl/carregar.py --criar-schema
+Servico criado pelo Terraform (ver terraform.txt), vazio. Carga feita com: python etl/carregar.py --criar-schema
 Segunda carga, para provar que e repetivel: python etl/carregar.py
   resultado da segunda carga: 0 novas, 0 atualizadas, tudo igual
     dim_uf 27 | dim_modalidade 4 | fato_credito_regional 7081 | fato_microcredito_nacional 136 | perfil_ocupados_uf 270

@@ -1,5 +1,4 @@
 terraform {
-  # precisa do 1.6 ou mais por causa do bloco import abaixo
   required_version = ">= 1.6.0, < 2.0.0"
 
   required_providers {
@@ -10,26 +9,25 @@ terraform {
   }
 }
 
+# o token da aiven vem da variavel de ambiente AIVEN_TOKEN, nunca do codigo
 provider "aiven" {}
 
-# o servico ja existe na aiven, entao aqui a gente so traz ele pro estado do
-# terraform (nao cria nada). sem isso o plan de quem clonar o repo ia propor
-# criar um servico novo
-import {
-  to = aiven_pg.microcredit
-  id = "${var.aiven_project_name}/${var.service_name}"
-}
-
+# o banco do projeto: um postgresql no plano gratis da aiven (1 GB).
+# o terraform cria o servico. quem cria as tabelas e carrega os dados depois
+# e o python (sql/schema.sql e etl/carregar.py)
 resource "aiven_pg" "microcredit" {
   project                = var.aiven_project_name
   service_name           = var.service_name
   plan                   = "free-1-1gb"
-  termination_protection = true
+  cloud_name             = var.cloud_name
+  termination_protection = var.proteger_contra_apagar
 
   pg_user_config {
     pg_version = var.postgresql_version
   }
 
+  # esse bloco nao aceita variavel. se um dia precisar apagar o servico de
+  # proposito, tira essa linha, roda o apply e so depois o destroy
   lifecycle {
     prevent_destroy = true
   }

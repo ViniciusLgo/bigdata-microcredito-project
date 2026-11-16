@@ -8,7 +8,7 @@ Integrantes: Vinicius Lago Cruz, Roberto Luis Jr., Guilherme Chaves e Maria Fern
 
 A fase 2 está pronta: os scripts baixam e tratam os dados, os CSVs finais estão no repositório e o banco está modelado. A carga na Aiven já foi feita antes, mas ainda precisamos entrar de novo no banco e guardar uma conferência atual.
 
-Na fase 3 já entraram a carga que pode rodar mais de uma vez, os testes dela, o Terraform, o guia de segurança e a análise territorial das ODS 5 e 18. O banco foi conferido em 16/11/2026 com a versão nova dos dados (7.518 linhas, evidência em [docs/evidencias/banco-fase3.txt](docs/evidencias/banco-fase3.txt)). Faltam o dashboard e testar o README do zero com alguém que não escreveu ele. O jeito de trabalhar com branches e revisão está no [CONTRIBUTING.md](CONTRIBUTING.md).
+Na fase 3 já entraram a carga que pode rodar mais de uma vez, os testes dela, o Terraform, o guia de segurança e a análise territorial das ODS 5 e 18. O serviço do banco foi criado pelo Terraform em 16/11/2026 (evidência em [docs/evidencias/terraform.txt](docs/evidencias/terraform.txt)) e conferido com a versão nova dos dados (7.518 linhas, evidência em [docs/evidencias/banco-fase3.txt](docs/evidencias/banco-fase3.txt)). Faltam o dashboard e testar o README do zero com alguém que não escreveu ele. O jeito de trabalhar com branches e revisão está no [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## O que o projeto faz
 
@@ -148,13 +148,13 @@ O banco é um serviço PostgreSQL da Aiven, plano `free-1-1gb`. A pasta [terrafo
 
 | Arquivo | Para que serve |
 |---|---|
-| `main.tf` | versão do Terraform, provider da Aiven, o `import` do serviço que já existe e o recurso `aiven_pg` (com proteção contra apagar) |
-| `variables.tf` | projeto, nome do serviço e versão do PostgreSQL |
-| `outputs.tf` | host, porta e nome do banco, nunca usuário nem senha |
+| `main.tf` | versão do Terraform, provider da Aiven e o recurso `aiven_pg`, que cria o serviço (com proteção contra apagar) |
+| `variables.tf` | projeto, nome do serviço, versão do PostgreSQL, região e proteção contra apagar |
+| `outputs.tf` | host, porta e nome do banco, e a URL de conexão completa marcada como sensível (só aparece com `terraform output -raw service_uri`) |
 | `terraform.tfvars.example` | modelo dos valores, com dados de exemplo |
 | `.terraform.lock.hcl` | trava a versão exata do provider |
 
-O serviço já existia, então o Terraform só passa a descrevê-lo (um bloco `import` traz ele para o estado, sem criar nada). O `terraform.tfvars` com os valores reais fica fora do Git. O passo a passo do `init` e do `plan` está em [terraform/README.md](terraform/README.md). Como o recurso tem `prevent_destroy`, um `terraform destroy` por engano é bloqueado.
+O Terraform cria o serviço. As tabelas e os dados vêm depois, do `sql/schema.sql` e do `etl/carregar.py`. O `terraform.tfvars` com os valores reais fica fora do Git. O passo a passo do `init`, do `plan` e do `apply`, e o que fazer se já existir um serviço gratuito na conta, está em [terraform/README.md](terraform/README.md). Como o recurso tem `prevent_destroy`, um `terraform destroy` por engano é bloqueado.
 
 ## Segurança das credenciais
 
