@@ -93,6 +93,60 @@ class TesteParticipacao(unittest.TestCase):
         self.assertAlmostEqual(p["part_grupo"].iloc[0], 1.0)
 
 
+class TesteKpisInterseccionais(unittest.TestCase):
+    def perfil(self):
+        # AC: 40 de 100 sao mulheres pretas. AM: 10 de 100
+        return pd.DataFrame({
+            "uf": ["AC", "AC", "AM", "AM"],
+            "sexo": ["Mulheres", "Homens", "Mulheres", "Homens"],
+            "cor_raca": ["Preta", "Preta", "Preta", "Branca"],
+            "ocupados": [40, 60, 10, 90],
+        })
+
+    def test_participacao_pondera_pelo_numero_de_pessoas(self):
+        # (40 + 10) mulheres pretas em 200 pessoas = 25%
+        p = contas.participacao_ponderada(self.perfil(), ["AC", "AM"], "Mulheres", ["Preta"])
+        self.assertAlmostEqual(p, 0.25)
+
+    def test_participacao_so_das_ufs_escolhidas(self):
+        p = contas.participacao_ponderada(self.perfil(), ["AC"], "Mulheres", ["Preta"])
+        self.assertAlmostEqual(p, 0.40)
+
+    def test_participacao_sem_ufs_da_nan(self):
+        p = contas.participacao_ponderada(self.perfil(), [], "Mulheres", ["Preta"])
+        self.assertTrue(p != p)
+
+    def pontos(self, part, valor):
+        return pd.DataFrame({"part_pct": part, "carteira_por_ocupado": valor})
+
+    def test_razao_compara_ufs_com_mais_e_menos_o_grupo(self):
+        # participacao baixa: carteira 100 e 200. alta: carteira 300 e 500
+        # mediana baixa = 150, mediana alta = 400, razao = 400 / 150
+        r = contas.razao_alta_baixa(self.pontos([10, 20, 60, 80], [100, 200, 300, 500]))
+        self.assertAlmostEqual(r, 400 / 150)
+
+    def test_razao_precisa_de_4_ufs(self):
+        self.assertIsNone(contas.razao_alta_baixa(self.pontos([10, 50, 90], [1, 2, 3])))
+
+    def test_razao_sem_variacao_na_participacao_nao_compara(self):
+        # todas iguais: nenhuma fica acima da mediana
+        self.assertIsNone(contas.razao_alta_baixa(self.pontos([30, 30, 30, 30], [1, 2, 3, 4])))
+
+
+class TesteRotulo(unittest.TestCase):
+    def test_plural_certo_para_cada_sexo(self):
+        self.assertEqual(contas.rotulo_grupo("Mulheres", ["Preta", "Parda"]), "Mulheres pretas e pardas")
+        self.assertEqual(contas.rotulo_grupo("Homens", ["Preta", "Parda"]), "Homens pretos e pardos")
+        self.assertEqual(contas.rotulo_grupo("Todos", ["Preta"]), "Pessoas pretas")
+
+    def test_sem_cor_e_sem_sexo(self):
+        self.assertEqual(contas.rotulo_grupo("Mulheres", []), "Mulheres")
+        self.assertEqual(contas.rotulo_grupo("Todos", []), "Ocupados")
+
+    def test_tres_cores(self):
+        self.assertEqual(contas.rotulo_grupo("Mulheres", ["Branca", "Preta", "Parda"]), "Mulheres brancas, pretas e pardas")
+
+
 class TesteFormato(unittest.TestCase):
     def test_numero_em_portugues(self):
         self.assertEqual(contas.fmt_num(1234567.891, 2), "1.234.567,89")

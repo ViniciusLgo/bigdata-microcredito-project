@@ -4,7 +4,7 @@ Painel em Streamlit que mostra o microcrédito por região, UF, segmento (PF e P
 
 ## O que tem
 
-- 4 indicadores no topo: carteira ativa do último mês (com a variação de 12 meses), inadimplência, carteira por ocupado e quanto da carteira está nas 3 maiores UFs;
+- 6 indicadores no topo. Quatro gerais: carteira ativa do último mês (com a variação de 12 meses), inadimplência, carteira por ocupado e quanto da carteira está nas 3 maiores UFs. Dois de gênero e raça: a participação do grupo escolhido na lateral (por exemplo, mulheres pretas e pardas) entre os ocupados das UFs filtradas, e quantas vezes a carteira por ocupado é maior nas UFs com mais desse grupo do que nas demais;
 - filtros na lateral: período, região, UF, segmento, modalidade e o perfil da UF (sexo, cor ou raça e participação mínima do grupo);
 - um seletor de métrica (carteira ativa, inadimplência, operações ou carteira por ocupado) que muda todos os gráficos;
 - aba Evolução: linhas no tempo, agrupadas por região, UF, segmento ou modalidade, e as séries nacionais da SGS;

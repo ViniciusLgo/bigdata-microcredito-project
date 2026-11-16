@@ -61,3 +61,45 @@ def participacao_grupo(perfil, sexo, cores):
 def spearman(x, y):
     # spearman = correlacao dos postos
     return x.rank().corr(y.rank())
+
+
+def participacao_ponderada(perfil, ufs, sexo, cores):
+    # quantos % dos ocupados do conjunto de UFs sao do grupo escolhido. soma as
+    # pessoas antes de dividir, entao UF grande pesa mais que UF pequena
+    p = perfil[perfil["uf"].isin(ufs)]
+    total = p["ocupados"].sum()
+    if total == 0:
+        return float("nan")
+    grupo = p
+    if sexo != "Todos":
+        grupo = grupo[grupo["sexo"] == sexo]
+    if cores:
+        grupo = grupo[grupo["cor_raca"].isin(cores)]
+    return grupo["ocupados"].sum() / total
+
+
+def razao_alta_baixa(pontos, col_part="part_pct", col_valor="carteira_por_ocupado"):
+    # compara a carteira por ocupado das UFs onde o grupo tem mais participacao
+    # (acima da mediana) com as outras. da quantas vezes uma e da outra.
+    # precisa de pelo menos 4 UFs, senao nao compara
+    if len(pontos) < 4:
+        return None
+    corte = pontos[col_part].median()
+    alta = pontos[pontos[col_part] > corte][col_valor]
+    baixa = pontos[pontos[col_part] <= corte][col_valor]
+    if alta.empty or baixa.empty or not baixa.median():
+        return None
+    return alta.median() / baixa.median()
+
+
+def rotulo_grupo(sexo, cores):
+    # monta o nome do grupo no plural certo, tipo "Mulheres pretas e pardas"
+    fem = {"Branca": "brancas", "Preta": "pretas", "Parda": "pardas", "Amarela": "amarelas", "Indígena": "indígenas"}
+    masc = {"Branca": "brancos", "Preta": "pretos", "Parda": "pardos", "Amarela": "amarelos", "Indígena": "indígenas"}
+    base = {"Mulheres": "Mulheres", "Homens": "Homens"}.get(sexo, "Pessoas")
+    if not cores:
+        return "Ocupados" if sexo == "Todos" else base
+    # "pessoas" e "mulheres" pedem o feminino, so "homens" usa o masculino
+    nomes = [(masc if sexo == "Homens" else fem)[c] for c in cores]
+    texto = nomes[0] if len(nomes) == 1 else ", ".join(nomes[:-1]) + " e " + nomes[-1]
+    return f"{base} {texto}"

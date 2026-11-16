@@ -14,7 +14,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from contas import agregar, fmt_num, fmt_reais, participacao_grupo, spearman
+from contas import (agregar, fmt_num, fmt_reais, participacao_grupo, participacao_ponderada,
+                    razao_alta_baixa, rotulo_grupo as montar_rotulo, spearman)
 
 BASE = os.path.join(os.path.dirname(__file__), "..")
 
@@ -172,7 +173,7 @@ cores = st.sidebar.multiselect("Cor ou raça", ["Branca", "Preta", "Parda", "Ama
                                default=["Preta", "Parda"])
 minimo = st.sidebar.slider("Participação mínima do grupo na UF (%)", 0, 100, 0)
 
-rotulo_grupo = (sexo if sexo != "Todos" else "Ocupados") + (" " + ", ".join(cores).lower() if cores else "")
+rotulo_grupo = montar_rotulo(sexo, cores)
 part = participacao_grupo(perfil, sexo, cores)
 
 # o que vem de fora do periodo (usado pra comparar com 12 meses antes)
@@ -208,6 +209,13 @@ por_uf = agregar(agora, ["uf"], ocupados).sort_values("carteira", ascending=Fals
 pop_total = sum(ocupados[u] for u in agora["uf"].unique())
 top3 = por_uf["carteira"].head(3).sum() / por_uf["carteira"].sum() * 100
 
+# uma linha por UF com a carteira por ocupado e a participacao do grupo escolhido
+pontos = agregar(agora, ["uf"], ocupados).merge(part, on="uf")
+pontos["regiao"] = pontos["uf"].map(REGIAO)
+pontos["part_pct"] = pontos["part_grupo"] * 100
+part_total = participacao_ponderada(perfil, agora["uf"].unique(), sexo, cores)
+razao = razao_alta_baixa(pontos)
+
 c1, c2, c3, c4 = st.columns(4)
 delta = None
 if tot_antes is not None:
@@ -219,6 +227,16 @@ c3.metric("Carteira por ocupado", "R$ " + fmt_num(tot["carteira"] / pop_total),
           help="Carteira dividida pelos ocupados por conta própria e empregadores das UFs (Censo 2022).")
 c4.metric("As 3 maiores UFs", fmt_num(top3, 1) + "% da carteira",
           help="Quanto da carteira está nas 3 UFs com maior saldo. Mostra a concentração.")
+
+i1, i2, _, _ = st.columns(4)
+i1.metric(f"{rotulo_grupo} entre os ocupados", fmt_num(part_total * 100, 1) + "%",
+          help="Entre quem trabalha por conta própria ou como empregador nas UFs filtradas (Censo 2022, IBGE). "
+               "Muda com o sexo e a cor ou raça escolhidos na lateral.")
+i2.metric("Carteira por ocupado: UFs com mais x menos o grupo",
+          fmt_num(razao, 1) + "x" if razao else "sem dados",
+          help="Mediana da carteira por ocupado nas UFs onde o grupo tem mais participação (acima da mediana), "
+               "dividida pela mediana nas demais. Mostra onde a oferta está, não quem tem acesso, e o Nordeste "
+               "pesa muito nesse número.")
 
 aba1, aba2, aba3, aba4 = st.tabs(["Evolução", "Ranking e detalhe", "ODS 5 e 18", "Dados"])
 
@@ -272,9 +290,6 @@ with aba2:
 # ---- ods 5 e 18
 with aba3:
     st.warning(RESSALVA)
-    pontos = agregar(agora, ["uf"], ocupados).merge(part, on="uf")
-    pontos["regiao"] = pontos["uf"].map(REGIAO)
-    pontos["part_pct"] = pontos["part_grupo"] * 100
     if len(pontos) < 3:
         st.info("Poucas UFs com esses filtros para comparar.")
     else:
