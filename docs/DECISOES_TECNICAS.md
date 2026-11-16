@@ -138,6 +138,6 @@ O grupo seguiu com a análise territorial porque é a única leitura que os dado
 |---|---|---|
 | Critério dos valores negativos em `numero_de_operacoes` | grupo e BCB | declarada como lacuna |
 | Unidade monetária de `carteira_ativa` | grupo e BCB | tratada como reais, por inferência |
-| Conferir o banco da Aiven com a versão nova dos dados | Vinicius | aberta |
+| Conferir o banco da Aiven com a versão nova dos dados | Vinicius | feita em 16/11/2026 (`docs/evidencias/banco-fase3.txt`) |
 | Fonte com sexo e raça no microcrédito | grupo e professora | aberta |
 | Prazo oficial da fase 3 | grupo | conferir no Classroom |

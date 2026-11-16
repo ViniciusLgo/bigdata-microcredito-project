@@ -72,6 +72,14 @@ def main():
     cur.execute("SELECT pg_size_pretty(pg_database_size(current_database()))")
     print(f"\ntamanho do banco: {cur.fetchone()[0]} (limite do plano gratis: 1 GB)")
 
+    # se o banco ainda esta vazio essa tabela nao existe, entao so aviso e paro
+    cur.execute("SELECT to_regclass('public.fato_credito_regional')")
+    if cur.fetchone()[0] is None:
+        print("
+ainda nao tem a fato_credito_regional. rode o carregar.py --criar-schema")
+        conn.close()
+        return
+
     cur.execute(
         "SELECT d.segmento, count(*), min(f.data_referencia), max(f.data_referencia) "
         "FROM fato_credito_regional f JOIN dim_modalidade d USING (modalidade_id) "
