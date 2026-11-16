@@ -7,9 +7,9 @@ Aqui explicamos como o grupo cuida das senhas e dos dados do projeto. A regra é
 | Segredo | Para que serve | Onde fica |
 |---|---|---|
 | `AIVEN_PG_URL` | conexão com o banco (traz usuário e senha) | variável de ambiente no terminal de quem vai rodar |
-| Token da Aiven | o Terraform usar a conta da Aiven | variável de ambiente `AIVEN_API_TOKEN`, também só no terminal |
+| Token da Aiven | o Terraform usar a conta da Aiven | variável de ambiente `AIVEN_TOKEN`, também só no terminal |
 | `terraform.tfvars` | nome do projeto e do serviço na Aiven | arquivo local, ignorado pelo Git |
-| `terraform.tfstate` | estado do Terraform, que pode guardar dados do serviço | arquivo local, ignorado pelo Git |
+| `terraform.tfstate` | estado do Terraform, que guarda dados do serviço, inclusive a senha do banco | arquivo local, ignorado pelo Git |
 
 No repositório entra só o `terraform.tfvars.example`, com valores de exemplo, para quem clonar saber o formato.
 
@@ -31,9 +31,9 @@ O `.terraform.lock.hcl` pode ir para o Git, porque só trava a versão do provid
 
 ## Cuidados no Terraform
 
-- O `outputs.tf` mostra só host, porta e nome do banco. Usuário e senha não saem em nenhum output.
+- O `outputs.tf` mostra só host, porta e nome do banco. A URL completa (com senha) é um output marcado como `sensitive`: não aparece na tela e só sai com `terraform output -raw service_uri`, no terminal de quem vai usar.
 - O recurso do banco tem `termination_protection` e `prevent_destroy`, então um `terraform destroy` por engano é bloqueado.
-- O Terraform só descreve o serviço que já existia na Aiven. Ele não cria um banco novo nem mexe nos dados.
+- O Terraform cria só o serviço (a infraestrutura). Ele não cria tabelas nem mexe nos dados, isso é feito pelo `etl/carregar.py`.
 
 ## Cuidados com o banco
 
