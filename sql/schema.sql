@@ -53,6 +53,24 @@ CREATE TABLE IF NOT EXISTS fato_credito_regional (
     UNIQUE (uf_id, modalidade_id, data_referencia)
 );
 
+/*
+Perfil de quem trabalha por conta propria ou como empregador em cada UF, vem
+do Censo 2022 do IBGE (tabela SIDRA 10261, ver analise/baixar_ibge.py).
+Serve pra cruzar com o microcredito por estado (ODS 5 e 18) e pros filtros de
+sexo e cor ou raca do dashboard. Nao tem pessoa aqui, so a contagem por UF.
+Fica separada das fatos: e outra fonte, de outro ano, e nao junta com o SCR
+linha a linha.
+*/
+CREATE TABLE IF NOT EXISTS perfil_ocupados_uf (
+    id          SERIAL PRIMARY KEY,
+    uf_id       INTEGER NOT NULL REFERENCES dim_uf (uf_id),
+    ano         INTEGER NOT NULL,
+    sexo        VARCHAR(10) NOT NULL,
+    cor_raca    VARCHAR(10) NOT NULL,
+    ocupados    INTEGER NOT NULL,
+    UNIQUE (uf_id, ano, sexo, cor_raca)
+);
+
 CREATE INDEX IF NOT EXISTS idx_credito_regional_data ON fato_credito_regional (data_referencia);
 CREATE INDEX IF NOT EXISTS idx_credito_regional_uf ON fato_credito_regional (uf_id);
 CREATE INDEX IF NOT EXISTS idx_microcredito_nacional_data ON fato_microcredito_nacional (data_referencia);

@@ -9,7 +9,7 @@ Antes esse script apagava e recriava as tabelas toda vez que rodava, e isso
 era perigoso. Agora cada coisa tem a sua flag:
     sem flag        so carrega os dados (as tabelas ja precisam existir)
     --criar-schema  cria as tabelas que faltam (sql/schema.sql) e depois carrega
-    --limpar        apaga as 4 tabelas (sql/limpar.sql) e para, nao carrega nada
+    --limpar        apaga as 5 tabelas (sql/limpar.sql) e para, nao carrega nada
 
 A carga pode rodar quantas vezes precisar. Se o registro ainda nao existe ele
 e inserido, se existe e o valor mudou ele e atualizado, e se e igual nao muda
@@ -36,6 +36,8 @@ BASE = os.path.join(os.path.dirname(__file__), "..")
 PASTA_PROC = os.path.join(BASE, "data", "processed")
 CSV_REGIONAL = os.path.join(PASTA_PROC, "fato_credito_regional.csv")
 CSV_NACIONAL = os.path.join(PASTA_PROC, "fato_microcredito_nacional.csv")
+# esse csv vem do analise/baixar_ibge.py e fica direto em data/
+CSV_PERFIL = os.path.join(BASE, "data", "ibge_sexo_raca_uf_2022.csv")
 
 UFS_BRASIL = {
     "AC": ("Acre", "Norte"), "AM": ("Amazonas", "Norte"), "AP": ("Amapá", "Norte"),
@@ -51,7 +53,8 @@ UFS_BRASIL = {
     "PR": ("Paraná", "Sul"), "RS": ("Rio Grande do Sul", "Sul"), "SC": ("Santa Catarina", "Sul"),
 }
 
-TABELAS = ["dim_uf", "dim_modalidade", "fato_credito_regional", "fato_microcredito_nacional"]
+TABELAS = ["dim_uf", "dim_modalidade", "fato_credito_regional", "fato_microcredito_nacional",
+           "perfil_ocupados_uf"]
 
 # quantas linhas vao em cada lote (cada lote tem o seu commit)
 TAMANHO_LOTE = 200
@@ -79,6 +82,15 @@ SQL_REGIONAL = """
            fato_credito_regional.quantidade_operacoes)
           IS DISTINCT FROM (EXCLUDED.valor_carteira_ativa, EXCLUDED.taxa_inadimplencia,
                             EXCLUDED.quantidade_operacoes)
+    RETURNING (xmax = 0)
+"""
+
+SQL_PERFIL = """
+    INSERT INTO perfil_ocupados_uf (uf_id, ano, sexo, cor_raca, ocupados)
+    VALUES %s
+    ON CONFLICT (uf_id, ano, sexo, cor_raca) DO UPDATE
+    SET ocupados = EXCLUDED.ocupados
+    WHERE perfil_ocupados_uf.ocupados IS DISTINCT FROM EXCLUDED.ocupados
     RETURNING (xmax = 0)
 """
 
@@ -114,20 +126,24 @@ def validar_arquivos():
         "valor_carteira_ativa", "taxa_inadimplencia", "quantidade_operacoes",
     ])
     nacional = ler_csv(CSV_NACIONAL, ["serie_id", "descricao_serie", "data_referencia", "valor"])
+    perfil = ler_csv(CSV_PERFIL, ["uf", "ano", "sexo", "cor_raca", "ocupados"])
 
     chave_regional = ["uf", "segmento", "modalidade", "data_referencia"]
     chave_nacional = ["serie_id", "data_referencia"]
+    chave_perfil = ["uf", "ano", "sexo", "cor_raca"]
 
     # as colunas que formam a chave nao podem ter vazio nem repetir
     for nome, df, chave in [
         ("fato_credito_regional.csv", regional, chave_regional),
         ("fato_microcredito_nacional.csv", nacional, chave_nacional + ["valor"]),
+        ("ibge_sexo_raca_uf_2022.csv", perfil, chave_perfil + ["ocupados"]),
     ]:
         vazios = df[chave].isna().any(axis=1).sum()
         if vazios:
             parar(f"{nome} tem {vazios} linhas com campo da chave vazio")
     conferir_chaves_repetidas(regional, chave_regional, "fato_credito_regional.csv")
     conferir_chaves_repetidas(nacional, chave_nacional, "fato_microcredito_nacional.csv")
+    conferir_chaves_repetidas(perfil, chave_perfil, "ibge_sexo_raca_uf_2022.csv")
 
     ufs_invalidas = sorted(set(regional["uf"]) - set(UFS_BRASIL))
     if ufs_invalidas:
@@ -137,7 +153,11 @@ def validar_arquivos():
     if segmentos_invalidos:
         parar(f"segmento diferente de PF e PJ no csv regional: {segmentos_invalidos}")
 
-    return regional, nacional
+    ufs_invalidas = sorted(set(perfil["uf"]) - set(UFS_BRASIL))
+    if ufs_invalidas:
+        parar(f"UF que nao existe no Brasil no csv do ibge: {ufs_invalidas}")
+
+    return regional, nacional, perfil
 
 
 def conectar():
@@ -266,6 +286,21 @@ def carregar_fato_regional(conn, df):
     return gravar_em_lotes(conn, "fato_credito_regional", SQL_REGIONAL, linhas)
 
 
+def carregar_perfil(conn, df):
+    cur = conn.cursor()
+    cur.execute("SELECT sigla_uf, uf_id FROM dim_uf")
+    mapa_uf = dict(cur.fetchall())
+    ufs_sem_dimensao = sorted(set(df["uf"]) - set(mapa_uf))
+    if ufs_sem_dimensao:
+        parar(f"essas UFs nao estao na dim_uf do banco: {ufs_sem_dimensao}")
+
+    linhas = [
+        (mapa_uf[r.uf], int(r.ano), r.sexo, r.cor_raca, int(r.ocupados))
+        for r in df.itertuples(index=False)
+    ]
+    return gravar_em_lotes(conn, "perfil_ocupados_uf", SQL_PERFIL, linhas)
+
+
 def main():
     parser = argparse.ArgumentParser(description="carrega os csvs tratados no postgres da aiven")
     parser.add_argument("--criar-schema", action="store_true",
@@ -284,7 +319,7 @@ def main():
         return
 
     # primeiro confiro os arquivos, so depois mexo no banco
-    regional, nacional = validar_arquivos()
+    regional, nacional, perfil = validar_arquivos()
 
     conn = conectar()
     if args.criar_schema:
@@ -299,6 +334,7 @@ def main():
     carregar_dim_uf(conn)
     carregar_fato_nacional(conn, nacional)
     carregar_fato_regional(conn, regional)
+    carregar_perfil(conn, perfil)
     conn.close()
     print("carga concluida")
 
