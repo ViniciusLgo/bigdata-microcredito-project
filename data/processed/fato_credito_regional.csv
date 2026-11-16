@@ -55,7 +55,7 @@ AC,PF,Empréstimos - Microcrédito,2025-05-31,6364044.88,1736.0,0.061
 AC,PF,Empréstimos - Microcrédito,2025-06-30,6440358.76,1715.0,0.0482
 AC,PF,Empréstimos - Microcrédito,2025-07-31,6732614.99,1761.0,0.053
 AC,PF,Empréstimos - Microcrédito,2025-08-31,6725743.35,1765.0,0.0543
-AC,PF,Empréstimos - Microcrédito,2025-09-30,6380721.09,1703.0,0.0284
+AC,PF,Empréstimos - Microcrédito,2025-09-30,6374194.27,1701.0,0.0285
 AC,PF,Empréstimos - Microcrédito,2025-10-31,6465603.18,1701.0,0.036
 AC,PF,Empréstimos - Microcrédito,2025-11-30,6595975.359999999,1733.0,0.0455
 AC,PF,Empréstimos - Microcrédito,2025-12-31,6440213.63,1696.0,0.0483
@@ -122,7 +122,7 @@ AC,PF,Financiamentos - Microcrédito,2025-05-31,21359956.01,2039.0,0.1797
 AC,PF,Financiamentos - Microcrédito,2025-06-30,21340137.05,2065.0,0.1966
 AC,PF,Financiamentos - Microcrédito,2025-07-31,22980980.45,2136.0,0.1936
 AC,PF,Financiamentos - Microcrédito,2025-08-31,23177531.4,2157.0,0.2027
-AC,PF,Financiamentos - Microcrédito,2025-09-30,23029303.23,2179.0,0.2094
+AC,PF,Financiamentos - Microcrédito,2025-09-30,23014266.44,2177.0,0.2089
 AC,PF,Financiamentos - Microcrédito,2025-10-31,23276428.58,2199.0,0.217
 AC,PF,Financiamentos - Microcrédito,2025-11-30,22971320.700000003,2097.0,0.1881
 AC,PF,Financiamentos - Microcrédito,2025-12-31,23877044.779999997,2107.0,0.1801
@@ -269,7 +269,7 @@ AL,PF,Empréstimos - Microcrédito,2025-05-31,242227370.96,50026.0,0.0223
 AL,PF,Empréstimos - Microcrédito,2025-06-30,237895782.37,49467.0,0.0232
 AL,PF,Empréstimos - Microcrédito,2025-07-31,236537435.56,49334.0,0.0247
 AL,PF,Empréstimos - Microcrédito,2025-08-31,231760320.15,49029.0,0.0264
-AL,PF,Empréstimos - Microcrédito,2025-09-30,227555487.76999998,48652.0,0.0263
+AL,PF,Empréstimos - Microcrédito,2025-09-30,227712172.46,48681.0,0.0262
 AL,PF,Empréstimos - Microcrédito,2025-10-31,223773852.66,48295.0,0.0275
 AL,PF,Empréstimos - Microcrédito,2025-11-30,221249327.64000002,47882.0,0.029
 AL,PF,Empréstimos - Microcrédito,2025-12-31,222004476.42,47282.0,0.0297
@@ -336,7 +336,7 @@ AL,PF,Financiamentos - Microcrédito,2025-05-31,42167717.54,7609.0,0.016
 AL,PF,Financiamentos - Microcrédito,2025-06-30,41300341.83,7523.0,0.0166
 AL,PF,Financiamentos - Microcrédito,2025-07-31,42087190.67,7612.0,0.0158
 AL,PF,Financiamentos - Microcrédito,2025-08-31,44031316.739999995,7843.0,0.015
-AL,PF,Financiamentos - Microcrédito,2025-09-30,45035184.89,8029.0,0.0143
+AL,PF,Financiamentos - Microcrédito,2025-09-30,45040822.0,8030.0,0.0143
 AL,PF,Financiamentos - Microcrédito,2025-10-31,46387597.07,8269.0,0.014
 AL,PF,Financiamentos - Microcrédito,2025-11-30,47925549.67,8537.0,0.0121
 AL,PF,Financiamentos - Microcrédito,2025-12-31,48802519.96,8717.0,0.0135
@@ -470,7 +470,7 @@ AL,PJ,Financiamentos - Microcrédito,2025-05-31,819880.98,95.0,0.102
 AL,PJ,Financiamentos - Microcrédito,2025-06-30,753746.93,93.0,0.1075
 AL,PJ,Financiamentos - Microcrédito,2025-07-31,676150.05,90.0,0.1193
 AL,PJ,Financiamentos - Microcrédito,2025-08-31,618228.75,86.0,0.1456
-AL,PJ,Financiamentos - Microcrédito,2025-09-30,552983.92,74.0,0.1621
+AL,PJ,Financiamentos - Microcrédito,2025-09-30,552983.92,72.0,0.1621
 AL,PJ,Financiamentos - Microcrédito,2025-10-31,501094.04000000004,53.0,0.2187
 AL,PJ,Financiamentos - Microcrédito,2025-11-30,444570.68,43.0,0.2752
 AL,PJ,Financiamentos - Microcrédito,2025-12-31,387561.08999999997,35.0,0.301
@@ -537,7 +537,7 @@ AM,PF,Empréstimos - Microcrédito,2025-05-31,38237515.86,8595.0,0.0503
 AM,PF,Empréstimos - Microcrédito,2025-06-30,38948934.38,8714.0,0.0416
 AM,PF,Empréstimos - Microcrédito,2025-07-31,40190527.12,8904.0,0.0438
 AM,PF,Empréstimos - Microcrédito,2025-08-31,41541459.65,9089.0,0.0455
-AM,PF,Empréstimos - Microcrédito,2025-09-30,40383938.64,8910.0,0.0251
+AM,PF,Empréstimos - Microcrédito,2025-09-30,40294210.25,8898.0,0.025
 AM,PF,Empréstimos - Microcrédito,2025-10-31,40660058.65,8894.0,0.0287
 AM,PF,Empréstimos - Microcrédito,2025-11-30,41274307.91,8937.0,0.0294
 AM,PF,Empréstimos - Microcrédito,2025-12-31,40351522.989999995,8815.0,0.0376
@@ -604,7 +604,7 @@ AM,PF,Financiamentos - Microcrédito,2025-05-31,11463069.65,1536.0,0.1314
 AM,PF,Financiamentos - Microcrédito,2025-06-30,11906246.4,1571.0,0.1457
 AM,PF,Financiamentos - Microcrédito,2025-07-31,12252513.540000001,1630.0,0.1559
 AM,PF,Financiamentos - Microcrédito,2025-08-31,12948786.379999999,1701.0,0.1612
-AM,PF,Financiamentos - Microcrédito,2025-09-30,13186953.73,1783.0,0.171
+AM,PF,Financiamentos - Microcrédito,2025-09-30,13180806.55,1784.0,0.1711
 AM,PF,Financiamentos - Microcrédito,2025-10-31,14397743.35,1854.0,0.1663
 AM,PF,Financiamentos - Microcrédito,2025-11-30,15693746.860000001,1917.0,0.1336
 AM,PF,Financiamentos - Microcrédito,2025-12-31,17405974.08,2001.0,0.1317
@@ -802,7 +802,7 @@ AP,PF,Empréstimos - Microcrédito,2025-05-31,6152642.95,1320.0,0.1268
 AP,PF,Empréstimos - Microcrédito,2025-06-30,6237705.399999999,1319.0,0.1135
 AP,PF,Empréstimos - Microcrédito,2025-07-31,6262922.9,1307.0,0.1159
 AP,PF,Empréstimos - Microcrédito,2025-08-31,6316391.5,1316.0,0.124
-AP,PF,Empréstimos - Microcrédito,2025-09-30,6083485.75,1278.0,0.0949
+AP,PF,Empréstimos - Microcrédito,2025-09-30,6071388.63,1271.0,0.0987
 AP,PF,Empréstimos - Microcrédito,2025-10-31,6022968.23,1258.0,0.0948
 AP,PF,Empréstimos - Microcrédito,2025-11-30,6216148.24,1285.0,0.0962
 AP,PF,Empréstimos - Microcrédito,2025-12-31,6387597.55,1292.0,0.0944
@@ -869,7 +869,7 @@ AP,PF,Financiamentos - Microcrédito,2025-05-31,5144541.42,437.0,0.0946
 AP,PF,Financiamentos - Microcrédito,2025-06-30,5267542.45,462.0,0.0928
 AP,PF,Financiamentos - Microcrédito,2025-07-31,5381296.72,492.0,0.1013
 AP,PF,Financiamentos - Microcrédito,2025-08-31,5622803.98,498.0,0.1076
-AP,PF,Financiamentos - Microcrédito,2025-09-30,5764728.3,512.0,0.1131
+AP,PF,Financiamentos - Microcrédito,2025-09-30,5754960.62,516.0,0.1163
 AP,PF,Financiamentos - Microcrédito,2025-10-31,6351547.73,551.0,0.1191
 AP,PF,Financiamentos - Microcrédito,2025-11-30,7386176.24,618.0,0.1013
 AP,PF,Financiamentos - Microcrédito,2025-12-31,8235119.09,670.0,0.0958
@@ -1003,7 +1003,7 @@ AP,PJ,Financiamentos - Microcrédito,2025-05-31,3502464.63,102.0,0.3435
 AP,PJ,Financiamentos - Microcrédito,2025-06-30,3760806.9499999997,104.0,0.4246
 AP,PJ,Financiamentos - Microcrédito,2025-07-31,4025296.0199999996,112.0,0.4256
 AP,PJ,Financiamentos - Microcrédito,2025-08-31,3846476.78,104.0,0.4188
-AP,PJ,Financiamentos - Microcrédito,2025-09-30,3801385.89,109.0,0.3358
+AP,PJ,Financiamentos - Microcrédito,2025-09-30,3801385.89,110.0,0.3358
 AP,PJ,Financiamentos - Microcrédito,2025-10-31,3925626.8,99.0,0.2935
 AP,PJ,Financiamentos - Microcrédito,2025-11-30,3937042.2899999996,88.0,0.2587
 AP,PJ,Financiamentos - Microcrédito,2025-12-31,6349658.17,88.0,0.1627
@@ -1070,7 +1070,7 @@ BA,PF,Empréstimos - Microcrédito,2025-05-31,958741769.85,181830.0,0.0336
 BA,PF,Empréstimos - Microcrédito,2025-06-30,953106910.85,181680.0,0.0339
 BA,PF,Empréstimos - Microcrédito,2025-07-31,943747793.83,182271.0,0.0365
 BA,PF,Empréstimos - Microcrédito,2025-08-31,923835487.46,182068.0,0.0393
-BA,PF,Empréstimos - Microcrédito,2025-09-30,899025980.4399999,181817.0,0.0367
+BA,PF,Empréstimos - Microcrédito,2025-09-30,900503072.36,182077.0,0.0367
 BA,PF,Empréstimos - Microcrédito,2025-10-31,882429245.52,182541.0,0.0394
 BA,PF,Empréstimos - Microcrédito,2025-11-30,880062994.49,183162.0,0.0409
 BA,PF,Empréstimos - Microcrédito,2025-12-31,881991607.74,182518.0,0.0421
@@ -1137,7 +1137,7 @@ BA,PF,Financiamentos - Microcrédito,2025-05-31,299550075.47,56046.0,0.0198
 BA,PF,Financiamentos - Microcrédito,2025-06-30,298319210.82,56302.0,0.0227
 BA,PF,Financiamentos - Microcrédito,2025-07-31,302133195.61,56747.0,0.024
 BA,PF,Financiamentos - Microcrédito,2025-08-31,301408689.43,56549.0,0.0232
-BA,PF,Financiamentos - Microcrédito,2025-09-30,299312438.63,56353.0,0.0215
+BA,PF,Financiamentos - Microcrédito,2025-09-30,299740618.46,56423.0,0.0215
 BA,PF,Financiamentos - Microcrédito,2025-10-31,299751691.88,56237.0,0.0223
 BA,PF,Financiamentos - Microcrédito,2025-11-30,300024140.33000004,55906.0,0.0213
 BA,PF,Financiamentos - Microcrédito,2025-12-31,298714749.51,55249.0,0.0227
@@ -1204,7 +1204,7 @@ BA,PJ,Empréstimos - Microcrédito,2025-05-31,2415107.41,442.0,0.1635
 BA,PJ,Empréstimos - Microcrédito,2025-06-30,2164596.83,402.0,0.1572
 BA,PJ,Empréstimos - Microcrédito,2025-07-31,1973981.1099999999,304.0,0.1907
 BA,PJ,Empréstimos - Microcrédito,2025-08-31,1760538.95,254.0,0.1886
-BA,PJ,Empréstimos - Microcrédito,2025-09-30,1486165.49,182.0,0.1216
+BA,PJ,Empréstimos - Microcrédito,2025-09-30,1490331.6800000002,181.0,0.1213
 BA,PJ,Empréstimos - Microcrédito,2025-10-31,1354287.99,161.0,0.1142
 BA,PJ,Empréstimos - Microcrédito,2025-11-30,1316710.63,148.0,0.1148
 BA,PJ,Empréstimos - Microcrédito,2025-12-31,1240895.23,134.0,0.1344
@@ -1338,7 +1338,7 @@ CE,PF,Empréstimos - Microcrédito,2025-05-31,1457879310.32,302478.0,0.0207
 CE,PF,Empréstimos - Microcrédito,2025-06-30,1455196075.37,303561.0,0.0223
 CE,PF,Empréstimos - Microcrédito,2025-07-31,1438616475.52,303202.0,0.0244
 CE,PF,Empréstimos - Microcrédito,2025-08-31,1404820616.6,303356.0,0.0262
-CE,PF,Empréstimos - Microcrédito,2025-09-30,1375091337.25,305741.0,0.0274
+CE,PF,Empréstimos - Microcrédito,2025-09-30,1376773692.35,306088.0,0.0274
 CE,PF,Empréstimos - Microcrédito,2025-10-31,1349808228.26,306148.0,0.0295
 CE,PF,Empréstimos - Microcrédito,2025-11-30,1335917743.4099998,305892.0,0.0305
 CE,PF,Empréstimos - Microcrédito,2025-12-31,1350039979.59,305393.0,0.0308
@@ -1405,7 +1405,7 @@ CE,PF,Financiamentos - Microcrédito,2025-05-31,335187831.53000003,70821.0,0.019
 CE,PF,Financiamentos - Microcrédito,2025-06-30,333017757.69,70917.0,0.0218
 CE,PF,Financiamentos - Microcrédito,2025-07-31,333680445.68,70918.0,0.0245
 CE,PF,Financiamentos - Microcrédito,2025-08-31,331859509.68,70123.0,0.0278
-CE,PF,Financiamentos - Microcrédito,2025-09-30,329936696.48,69470.0,0.0295
+CE,PF,Financiamentos - Microcrédito,2025-09-30,330216941.11,69541.0,0.0295
 CE,PF,Financiamentos - Microcrédito,2025-10-31,334937577.56,69319.0,0.0314
 CE,PF,Financiamentos - Microcrédito,2025-11-30,332968777.39,68414.0,0.0309
 CE,PF,Financiamentos - Microcrédito,2025-12-31,328844274.65000004,67260.0,0.0341
@@ -1472,7 +1472,7 @@ CE,PJ,Empréstimos - Microcrédito,2025-05-31,2251756.66,242.0,0.0909
 CE,PJ,Empréstimos - Microcrédito,2025-06-30,2198637.63,237.0,0.0621
 CE,PJ,Empréstimos - Microcrédito,2025-07-31,2226169.37,221.0,0.0659
 CE,PJ,Empréstimos - Microcrédito,2025-08-31,2214458.77,194.0,0.0773
-CE,PJ,Empréstimos - Microcrédito,2025-09-30,2184330.05,153.0,0.0462
+CE,PJ,Empréstimos - Microcrédito,2025-09-30,2184330.05,160.0,0.0462
 CE,PJ,Empréstimos - Microcrédito,2025-10-31,1986471.7500000002,136.0,0.0726
 CE,PJ,Empréstimos - Microcrédito,2025-11-30,1805677.65,139.0,0.0896
 CE,PJ,Empréstimos - Microcrédito,2025-12-31,1624819.04,126.0,0.1269
@@ -1606,7 +1606,7 @@ DF,PF,Empréstimos - Microcrédito,2025-05-31,15885899.56,3142.0,0.0646
 DF,PF,Empréstimos - Microcrédito,2025-06-30,14956930.17,2964.0,0.0669
 DF,PF,Empréstimos - Microcrédito,2025-07-31,14571195.12,2935.0,0.0691
 DF,PF,Empréstimos - Microcrédito,2025-08-31,15026215.26,3057.0,0.0716
-DF,PF,Empréstimos - Microcrédito,2025-09-30,14321662.21,2985.0,0.0493
+DF,PF,Empréstimos - Microcrédito,2025-09-30,13856595.27,2905.0,0.0466
 DF,PF,Empréstimos - Microcrédito,2025-10-31,13764925.120000001,2927.0,0.0522
 DF,PF,Empréstimos - Microcrédito,2025-11-30,13691183.11,2920.0,0.0566
 DF,PF,Empréstimos - Microcrédito,2025-12-31,13311439.61,2821.0,0.0657
@@ -1673,7 +1673,7 @@ DF,PF,Financiamentos - Microcrédito,2025-05-31,7890533.3,1095.0,0.0593
 DF,PF,Financiamentos - Microcrédito,2025-06-30,7906253.92,1079.0,0.0603
 DF,PF,Financiamentos - Microcrédito,2025-07-31,7981371.95,1081.0,0.0595
 DF,PF,Financiamentos - Microcrédito,2025-08-31,8117655.06,1091.0,0.0563
-DF,PF,Financiamentos - Microcrédito,2025-09-30,7879299.49,1080.0,0.0446
+DF,PF,Financiamentos - Microcrédito,2025-09-30,7722803.8,1059.0,0.0419
 DF,PF,Financiamentos - Microcrédito,2025-10-31,7944972.03,1075.0,0.0447
 DF,PF,Financiamentos - Microcrédito,2025-11-30,8150245.31,1070.0,0.043
 DF,PF,Financiamentos - Microcrédito,2025-12-31,8110617.1899999995,1044.0,0.0464
@@ -1874,7 +1874,7 @@ ES,PF,Empréstimos - Microcrédito,2025-05-31,78685318.66,11515.0,0.051
 ES,PF,Empréstimos - Microcrédito,2025-06-30,77775348.9,11465.0,0.0486
 ES,PF,Empréstimos - Microcrédito,2025-07-31,77224599.27,11494.0,0.0506
 ES,PF,Empréstimos - Microcrédito,2025-08-31,76141856.07,11507.0,0.0527
-ES,PF,Empréstimos - Microcrédito,2025-09-30,73653211.44,11311.0,0.042
+ES,PF,Empréstimos - Microcrédito,2025-09-30,73550271.98,11289.0,0.0419
 ES,PF,Empréstimos - Microcrédito,2025-10-31,72694587.87,11338.0,0.0426
 ES,PF,Empréstimos - Microcrédito,2025-11-30,71093057.15,11290.0,0.0474
 ES,PF,Empréstimos - Microcrédito,2025-12-31,70383484.92,11181.0,0.0525
@@ -1941,7 +1941,7 @@ ES,PF,Financiamentos - Microcrédito,2025-05-31,2855336.4899999998,389.0,0.0521
 ES,PF,Financiamentos - Microcrédito,2025-06-30,2929925.78,400.0,0.0602
 ES,PF,Financiamentos - Microcrédito,2025-07-31,3045893.18,451.0,0.0581
 ES,PF,Financiamentos - Microcrédito,2025-08-31,2993734.71,441.0,0.0552
-ES,PF,Financiamentos - Microcrédito,2025-09-30,2898407.9699999997,454.0,0.0336
+ES,PF,Financiamentos - Microcrédito,2025-09-30,2881637.61,453.0,0.0338
 ES,PF,Financiamentos - Microcrédito,2025-10-31,3015292.78,463.0,0.0383
 ES,PF,Financiamentos - Microcrédito,2025-11-30,3117910.95,474.0,0.0347
 ES,PF,Financiamentos - Microcrédito,2025-12-31,3141080.46,485.0,0.0299
@@ -2008,7 +2008,7 @@ ES,PJ,Empréstimos - Microcrédito,2025-05-31,69060018.11,6314.0,0.0604
 ES,PJ,Empréstimos - Microcrédito,2025-06-30,68238440.13,6244.0,0.0624
 ES,PJ,Empréstimos - Microcrédito,2025-07-31,68776272.89999999,6285.0,0.0653
 ES,PJ,Empréstimos - Microcrédito,2025-08-31,68297864.46,6226.0,0.0695
-ES,PJ,Empréstimos - Microcrédito,2025-09-30,166933580.13,6125.0,0.026
+ES,PJ,Empréstimos - Microcrédito,2025-09-30,166929413.94,6135.0,0.026
 ES,PJ,Empréstimos - Microcrédito,2025-10-31,166633358.48000002,6084.0,0.0265
 ES,PJ,Empréstimos - Microcrédito,2025-11-30,166050781.32,6066.0,0.0277
 ES,PJ,Empréstimos - Microcrédito,2025-12-31,166293326.0,6069.0,0.0279
@@ -2142,7 +2142,7 @@ GO,PF,Empréstimos - Microcrédito,2025-05-31,66563444.11,13347.0,0.0837
 GO,PF,Empréstimos - Microcrédito,2025-06-30,64841307.33,13117.0,0.068
 GO,PF,Empréstimos - Microcrédito,2025-07-31,65149885.8,13284.0,0.0757
 GO,PF,Empréstimos - Microcrédito,2025-08-31,65065773.81,13284.0,0.0809
-GO,PF,Empréstimos - Microcrédito,2025-09-30,61259250.07,12789.0,0.0432
+GO,PF,Empréstimos - Microcrédito,2025-09-30,61093766.94,12756.0,0.0438
 GO,PF,Empréstimos - Microcrédito,2025-10-31,61269100.36,12763.0,0.0526
 GO,PF,Empréstimos - Microcrédito,2025-11-30,60508806.56,12595.0,0.0577
 GO,PF,Empréstimos - Microcrédito,2025-12-31,59444938.230000004,12362.0,0.0703
@@ -2209,7 +2209,7 @@ GO,PF,Financiamentos - Microcrédito,2025-05-31,13289189.35,1649.0,0.0751
 GO,PF,Financiamentos - Microcrédito,2025-06-30,13395648.83,1656.0,0.0737
 GO,PF,Financiamentos - Microcrédito,2025-07-31,13716459.65,1689.0,0.0802
 GO,PF,Financiamentos - Microcrédito,2025-08-31,13916694.9,1712.0,0.0819
-GO,PF,Financiamentos - Microcrédito,2025-09-30,13584453.709999999,1709.0,0.0783
+GO,PF,Financiamentos - Microcrédito,2025-09-30,13560816.34,1699.0,0.0791
 GO,PF,Financiamentos - Microcrédito,2025-10-31,13513179.94,1717.0,0.0844
 GO,PF,Financiamentos - Microcrédito,2025-11-30,13454636.66,1708.0,0.0788
 GO,PF,Financiamentos - Microcrédito,2025-12-31,13468524.51,1693.0,0.0759
@@ -2276,7 +2276,7 @@ GO,PJ,Empréstimos - Microcrédito,2025-05-31,4550733.89,346.0,0.0659
 GO,PJ,Empréstimos - Microcrédito,2025-06-30,4372128.970000001,311.0,0.0554
 GO,PJ,Empréstimos - Microcrédito,2025-07-31,4260379.36,264.0,0.06
 GO,PJ,Empréstimos - Microcrédito,2025-08-31,4165990.63,223.0,0.0517
-GO,PJ,Empréstimos - Microcrédito,2025-09-30,4042873.94,189.0,0.0381
+GO,PJ,Empréstimos - Microcrédito,2025-09-30,4043635.5799999996,181.0,0.0381
 GO,PJ,Empréstimos - Microcrédito,2025-10-31,3533167.38,175.0,0.0477
 GO,PJ,Empréstimos - Microcrédito,2025-11-30,3434187.02,174.0,0.0528
 GO,PJ,Empréstimos - Microcrédito,2025-12-31,5421093.61,167.0,0.0293
@@ -2410,7 +2410,7 @@ MA,PF,Empréstimos - Microcrédito,2025-05-31,720331135.23,121464.0,0.0248
 MA,PF,Empréstimos - Microcrédito,2025-06-30,724041534.53,123041.0,0.0256
 MA,PF,Empréstimos - Microcrédito,2025-07-31,725301520.13,125274.0,0.0272
 MA,PF,Empréstimos - Microcrédito,2025-08-31,718311904.8,126657.0,0.0293
-MA,PF,Empréstimos - Microcrédito,2025-09-30,700126180.86,127515.0,0.0285
+MA,PF,Empréstimos - Microcrédito,2025-09-30,700557617.59,127560.0,0.0284
 MA,PF,Empréstimos - Microcrédito,2025-10-31,686304320.54,128137.0,0.032
 MA,PF,Empréstimos - Microcrédito,2025-11-30,690995426.95,129316.0,0.0338
 MA,PF,Empréstimos - Microcrédito,2025-12-31,707001425.97,130110.0,0.0359
@@ -2477,7 +2477,7 @@ MA,PF,Financiamentos - Microcrédito,2025-05-31,263616112.1,48562.0,0.0156
 MA,PF,Financiamentos - Microcrédito,2025-06-30,265694586.61,48750.0,0.0164
 MA,PF,Financiamentos - Microcrédito,2025-07-31,271466114.53000003,49354.0,0.0175
 MA,PF,Financiamentos - Microcrédito,2025-08-31,276516656.71,49697.0,0.0186
-MA,PF,Financiamentos - Microcrédito,2025-09-30,276636568.0,49837.0,0.0199
+MA,PF,Financiamentos - Microcrédito,2025-09-30,276809354.5,49871.0,0.0197
 MA,PF,Financiamentos - Microcrédito,2025-10-31,281660734.17,50365.0,0.0213
 MA,PF,Financiamentos - Microcrédito,2025-11-30,282396162.29,50371.0,0.0208
 MA,PF,Financiamentos - Microcrédito,2025-12-31,283275132.15000004,50226.0,0.022
@@ -2544,7 +2544,7 @@ MA,PJ,Empréstimos - Microcrédito,2025-05-31,2887935.94,191.0,0.0232
 MA,PJ,Empréstimos - Microcrédito,2025-06-30,3069248.79,204.0,0.0395
 MA,PJ,Empréstimos - Microcrédito,2025-07-31,3295609.61,211.0,0.0424
 MA,PJ,Empréstimos - Microcrédito,2025-08-31,3624232.21,237.0,0.0576
-MA,PJ,Empréstimos - Microcrédito,2025-09-30,3842528.3400000003,252.0,0.0486
+MA,PJ,Empréstimos - Microcrédito,2025-09-30,3840335.6399999997,251.0,0.0486
 MA,PJ,Empréstimos - Microcrédito,2025-10-31,3584509.71,248.0,0.0597
 MA,PJ,Empréstimos - Microcrédito,2025-11-30,3264765.42,239.0,0.095
 MA,PJ,Empréstimos - Microcrédito,2025-12-31,2864128.2199999997,224.0,0.1413
@@ -2668,7 +2668,7 @@ MG,PF,Empréstimos - Microcrédito,2025-05-31,381565216.85,81110.0,0.047
 MG,PF,Empréstimos - Microcrédito,2025-06-30,376881611.59000003,80039.0,0.0431
 MG,PF,Empréstimos - Microcrédito,2025-07-31,369939543.85,79658.0,0.0459
 MG,PF,Empréstimos - Microcrédito,2025-08-31,362522635.37,79151.0,0.0493
-MG,PF,Empréstimos - Microcrédito,2025-09-30,350865155.88,77843.0,0.0355
+MG,PF,Empréstimos - Microcrédito,2025-09-30,350865815.69,77887.0,0.0355
 MG,PF,Empréstimos - Microcrédito,2025-10-31,346335492.3,77923.0,0.0388
 MG,PF,Empréstimos - Microcrédito,2025-11-30,342205305.51,77734.0,0.0414
 MG,PF,Empréstimos - Microcrédito,2025-12-31,340086776.61,76669.0,0.0455
@@ -2735,7 +2735,7 @@ MG,PF,Financiamentos - Microcrédito,2025-05-31,59471015.06,9713.0,0.0237
 MG,PF,Financiamentos - Microcrédito,2025-06-30,58942766.21,9699.0,0.0261
 MG,PF,Financiamentos - Microcrédito,2025-07-31,59408788.14,9748.0,0.0294
 MG,PF,Financiamentos - Microcrédito,2025-08-31,59720697.58,9788.0,0.0306
-MG,PF,Financiamentos - Microcrédito,2025-09-30,59969414.699999996,9855.0,0.0281
+MG,PF,Financiamentos - Microcrédito,2025-09-30,59911444.19,9845.0,0.028
 MG,PF,Financiamentos - Microcrédito,2025-10-31,60012174.73,9874.0,0.0305
 MG,PF,Financiamentos - Microcrédito,2025-11-30,59942025.18,9887.0,0.0328
 MG,PF,Financiamentos - Microcrédito,2025-12-31,59065993.79,9819.0,0.0343
@@ -2802,7 +2802,7 @@ MG,PJ,Empréstimos - Microcrédito,2025-05-31,6851809.9799999995,1043.0,0.1036
 MG,PJ,Empréstimos - Microcrédito,2025-06-30,6443499.62,991.0,0.0986
 MG,PJ,Empréstimos - Microcrédito,2025-07-31,6182146.56,848.0,0.1023
 MG,PJ,Empréstimos - Microcrédito,2025-08-31,5903819.92,766.0,0.0991
-MG,PJ,Empréstimos - Microcrédito,2025-09-30,5472777.93,644.0,0.0792
+MG,PJ,Empréstimos - Microcrédito,2025-09-30,5482941.86,645.0,0.0791
 MG,PJ,Empréstimos - Microcrédito,2025-10-31,5494569.85,615.0,0.0805
 MG,PJ,Empréstimos - Microcrédito,2025-11-30,5425125.68,593.0,0.094
 MG,PJ,Empréstimos - Microcrédito,2025-12-31,5197806.95,564.0,0.0979
@@ -2869,7 +2869,7 @@ MG,PJ,Financiamentos - Microcrédito,2025-05-31,1025123.78,106.0,0.1486
 MG,PJ,Financiamentos - Microcrédito,2025-06-30,1002492.5099999999,108.0,0.1803
 MG,PJ,Financiamentos - Microcrédito,2025-07-31,968379.0700000001,100.0,0.2106
 MG,PJ,Financiamentos - Microcrédito,2025-08-31,887344.44,94.0,0.2249
-MG,PJ,Financiamentos - Microcrédito,2025-09-30,791898.02,88.0,0.2033
+MG,PJ,Financiamentos - Microcrédito,2025-09-30,791898.02,87.0,0.2033
 MG,PJ,Financiamentos - Microcrédito,2025-10-31,735306.2,82.0,0.222
 MG,PJ,Financiamentos - Microcrédito,2025-11-30,625189.1,82.0,0.2343
 MG,PJ,Financiamentos - Microcrédito,2025-12-31,549126.88,66.0,0.2502
@@ -2936,7 +2936,7 @@ MS,PF,Empréstimos - Microcrédito,2025-05-31,24247107.26,5271.0,0.0661
 MS,PF,Empréstimos - Microcrédito,2025-06-30,24051817.24,5292.0,0.057
 MS,PF,Empréstimos - Microcrédito,2025-07-31,24215326.169999998,5349.0,0.067
 MS,PF,Empréstimos - Microcrédito,2025-08-31,24548686.85,5363.0,0.0737
-MS,PF,Empréstimos - Microcrédito,2025-09-30,23234745.73,5163.0,0.0452
+MS,PF,Empréstimos - Microcrédito,2025-09-30,23196613.99,5165.0,0.0453
 MS,PF,Empréstimos - Microcrédito,2025-10-31,23077491.88,5146.0,0.0519
 MS,PF,Empréstimos - Microcrédito,2025-11-30,22973167.21,5157.0,0.0601
 MS,PF,Empréstimos - Microcrédito,2025-12-31,22694956.68,5119.0,0.0706
@@ -3003,7 +3003,7 @@ MS,PF,Financiamentos - Microcrédito,2025-05-31,4264934.83,501.0,0.058
 MS,PF,Financiamentos - Microcrédito,2025-06-30,4453060.7,501.0,0.051
 MS,PF,Financiamentos - Microcrédito,2025-07-31,4580310.3,524.0,0.0502
 MS,PF,Financiamentos - Microcrédito,2025-08-31,4704002.33,542.0,0.0553
-MS,PF,Financiamentos - Microcrédito,2025-09-30,4621913.38,545.0,0.0485
+MS,PF,Financiamentos - Microcrédito,2025-09-30,4588500.17,535.0,0.045
 MS,PF,Financiamentos - Microcrédito,2025-10-31,4519555.37,527.0,0.0389
 MS,PF,Financiamentos - Microcrédito,2025-11-30,4549534.65,541.0,0.0567
 MS,PF,Financiamentos - Microcrédito,2025-12-31,4480685.33,533.0,0.0543
@@ -3070,7 +3070,7 @@ MS,PJ,Empréstimos - Microcrédito,2025-05-31,926897.98,107.0,0.1149
 MS,PJ,Empréstimos - Microcrédito,2025-06-30,912505.49,102.0,0.1187
 MS,PJ,Empréstimos - Microcrédito,2025-07-31,901354.9500000001,73.0,0.1497
 MS,PJ,Empréstimos - Microcrédito,2025-08-31,865868.31,52.0,0.1764
-MS,PJ,Empréstimos - Microcrédito,2025-09-30,790493.0,33.0,0.1646
+MS,PJ,Empréstimos - Microcrédito,2025-09-30,788786.66,34.0,0.165
 MS,PJ,Empréstimos - Microcrédito,2025-10-31,811295.81,31.0,0.1557
 MS,PJ,Empréstimos - Microcrédito,2025-11-30,816190.6799999999,27.0,0.1452
 MS,PJ,Empréstimos - Microcrédito,2025-12-31,811030.76,27.0,0.1476
@@ -3194,7 +3194,7 @@ MT,PF,Empréstimos - Microcrédito,2025-05-31,30323340.19,5682.0,0.1013
 MT,PF,Empréstimos - Microcrédito,2025-06-30,29712898.8,5649.0,0.0846
 MT,PF,Empréstimos - Microcrédito,2025-07-31,29488746.34,5690.0,0.0868
 MT,PF,Empréstimos - Microcrédito,2025-08-31,29515362.85,5721.0,0.0906
-MT,PF,Empréstimos - Microcrédito,2025-09-30,27748042.27,5441.0,0.0546
+MT,PF,Empréstimos - Microcrédito,2025-09-30,27645920.1,5423.0,0.0547
 MT,PF,Empréstimos - Microcrédito,2025-10-31,27781747.740000002,5405.0,0.0626
 MT,PF,Empréstimos - Microcrédito,2025-11-30,27532880.41,5359.0,0.0697
 MT,PF,Empréstimos - Microcrédito,2025-12-31,27236931.59,5270.0,0.0752
@@ -3261,7 +3261,7 @@ MT,PF,Financiamentos - Microcrédito,2025-05-31,6261342.43,886.0,0.0413
 MT,PF,Financiamentos - Microcrédito,2025-06-30,6083529.35,865.0,0.0434
 MT,PF,Financiamentos - Microcrédito,2025-07-31,6084589.99,857.0,0.0439
 MT,PF,Financiamentos - Microcrédito,2025-08-31,6071019.99,847.0,0.0439
-MT,PF,Financiamentos - Microcrédito,2025-09-30,5820891.0,825.0,0.0299
+MT,PF,Financiamentos - Microcrédito,2025-09-30,5770690.87,811.0,0.0302
 MT,PF,Financiamentos - Microcrédito,2025-10-31,5789977.2,813.0,0.0298
 MT,PF,Financiamentos - Microcrédito,2025-11-30,5855296.24,823.0,0.0316
 MT,PF,Financiamentos - Microcrédito,2025-12-31,5754793.41,791.0,0.0353
@@ -3328,7 +3328,7 @@ MT,PJ,Empréstimos - Microcrédito,2025-05-31,7504966.63,873.0,0.1563
 MT,PJ,Empréstimos - Microcrédito,2025-06-30,7128492.9799999995,808.0,0.1575
 MT,PJ,Empréstimos - Microcrédito,2025-07-31,6899875.35,752.0,0.171
 MT,PJ,Empréstimos - Microcrédito,2025-08-31,6488974.5200000005,710.0,0.1665
-MT,PJ,Empréstimos - Microcrédito,2025-09-30,6155469.75,666.0,0.1681
+MT,PJ,Empréstimos - Microcrédito,2025-09-30,6147951.18,666.0,0.1683
 MT,PJ,Empréstimos - Microcrédito,2025-10-31,5909040.93,635.0,0.1684
 MT,PJ,Empréstimos - Microcrédito,2025-11-30,5538939.569999999,590.0,0.171
 MT,PJ,Empréstimos - Microcrédito,2025-12-31,5094042.83,542.0,0.1577
@@ -3462,7 +3462,7 @@ PA,PF,Empréstimos - Microcrédito,2025-05-31,104032896.19,23764.0,0.0468
 PA,PF,Empréstimos - Microcrédito,2025-06-30,106420549.95,24171.0,0.0397
 PA,PF,Empréstimos - Microcrédito,2025-07-31,111141911.19,25021.0,0.0415
 PA,PF,Empréstimos - Microcrédito,2025-08-31,114065789.37,25589.0,0.0449
-PA,PF,Empréstimos - Microcrédito,2025-09-30,113199310.61,25399.0,0.0299
+PA,PF,Empréstimos - Microcrédito,2025-09-30,112804156.72,25329.0,0.0297
 PA,PF,Empréstimos - Microcrédito,2025-10-31,114165760.1,25608.0,0.0344
 PA,PF,Empréstimos - Microcrédito,2025-11-30,115493349.51,25871.0,0.0375
 PA,PF,Empréstimos - Microcrédito,2025-12-31,114387195.76,25731.0,0.0447
@@ -3529,7 +3529,7 @@ PA,PF,Financiamentos - Microcrédito,2025-05-31,169930107.20000002,15944.0,0.149
 PA,PF,Financiamentos - Microcrédito,2025-06-30,175560925.5,16045.0,0.1569
 PA,PF,Financiamentos - Microcrédito,2025-07-31,177277607.67000002,16273.0,0.1678
 PA,PF,Financiamentos - Microcrédito,2025-08-31,179312621.88,16649.0,0.1793
-PA,PF,Financiamentos - Microcrédito,2025-09-30,180499178.12,16886.0,0.1876
+PA,PF,Financiamentos - Microcrédito,2025-09-30,180196501.8,16820.0,0.1873
 PA,PF,Financiamentos - Microcrédito,2025-10-31,185983382.97,17259.0,0.1957
 PA,PF,Financiamentos - Microcrédito,2025-11-30,187796204.35999998,16841.0,0.1739
 PA,PF,Financiamentos - Microcrédito,2025-12-31,198573182.49,16863.0,0.1705
@@ -3596,7 +3596,7 @@ PA,PJ,Empréstimos - Microcrédito,2025-05-31,3386541.54,451.0,0.1924
 PA,PJ,Empréstimos - Microcrédito,2025-06-30,3052464.32,415.0,0.2069
 PA,PJ,Empréstimos - Microcrédito,2025-07-31,2793898.15,369.0,0.2031
 PA,PJ,Empréstimos - Microcrédito,2025-08-31,2610173.36,313.0,0.1952
-PA,PJ,Empréstimos - Microcrédito,2025-09-30,2489448.75,284.0,0.2125
+PA,PJ,Empréstimos - Microcrédito,2025-09-30,2489448.75,282.0,0.2125
 PA,PJ,Empréstimos - Microcrédito,2025-10-31,2299964.74,245.0,0.2192
 PA,PJ,Empréstimos - Microcrédito,2025-11-30,2185529.31,223.0,0.2583
 PA,PJ,Empréstimos - Microcrédito,2025-12-31,1990473.9100000001,213.0,0.2597
@@ -3663,7 +3663,7 @@ PA,PJ,Financiamentos - Microcrédito,2025-05-31,71021.76000000001,-7.0,0.0
 PA,PJ,Financiamentos - Microcrédito,2025-06-30,104687.14,-1.0,0.0
 PA,PJ,Financiamentos - Microcrédito,2025-07-31,121484.84,-1.0,0.2186
 PA,PJ,Financiamentos - Microcrédito,2025-08-31,98702.07,-1.0,0.1198
-PA,PJ,Financiamentos - Microcrédito,2025-09-30,103105.53,-2.0,0.0513
+PA,PJ,Financiamentos - Microcrédito,2025-09-30,100928.20999999999,-1.0,0.0524
 PA,PJ,Financiamentos - Microcrédito,2025-10-31,103571.37,-1.0,0.3161
 PA,PJ,Financiamentos - Microcrédito,2025-11-30,98415.74,-1.0,0.3696
 PA,PJ,Financiamentos - Microcrédito,2025-12-31,77360.47,3.0,0.1216
@@ -3730,7 +3730,7 @@ PB,PF,Empréstimos - Microcrédito,2025-05-31,367700439.76,73061.0,0.0314
 PB,PF,Empréstimos - Microcrédito,2025-06-30,364449033.3,72300.0,0.0323
 PB,PF,Empréstimos - Microcrédito,2025-07-31,358372306.69,71305.0,0.0341
 PB,PF,Empréstimos - Microcrédito,2025-08-31,349396684.69,70458.0,0.0368
-PB,PF,Empréstimos - Microcrédito,2025-09-30,340986450.7,70275.0,0.0374
+PB,PF,Empréstimos - Microcrédito,2025-09-30,341511477.61,70402.0,0.0372
 PB,PF,Empréstimos - Microcrédito,2025-10-31,333834012.32,70084.0,0.039
 PB,PF,Empréstimos - Microcrédito,2025-11-30,328027694.74,69465.0,0.0408
 PB,PF,Empréstimos - Microcrédito,2025-12-31,332774206.39,69050.0,0.0394
@@ -3797,7 +3797,7 @@ PB,PF,Financiamentos - Microcrédito,2025-05-31,182465218.17,35480.0,0.0243
 PB,PF,Financiamentos - Microcrédito,2025-06-30,177493241.08,35054.0,0.0272
 PB,PF,Financiamentos - Microcrédito,2025-07-31,174236777.6,34604.0,0.0293
 PB,PF,Financiamentos - Microcrédito,2025-08-31,169797921.10999998,33846.0,0.0322
-PB,PF,Financiamentos - Microcrédito,2025-09-30,164011162.69,32983.0,0.0381
+PB,PF,Financiamentos - Microcrédito,2025-09-30,164341099.09,33054.0,0.0381
 PB,PF,Financiamentos - Microcrédito,2025-10-31,162479213.98,32550.0,0.0431
 PB,PF,Financiamentos - Microcrédito,2025-11-30,160167240.35999998,31817.0,0.0441
 PB,PF,Financiamentos - Microcrédito,2025-12-31,156412927.51,31044.0,0.0486
@@ -3931,7 +3931,7 @@ PB,PJ,Financiamentos - Microcrédito,2025-05-31,20641.91,-2.0,0.7134
 PB,PJ,Financiamentos - Microcrédito,2025-06-30,19840.19,-2.0,0.7422
 PB,PJ,Financiamentos - Microcrédito,2025-07-31,19520.92,-2.0,0.7544
 PB,PJ,Financiamentos - Microcrédito,2025-08-31,18704.91,-2.0,0.7873
-PB,PJ,Financiamentos - Microcrédito,2025-09-30,3641.14,-1.0,0.0
+PB,PJ,Financiamentos - Microcrédito,2025-09-30,488.12,-1.0,0.0
 PB,PJ,Financiamentos - Microcrédito,2025-10-31,3306.02,-1.0,0.0
 PB,PJ,Financiamentos - Microcrédito,2025-11-30,2958.28,-1.0,0.171
 PB,PJ,Financiamentos - Microcrédito,2025-12-31,505.9,-1.0,1.0
@@ -3998,7 +3998,7 @@ PE,PF,Empréstimos - Microcrédito,2025-05-31,459619275.55,91487.0,0.0273
 PE,PF,Empréstimos - Microcrédito,2025-06-30,452242122.3,91118.0,0.0286
 PE,PF,Empréstimos - Microcrédito,2025-07-31,446909746.16,91897.0,0.0302
 PE,PF,Empréstimos - Microcrédito,2025-08-31,438023800.90999997,91811.0,0.032
-PE,PF,Empréstimos - Microcrédito,2025-09-30,426316590.95,91791.0,0.0305
+PE,PF,Empréstimos - Microcrédito,2025-09-30,426274916.04,91804.0,0.0304
 PE,PF,Empréstimos - Microcrédito,2025-10-31,421055047.93,91948.0,0.0321
 PE,PF,Empréstimos - Microcrédito,2025-11-30,416919272.09,91859.0,0.0333
 PE,PF,Empréstimos - Microcrédito,2025-12-31,417398983.88,91181.0,0.0334
@@ -4065,7 +4065,7 @@ PE,PF,Financiamentos - Microcrédito,2025-05-31,149642724.29999998,26859.0,0.018
 PE,PF,Financiamentos - Microcrédito,2025-06-30,149546937.44,26893.0,0.0194
 PE,PF,Financiamentos - Microcrédito,2025-07-31,151183813.97,27190.0,0.0212
 PE,PF,Financiamentos - Microcrédito,2025-08-31,152383709.87,27272.0,0.0217
-PE,PF,Financiamentos - Microcrédito,2025-09-30,151016992.31,27231.0,0.0224
+PE,PF,Financiamentos - Microcrédito,2025-09-30,150940693.79999998,27213.0,0.0223
 PE,PF,Financiamentos - Microcrédito,2025-10-31,151670091.94,27197.0,0.022
 PE,PF,Financiamentos - Microcrédito,2025-11-30,151808761.73,27263.0,0.0206
 PE,PF,Financiamentos - Microcrédito,2025-12-31,149817317.25,26887.0,0.023
@@ -4132,7 +4132,7 @@ PE,PJ,Empréstimos - Microcrédito,2025-05-31,6140056.26,379.0,0.0225
 PE,PJ,Empréstimos - Microcrédito,2025-06-30,13997392.49,428.0,0.0072
 PE,PJ,Empréstimos - Microcrédito,2025-07-31,14214670.72,435.0,0.0092
 PE,PJ,Empréstimos - Microcrédito,2025-08-31,14284969.159999998,453.0,0.0131
-PE,PJ,Empréstimos - Microcrédito,2025-09-30,11457255.25,446.0,0.0169
+PE,PJ,Empréstimos - Microcrédito,2025-09-30,11457255.25,445.0,0.0169
 PE,PJ,Empréstimos - Microcrédito,2025-10-31,11485325.01,461.0,0.0184
 PE,PJ,Empréstimos - Microcrédito,2025-11-30,11602149.15,481.0,0.019
 PE,PJ,Empréstimos - Microcrédito,2025-12-31,26690542.5,498.0,0.0133
@@ -4199,7 +4199,7 @@ PE,PJ,Financiamentos - Microcrédito,2025-05-31,97258.79,-8.0,0.2017
 PE,PJ,Financiamentos - Microcrédito,2025-06-30,156193.41999999998,-9.0,0.1502
 PE,PJ,Financiamentos - Microcrédito,2025-07-31,227479.18000000002,-11.0,0.1031
 PE,PJ,Financiamentos - Microcrédito,2025-08-31,284035.08,18.0,0.0826
-PE,PJ,Financiamentos - Microcrédito,2025-09-30,343349.53,21.0,0.0805
+PE,PJ,Financiamentos - Microcrédito,2025-09-30,343349.53,20.0,0.0805
 PE,PJ,Financiamentos - Microcrédito,2025-10-31,352328.75,25.0,0.0761
 PE,PJ,Financiamentos - Microcrédito,2025-11-30,350226.97000000003,25.0,0.0818
 PE,PJ,Financiamentos - Microcrédito,2025-12-31,364294.91000000003,27.0,0.0903
@@ -4266,7 +4266,7 @@ PI,PF,Empréstimos - Microcrédito,2025-05-31,540990888.22,111746.0,0.0257
 PI,PF,Empréstimos - Microcrédito,2025-06-30,544497875.98,112333.0,0.0271
 PI,PF,Empréstimos - Microcrédito,2025-07-31,535874440.37,112657.0,0.0296
 PI,PF,Empréstimos - Microcrédito,2025-08-31,521002977.5,112694.0,0.0325
-PI,PF,Empréstimos - Microcrédito,2025-09-30,507895630.48,113450.0,0.0336
+PI,PF,Empréstimos - Microcrédito,2025-09-30,508969571.17,113700.0,0.0337
 PI,PF,Empréstimos - Microcrédito,2025-10-31,497460292.65,113195.0,0.0371
 PI,PF,Empréstimos - Microcrédito,2025-11-30,492641281.01,112677.0,0.0405
 PI,PF,Empréstimos - Microcrédito,2025-12-31,496178562.68,111090.0,0.0418
@@ -4333,7 +4333,7 @@ PI,PF,Financiamentos - Microcrédito,2025-05-31,190032818.56,40237.0,0.0164
 PI,PF,Financiamentos - Microcrédito,2025-06-30,189781499.1,40328.0,0.0184
 PI,PF,Financiamentos - Microcrédito,2025-07-31,188921924.39,40228.0,0.0188
 PI,PF,Financiamentos - Microcrédito,2025-08-31,187062013.42000002,39726.0,0.0204
-PI,PF,Financiamentos - Microcrédito,2025-09-30,184198400.75,39218.0,0.0218
+PI,PF,Financiamentos - Microcrédito,2025-09-30,184766491.14000002,39333.0,0.0219
 PI,PF,Financiamentos - Microcrédito,2025-10-31,185193642.42999998,39008.0,0.0228
 PI,PF,Financiamentos - Microcrédito,2025-11-30,183702432.9,38542.0,0.0219
 PI,PF,Financiamentos - Microcrédito,2025-12-31,182384491.17,38038.0,0.0243
@@ -4400,7 +4400,7 @@ PI,PJ,Empréstimos - Microcrédito,2025-05-31,2862865.1,279.0,0.0793
 PI,PJ,Empréstimos - Microcrédito,2025-06-30,18201633.77,306.0,0.0162
 PI,PJ,Empréstimos - Microcrédito,2025-07-31,18382871.07,306.0,0.021
 PI,PJ,Empréstimos - Microcrédito,2025-08-31,18560188.97,325.0,0.0218
-PI,PJ,Empréstimos - Microcrédito,2025-09-30,18664588.28,351.0,0.0204
+PI,PJ,Empréstimos - Microcrédito,2025-09-30,18657561.75,349.0,0.0204
 PI,PJ,Empréstimos - Microcrédito,2025-10-31,18150932.05,353.0,0.0238
 PI,PJ,Empréstimos - Microcrédito,2025-11-30,17862167.38,363.0,0.0289
 PI,PJ,Empréstimos - Microcrédito,2025-12-31,17426743.66,368.0,0.0321
@@ -4533,7 +4533,7 @@ PR,PF,Empréstimos - Microcrédito,2025-05-31,92387062.19,19458.0,0.0865
 PR,PF,Empréstimos - Microcrédito,2025-06-30,92450305.56,19382.0,0.0815
 PR,PF,Empréstimos - Microcrédito,2025-07-31,93361265.67999999,19624.0,0.0883
 PR,PF,Empréstimos - Microcrédito,2025-08-31,93517771.42,19744.0,0.0935
-PR,PF,Empréstimos - Microcrédito,2025-09-30,88634515.49,19091.0,0.0619
+PR,PF,Empréstimos - Microcrédito,2025-09-30,88794579.72,19112.0,0.0621
 PR,PF,Empréstimos - Microcrédito,2025-10-31,85841848.73,19212.0,0.064
 PR,PF,Empréstimos - Microcrédito,2025-11-30,85884398.66,19229.0,0.0722
 PR,PF,Empréstimos - Microcrédito,2025-12-31,85355875.43,19155.0,0.0852
@@ -4600,7 +4600,7 @@ PR,PF,Financiamentos - Microcrédito,2025-05-31,32042323.7,4462.0,0.1204
 PR,PF,Financiamentos - Microcrédito,2025-06-30,31836800.919999998,4408.0,0.1252
 PR,PF,Financiamentos - Microcrédito,2025-07-31,31795244.8,4393.0,0.1285
 PR,PF,Financiamentos - Microcrédito,2025-08-31,31579640.62,4337.0,0.129
-PR,PF,Financiamentos - Microcrédito,2025-09-30,29888551.0,4104.0,0.0857
+PR,PF,Financiamentos - Microcrédito,2025-09-30,29782745.95,4088.0,0.0859
 PR,PF,Financiamentos - Microcrédito,2025-10-31,29346114.419999998,4027.0,0.0811
 PR,PF,Financiamentos - Microcrédito,2025-11-30,29110056.16,3997.0,0.0824
 PR,PF,Financiamentos - Microcrédito,2025-12-31,28705133.27,3908.0,0.074
@@ -4667,7 +4667,7 @@ PR,PJ,Empréstimos - Microcrédito,2025-05-31,279916123.81,25029.0,0.0485
 PR,PJ,Empréstimos - Microcrédito,2025-06-30,320286615.63,25031.0,0.0455
 PR,PJ,Empréstimos - Microcrédito,2025-07-31,320518805.85,24971.0,0.0473
 PR,PJ,Empréstimos - Microcrédito,2025-08-31,320342760.45,24874.0,0.0488
-PR,PJ,Empréstimos - Microcrédito,2025-09-30,324613691.28,25069.0,0.0487
+PR,PJ,Empréstimos - Microcrédito,2025-09-30,324566487.23,25059.0,0.0487
 PR,PJ,Empréstimos - Microcrédito,2025-10-31,303181977.51,25353.0,0.0527
 PR,PJ,Empréstimos - Microcrédito,2025-11-30,303431047.34,25607.0,0.0544
 PR,PJ,Empréstimos - Microcrédito,2025-12-31,300243690.07,25618.0,0.0568
@@ -4734,7 +4734,7 @@ PR,PJ,Financiamentos - Microcrédito,2025-05-31,13854334.02,1515.0,0.2288
 PR,PJ,Financiamentos - Microcrédito,2025-06-30,13479198.76,1495.0,0.2449
 PR,PJ,Financiamentos - Microcrédito,2025-07-31,13455268.85,1486.0,0.2418
 PR,PJ,Financiamentos - Microcrédito,2025-08-31,13050149.77,1456.0,0.2411
-PR,PJ,Financiamentos - Microcrédito,2025-09-30,12862892.22,1444.0,0.2311
+PR,PJ,Financiamentos - Microcrédito,2025-09-30,12865560.49,1445.0,0.231
 PR,PJ,Financiamentos - Microcrédito,2025-10-31,11662686.14,1331.0,0.1727
 PR,PJ,Financiamentos - Microcrédito,2025-11-30,11203049.37,1256.0,0.1656
 PR,PJ,Financiamentos - Microcrédito,2025-12-31,11116311.0,1228.0,0.1555
@@ -4801,7 +4801,7 @@ RJ,PF,Empréstimos - Microcrédito,2025-05-31,45267931.32,9324.0,0.0845
 RJ,PF,Empréstimos - Microcrédito,2025-06-30,43978908.730000004,9037.0,0.0693
 RJ,PF,Empréstimos - Microcrédito,2025-07-31,43759615.45,8974.0,0.0799
 RJ,PF,Empréstimos - Microcrédito,2025-08-31,45095160.14,9270.0,0.0897
-RJ,PF,Empréstimos - Microcrédito,2025-09-30,43892771.3,9130.0,0.0571
+RJ,PF,Empréstimos - Microcrédito,2025-09-30,43181140.42,8961.0,0.0575
 RJ,PF,Empréstimos - Microcrédito,2025-10-31,44256395.78,9158.0,0.0682
 RJ,PF,Empréstimos - Microcrédito,2025-11-30,44828447.94,9255.0,0.0739
 RJ,PF,Empréstimos - Microcrédito,2025-12-31,43997717.89,9044.0,0.0858
@@ -4868,7 +4868,7 @@ RJ,PF,Financiamentos - Microcrédito,2025-05-31,9481775.1,1681.0,0.0353
 RJ,PF,Financiamentos - Microcrédito,2025-06-30,9090641.17,1586.0,0.0453
 RJ,PF,Financiamentos - Microcrédito,2025-07-31,8890930.53,1559.0,0.0535
 RJ,PF,Financiamentos - Microcrédito,2025-08-31,9171015.41,1599.0,0.0548
-RJ,PF,Financiamentos - Microcrédito,2025-09-30,8834667.99,1556.0,0.0516
+RJ,PF,Financiamentos - Microcrédito,2025-09-30,8583900.02,1502.0,0.0532
 RJ,PF,Financiamentos - Microcrédito,2025-10-31,8781417.91,1523.0,0.0533
 RJ,PF,Financiamentos - Microcrédito,2025-11-30,8839620.780000001,1527.0,0.0476
 RJ,PF,Financiamentos - Microcrédito,2025-12-31,8479556.8,1474.0,0.0515
@@ -4935,7 +4935,7 @@ RJ,PJ,Empréstimos - Microcrédito,2025-05-31,2007951.78,394.0,0.1354
 RJ,PJ,Empréstimos - Microcrédito,2025-06-30,1793936.8900000001,357.0,0.1237
 RJ,PJ,Empréstimos - Microcrédito,2025-07-31,1646599.84,268.0,0.1506
 RJ,PJ,Empréstimos - Microcrédito,2025-08-31,1511828.94,229.0,0.1552
-RJ,PJ,Empréstimos - Microcrédito,2025-09-30,1225666.1300000001,163.0,0.0642
+RJ,PJ,Empréstimos - Microcrédito,2025-09-30,1240965.11,161.0,0.0634
 RJ,PJ,Empréstimos - Microcrédito,2025-10-31,1153279.53,120.0,0.0601
 RJ,PJ,Empréstimos - Microcrédito,2025-11-30,1115134.86,101.0,0.0613
 RJ,PJ,Empréstimos - Microcrédito,2025-12-31,1091670.58,93.0,0.0596
@@ -5069,7 +5069,7 @@ RN,PF,Empréstimos - Microcrédito,2025-05-31,271719918.46999997,49087.0,0.0272
 RN,PF,Empréstimos - Microcrédito,2025-06-30,265563373.92000002,48452.0,0.0293
 RN,PF,Empréstimos - Microcrédito,2025-07-31,261867105.71,48260.0,0.0322
 RN,PF,Empréstimos - Microcrédito,2025-08-31,255636715.41,47802.0,0.0347
-RN,PF,Empréstimos - Microcrédito,2025-09-30,248464604.61,47648.0,0.0352
+RN,PF,Empréstimos - Microcrédito,2025-09-30,248499744.08,47653.0,0.0352
 RN,PF,Empréstimos - Microcrédito,2025-10-31,244232474.94,47733.0,0.0368
 RN,PF,Empréstimos - Microcrédito,2025-11-30,242854196.75,47542.0,0.0381
 RN,PF,Empréstimos - Microcrédito,2025-12-31,243625152.47,47183.0,0.0398
@@ -5136,7 +5136,7 @@ RN,PF,Financiamentos - Microcrédito,2025-05-31,160515333.4,29460.0,0.0465
 RN,PF,Financiamentos - Microcrédito,2025-06-30,158895112.91,29275.0,0.0478
 RN,PF,Financiamentos - Microcrédito,2025-07-31,157745785.33,29192.0,0.0502
 RN,PF,Financiamentos - Microcrédito,2025-08-31,155870439.14,29045.0,0.0493
-RN,PF,Financiamentos - Microcrédito,2025-09-30,152283822.14000002,28706.0,0.0491
+RN,PF,Financiamentos - Microcrédito,2025-09-30,152378075.77,28725.0,0.0492
 RN,PF,Financiamentos - Microcrédito,2025-10-31,151970836.37,28509.0,0.049
 RN,PF,Financiamentos - Microcrédito,2025-11-30,149077727.72,27903.0,0.0458
 RN,PF,Financiamentos - Microcrédito,2025-12-31,145976011.25,27399.0,0.0488
@@ -5203,7 +5203,7 @@ RN,PJ,Empréstimos - Microcrédito,2025-05-31,264408.5,40.0,0.1181
 RN,PJ,Empréstimos - Microcrédito,2025-06-30,241899.93,40.0,0.1213
 RN,PJ,Empréstimos - Microcrédito,2025-07-31,216824.07,21.0,0.1899
 RN,PJ,Empréstimos - Microcrédito,2025-08-31,178504.65000000002,8.0,0.2465
-RN,PJ,Empréstimos - Microcrédito,2025-09-30,156751.68,6.0,0.3055
+RN,PJ,Empréstimos - Microcrédito,2025-09-30,168891.3,5.0,0.2835
 RN,PJ,Empréstimos - Microcrédito,2025-10-31,137611.81,1.0,0.2267
 RN,PJ,Empréstimos - Microcrédito,2025-11-30,131354.48,-1.0,0.2324
 RN,PJ,Empréstimos - Microcrédito,2025-12-31,119101.01999999999,-3.0,0.2508
@@ -5270,7 +5270,7 @@ RN,PJ,Financiamentos - Microcrédito,2025-05-31,34072757.65,5465.0,0.0206
 RN,PJ,Financiamentos - Microcrédito,2025-06-30,34636319.49,5508.0,0.0241
 RN,PJ,Financiamentos - Microcrédito,2025-07-31,34845409.03,5544.0,0.0282
 RN,PJ,Financiamentos - Microcrédito,2025-08-31,36558922.96,5692.0,0.0288
-RN,PJ,Financiamentos - Microcrédito,2025-09-30,37807402.5,5698.0,0.0286
+RN,PJ,Financiamentos - Microcrédito,2025-09-30,37798530.730000004,5695.0,0.0286
 RN,PJ,Financiamentos - Microcrédito,2025-10-31,38849804.879999995,5749.0,0.0291
 RN,PJ,Financiamentos - Microcrédito,2025-11-30,39094590.55,5713.0,0.0313
 RN,PJ,Financiamentos - Microcrédito,2025-12-31,38199952.91,5629.0,0.0324
@@ -5337,7 +5337,7 @@ RO,PF,Empréstimos - Microcrédito,2025-05-31,12358454.21,2564.0,0.0865
 RO,PF,Empréstimos - Microcrédito,2025-06-30,12098382.9,2568.0,0.0762
 RO,PF,Empréstimos - Microcrédito,2025-07-31,12071084.32,2613.0,0.0804
 RO,PF,Empréstimos - Microcrédito,2025-08-31,12151226.36,2626.0,0.084
-RO,PF,Empréstimos - Microcrédito,2025-09-30,11262242.72,2452.0,0.0469
+RO,PF,Empréstimos - Microcrédito,2025-09-30,11194190.66,2441.0,0.0472
 RO,PF,Empréstimos - Microcrédito,2025-10-31,11097609.5,2440.0,0.0533
 RO,PF,Empréstimos - Microcrédito,2025-11-30,10884937.45,2431.0,0.0598
 RO,PF,Empréstimos - Microcrédito,2025-12-31,10525858.75,2382.0,0.0704
@@ -5404,7 +5404,7 @@ RO,PF,Financiamentos - Microcrédito,2025-05-31,13184710.97,1367.0,0.1482
 RO,PF,Financiamentos - Microcrédito,2025-06-30,13539556.49,1385.0,0.1561
 RO,PF,Financiamentos - Microcrédito,2025-07-31,13901123.17,1406.0,0.1663
 RO,PF,Financiamentos - Microcrédito,2025-08-31,13815515.65,1391.0,0.1881
-RO,PF,Financiamentos - Microcrédito,2025-09-30,13554876.53,1387.0,0.2026
+RO,PF,Financiamentos - Microcrédito,2025-09-30,13576901.31,1394.0,0.2033
 RO,PF,Financiamentos - Microcrédito,2025-10-31,14067646.79,1402.0,0.2168
 RO,PF,Financiamentos - Microcrédito,2025-11-30,14198150.08,1350.0,0.1944
 RO,PF,Financiamentos - Microcrédito,2025-12-31,15013277.42,1365.0,0.1986
@@ -5471,7 +5471,7 @@ RO,PJ,Empréstimos - Microcrédito,2025-05-31,141267.23,-2.0,0.2736
 RO,PJ,Empréstimos - Microcrédito,2025-06-30,112722.81000000001,-4.0,0.1989
 RO,PJ,Empréstimos - Microcrédito,2025-07-31,118623.12999999999,-2.0,0.1794
 RO,PJ,Empréstimos - Microcrédito,2025-08-31,107472.95,-1.0,0.1981
-RO,PJ,Empréstimos - Microcrédito,2025-09-30,82407.64,-10.0,0.168
+RO,PJ,Empréstimos - Microcrédito,2025-09-30,81201.75,-9.0,0.1705
 RO,PJ,Empréstimos - Microcrédito,2025-10-31,70077.81,-7.0,0.1933
 RO,PJ,Empréstimos - Microcrédito,2025-11-30,65513.03,-6.0,0.2063
 RO,PJ,Empréstimos - Microcrédito,2025-12-31,72365.28,-7.0,0.1866
@@ -5605,7 +5605,7 @@ RR,PF,Empréstimos - Microcrédito,2025-05-31,4761755.42,922.0,0.0411
 RR,PF,Empréstimos - Microcrédito,2025-06-30,4771790.7,913.0,0.0373
 RR,PF,Empréstimos - Microcrédito,2025-07-31,4707456.46,922.0,0.0345
 RR,PF,Empréstimos - Microcrédito,2025-08-31,4814522.24,915.0,0.0408
-RR,PF,Empréstimos - Microcrédito,2025-09-30,4825615.55,926.0,0.0246
+RR,PF,Empréstimos - Microcrédito,2025-09-30,4779323.3,925.0,0.0248
 RR,PF,Empréstimos - Microcrédito,2025-10-31,4751883.65,919.0,0.0317
 RR,PF,Empréstimos - Microcrédito,2025-11-30,4687347.9,926.0,0.0382
 RR,PF,Empréstimos - Microcrédito,2025-12-31,4609071.54,930.0,0.0444
@@ -5672,7 +5672,7 @@ RR,PF,Financiamentos - Microcrédito,2025-05-31,4819159.92,376.0,0.1593
 RR,PF,Financiamentos - Microcrédito,2025-06-30,5036673.58,356.0,0.1585
 RR,PF,Financiamentos - Microcrédito,2025-07-31,5000754.17,373.0,0.1629
 RR,PF,Financiamentos - Microcrédito,2025-08-31,5008451.02,380.0,0.1771
-RR,PF,Financiamentos - Microcrédito,2025-09-30,4836494.88,374.0,0.1646
+RR,PF,Financiamentos - Microcrédito,2025-09-30,4833582.74,371.0,0.1647
 RR,PF,Financiamentos - Microcrédito,2025-10-31,4839517.21,372.0,0.1707
 RR,PF,Financiamentos - Microcrédito,2025-11-30,4598559.95,352.0,0.1194
 RR,PF,Financiamentos - Microcrédito,2025-12-31,4639248.77,341.0,0.0953
@@ -5829,7 +5829,7 @@ RS,PF,Empréstimos - Microcrédito,2025-05-31,56485296.05,10786.0,0.0756
 RS,PF,Empréstimos - Microcrédito,2025-06-30,55684265.85,10707.0,0.0716
 RS,PF,Empréstimos - Microcrédito,2025-07-31,55961263.9,10737.0,0.0811
 RS,PF,Empréstimos - Microcrédito,2025-08-31,56224870.72,10756.0,0.0858
-RS,PF,Empréstimos - Microcrédito,2025-09-30,53641562.17,10347.0,0.0504
+RS,PF,Empréstimos - Microcrédito,2025-09-30,53598930.660000004,10339.0,0.0505
 RS,PF,Empréstimos - Microcrédito,2025-10-31,53485246.84,10347.0,0.0618
 RS,PF,Empréstimos - Microcrédito,2025-11-30,52799367.87,10260.0,0.0742
 RS,PF,Empréstimos - Microcrédito,2025-12-31,51491453.839999996,10066.0,0.0877
@@ -5896,7 +5896,7 @@ RS,PF,Financiamentos - Microcrédito,2025-05-31,12431519.6,1809.0,0.0846
 RS,PF,Financiamentos - Microcrédito,2025-06-30,12361567.69,1782.0,0.0885
 RS,PF,Financiamentos - Microcrédito,2025-07-31,12456712.7,1766.0,0.0908
 RS,PF,Financiamentos - Microcrédito,2025-08-31,12588431.16,1768.0,0.0941
-RS,PF,Financiamentos - Microcrédito,2025-09-30,12148933.53,1715.0,0.0666
+RS,PF,Financiamentos - Microcrédito,2025-09-30,12157200.3,1717.0,0.0683
 RS,PF,Financiamentos - Microcrédito,2025-10-31,12058253.3,1687.0,0.0639
 RS,PF,Financiamentos - Microcrédito,2025-11-30,12075986.39,1680.0,0.0591
 RS,PF,Financiamentos - Microcrédito,2025-12-31,11881558.96,1660.0,0.0627
@@ -5963,7 +5963,7 @@ RS,PJ,Empréstimos - Microcrédito,2025-05-31,111932108.19,1615.0,0.0086
 RS,PJ,Empréstimos - Microcrédito,2025-06-30,162205180.28,1585.0,0.0056
 RS,PJ,Empréstimos - Microcrédito,2025-07-31,161718188.15,1437.0,0.0062
 RS,PJ,Empréstimos - Microcrédito,2025-08-31,161367897.44,1339.0,0.0056
-RS,PJ,Empréstimos - Microcrédito,2025-09-30,160905801.16,1230.0,0.005
+RS,PJ,Empréstimos - Microcrédito,2025-09-30,160897891.82,1229.0,0.005
 RS,PJ,Empréstimos - Microcrédito,2025-10-31,143294637.19,1230.0,0.0058
 RS,PJ,Empréstimos - Microcrédito,2025-11-30,160994031.20999998,1218.0,0.0054
 RS,PJ,Empréstimos - Microcrédito,2025-12-31,328718806.53999996,1173.0,0.0028
@@ -6030,7 +6030,7 @@ RS,PJ,Financiamentos - Microcrédito,2025-05-31,901597.09,68.0,0.2634
 RS,PJ,Financiamentos - Microcrédito,2025-06-30,873537.07,65.0,0.2881
 RS,PJ,Financiamentos - Microcrédito,2025-07-31,871366.26,61.0,0.293
 RS,PJ,Financiamentos - Microcrédito,2025-08-31,857663.87,59.0,0.2998
-RS,PJ,Financiamentos - Microcrédito,2025-09-30,898842.75,60.0,0.2362
+RS,PJ,Financiamentos - Microcrédito,2025-09-30,907247.19,59.0,0.234
 RS,PJ,Financiamentos - Microcrédito,2025-10-31,780572.91,28.0,0.1091
 RS,PJ,Financiamentos - Microcrédito,2025-11-30,734212.5599999999,37.0,0.1159
 RS,PJ,Financiamentos - Microcrédito,2025-12-31,701815.24,34.0,0.1132
@@ -6097,7 +6097,7 @@ SC,PF,Empréstimos - Microcrédito,2025-05-31,75080590.58,15463.0,0.091
 SC,PF,Empréstimos - Microcrédito,2025-06-30,74290968.31,15270.0,0.075
 SC,PF,Empréstimos - Microcrédito,2025-07-31,75111632.27,15437.0,0.0833
 SC,PF,Empréstimos - Microcrédito,2025-08-31,75144563.07,15405.0,0.0909
-SC,PF,Empréstimos - Microcrédito,2025-09-30,70465541.98,14667.0,0.0446
+SC,PF,Empréstimos - Microcrédito,2025-09-30,70542461.78,14706.0,0.0446
 SC,PF,Empréstimos - Microcrédito,2025-10-31,70064634.13,14578.0,0.0564
 SC,PF,Empréstimos - Microcrédito,2025-11-30,69241568.78,14466.0,0.0688
 SC,PF,Empréstimos - Microcrédito,2025-12-31,67758151.58,14308.0,0.0828
@@ -6164,7 +6164,7 @@ SC,PF,Financiamentos - Microcrédito,2025-05-31,317010251.02,48377.0,0.1487
 SC,PF,Financiamentos - Microcrédito,2025-06-30,304656307.9,46766.0,0.1601
 SC,PF,Financiamentos - Microcrédito,2025-07-31,290384291.76,44822.0,0.1674
 SC,PF,Financiamentos - Microcrédito,2025-08-31,275973135.71,42741.0,0.1699
-SC,PF,Financiamentos - Microcrédito,2025-09-30,243167445.46,38575.0,0.1076
+SC,PF,Financiamentos - Microcrédito,2025-09-30,243541503.23000002,38632.0,0.108
 SC,PF,Financiamentos - Microcrédito,2025-10-31,227441620.27,36430.0,0.1002
 SC,PF,Financiamentos - Microcrédito,2025-11-30,215181313.71,34636.0,0.0938
 SC,PF,Financiamentos - Microcrédito,2025-12-31,204261444.31,32811.0,0.0907
@@ -6231,7 +6231,7 @@ SC,PJ,Empréstimos - Microcrédito,2025-05-31,76910703.47,527.0,0.0038
 SC,PJ,Empréstimos - Microcrédito,2025-06-30,223230120.25,533.0,0.0012
 SC,PJ,Empréstimos - Microcrédito,2025-07-31,222132635.14,458.0,0.0015
 SC,PJ,Empréstimos - Microcrédito,2025-08-31,222165508.31,422.0,0.0014
-SC,PJ,Empréstimos - Microcrédito,2025-09-30,221484823.98999998,380.0,0.0011
+SC,PJ,Empréstimos - Microcrédito,2025-09-30,221510519.89999998,375.0,0.0012
 SC,PJ,Empréstimos - Microcrédito,2025-10-31,206003837.67,380.0,0.0013
 SC,PJ,Empréstimos - Microcrédito,2025-11-30,204475665.09,362.0,0.0011
 SC,PJ,Empréstimos - Microcrédito,2025-12-31,224916675.82999998,339.0,0.0009
@@ -6298,7 +6298,7 @@ SC,PJ,Financiamentos - Microcrédito,2025-05-31,178951464.65,12106.0,0.1083
 SC,PJ,Financiamentos - Microcrédito,2025-06-30,174181299.58,11676.0,0.1154
 SC,PJ,Financiamentos - Microcrédito,2025-07-31,162683949.34,11182.0,0.1232
 SC,PJ,Financiamentos - Microcrédito,2025-08-31,159486437.56,10729.0,0.1213
-SC,PJ,Financiamentos - Microcrédito,2025-09-30,153939775.62,10033.0,0.1151
+SC,PJ,Financiamentos - Microcrédito,2025-09-30,153915220.39,10030.0,0.1151
 SC,PJ,Financiamentos - Microcrédito,2025-10-31,146236383.71,9094.0,0.0827
 SC,PJ,Financiamentos - Microcrédito,2025-11-30,143115139.86,8662.0,0.0813
 SC,PJ,Financiamentos - Microcrédito,2025-12-31,139749740.22,8275.0,0.0783
@@ -6365,7 +6365,7 @@ SE,PF,Empréstimos - Microcrédito,2025-05-31,194529304.06,40573.0,0.026
 SE,PF,Empréstimos - Microcrédito,2025-06-30,190728326.99,40272.0,0.0263
 SE,PF,Empréstimos - Microcrédito,2025-07-31,187560436.9,40153.0,0.0286
 SE,PF,Empréstimos - Microcrédito,2025-08-31,183330331.01,39917.0,0.0303
-SE,PF,Empréstimos - Microcrédito,2025-09-30,178031664.26,39803.0,0.0292
+SE,PF,Empréstimos - Microcrédito,2025-09-30,178139318.47,39832.0,0.0292
 SE,PF,Empréstimos - Microcrédito,2025-10-31,174158398.31,39639.0,0.0317
 SE,PF,Empréstimos - Microcrédito,2025-11-30,171894012.18,39565.0,0.0314
 SE,PF,Empréstimos - Microcrédito,2025-12-31,171986597.02,39228.0,0.032
@@ -6432,7 +6432,7 @@ SE,PF,Financiamentos - Microcrédito,2025-05-31,86551505.92999999,15234.0,0.0179
 SE,PF,Financiamentos - Microcrédito,2025-06-30,83846552.00999999,15000.0,0.0226
 SE,PF,Financiamentos - Microcrédito,2025-07-31,82302020.7,14790.0,0.0235
 SE,PF,Financiamentos - Microcrédito,2025-08-31,79501169.74000001,14400.0,0.025
-SE,PF,Financiamentos - Microcrédito,2025-09-30,76380765.38000001,14121.0,0.0247
+SE,PF,Financiamentos - Microcrédito,2025-09-30,76390532.67,14135.0,0.0245
 SE,PF,Financiamentos - Microcrédito,2025-10-31,75472812.21000001,13965.0,0.0227
 SE,PF,Financiamentos - Microcrédito,2025-11-30,73655168.26,13697.0,0.0247
 SE,PF,Financiamentos - Microcrédito,2025-12-31,70842792.74,13187.0,0.0455
@@ -6533,6 +6533,7 @@ SE,PJ,Financiamentos - Microcrédito,2022-08-31,2382.49,-1.0,0.0
 SE,PJ,Financiamentos - Microcrédito,2025-03-31,8783.29,-1.0,0.0
 SE,PJ,Financiamentos - Microcrédito,2025-04-30,9010.45,-1.0,0.0
 SE,PJ,Financiamentos - Microcrédito,2025-07-31,7750.44,-1.0,0.0
+SE,PJ,Financiamentos - Microcrédito,2025-09-30,7006.26,-1.0,0.0
 SE,PJ,Financiamentos - Microcrédito,2025-10-31,7208.48,-1.0,0.0
 SE,PJ,Financiamentos - Microcrédito,2025-11-30,7414.83,-1.0,0.0
 SE,PJ,Financiamentos - Microcrédito,2025-12-31,7638.79,-1.0,0.0
@@ -6599,7 +6600,7 @@ SP,PF,Empréstimos - Microcrédito,2025-05-31,393373665.52,75411.0,0.0804
 SP,PF,Empréstimos - Microcrédito,2025-06-30,383774382.78,74147.0,0.0686
 SP,PF,Empréstimos - Microcrédito,2025-07-31,384916458.32,74313.0,0.0775
 SP,PF,Empréstimos - Microcrédito,2025-08-31,388996336.81,75446.0,0.0837
-SP,PF,Empréstimos - Microcrédito,2025-09-30,369481412.27,73087.0,0.0494
+SP,PF,Empréstimos - Microcrédito,2025-09-30,366145967.78999996,72337.0,0.0499
 SP,PF,Empréstimos - Microcrédito,2025-10-31,367754527.73,73016.0,0.0585
 SP,PF,Empréstimos - Microcrédito,2025-11-30,364440094.63,72866.0,0.0662
 SP,PF,Empréstimos - Microcrédito,2025-12-31,356273907.07,71494.0,0.0771
@@ -6666,7 +6667,7 @@ SP,PF,Financiamentos - Microcrédito,2025-05-31,109588001.4,19071.0,0.0307
 SP,PF,Financiamentos - Microcrédito,2025-06-30,105321241.47,18114.0,0.0334
 SP,PF,Financiamentos - Microcrédito,2025-07-31,104160635.1,17544.0,0.0354
 SP,PF,Financiamentos - Microcrédito,2025-08-31,105305781.28,17438.0,0.0359
-SP,PF,Financiamentos - Microcrédito,2025-09-30,103352026.72,16909.0,0.0305
+SP,PF,Financiamentos - Microcrédito,2025-09-30,102236010.19,16686.0,0.0305
 SP,PF,Financiamentos - Microcrédito,2025-10-31,102007675.56,16411.0,0.0296
 SP,PF,Financiamentos - Microcrédito,2025-11-30,101142708.94,16174.0,0.0294
 SP,PF,Financiamentos - Microcrédito,2025-12-31,100019298.83,15744.0,0.0302
@@ -6733,7 +6734,7 @@ SP,PJ,Empréstimos - Microcrédito,2025-05-31,12960905.11,1932.0,0.1033
 SP,PJ,Empréstimos - Microcrédito,2025-06-30,11896092.47,1792.0,0.0941
 SP,PJ,Empréstimos - Microcrédito,2025-07-31,11158351.61,1464.0,0.113
 SP,PJ,Empréstimos - Microcrédito,2025-08-31,10533926.52,1251.0,0.1164
-SP,PJ,Empréstimos - Microcrédito,2025-09-30,9504748.49,890.0,0.0809
+SP,PJ,Empréstimos - Microcrédito,2025-09-30,9515451.83,889.0,0.0809
 SP,PJ,Empréstimos - Microcrédito,2025-10-31,8233436.18,816.0,0.0978
 SP,PJ,Empréstimos - Microcrédito,2025-11-30,12944502.73,730.0,0.0737
 SP,PJ,Empréstimos - Microcrédito,2025-12-31,12687838.73,692.0,0.0795
@@ -6800,7 +6801,7 @@ SP,PJ,Financiamentos - Microcrédito,2025-05-31,372085.12,-30.0,0.15
 SP,PJ,Financiamentos - Microcrédito,2025-06-30,350910.1,-31.0,0.1591
 SP,PJ,Financiamentos - Microcrédito,2025-07-31,333679.87,-31.0,0.2021
 SP,PJ,Financiamentos - Microcrédito,2025-08-31,323104.34,-31.0,0.2576
-SP,PJ,Financiamentos - Microcrédito,2025-09-30,294028.85,-29.0,0.2225
+SP,PJ,Financiamentos - Microcrédito,2025-09-30,314707.22,-28.0,0.2079
 SP,PJ,Financiamentos - Microcrédito,2025-10-31,265177.85,-27.0,0.2255
 SP,PJ,Financiamentos - Microcrédito,2025-11-30,137648.68,-24.0,0.3002
 SP,PJ,Financiamentos - Microcrédito,2025-12-31,140961.34,-21.0,0.2524
@@ -6867,7 +6868,7 @@ TO,PF,Empréstimos - Microcrédito,2025-05-31,27393435.76,5271.0,0.0609
 TO,PF,Empréstimos - Microcrédito,2025-06-30,27420386.38,5306.0,0.0564
 TO,PF,Empréstimos - Microcrédito,2025-07-31,28137417.31,5443.0,0.0598
 TO,PF,Empréstimos - Microcrédito,2025-08-31,28266203.6,5501.0,0.0649
-TO,PF,Empréstimos - Microcrédito,2025-09-30,27047173.88,5342.0,0.0373
+TO,PF,Empréstimos - Microcrédito,2025-09-30,26943176.07,5319.0,0.0374
 TO,PF,Empréstimos - Microcrédito,2025-10-31,26818646.599999998,5332.0,0.0409
 TO,PF,Empréstimos - Microcrédito,2025-11-30,26792066.19,5332.0,0.0433
 TO,PF,Empréstimos - Microcrédito,2025-12-31,26368487.080000002,5252.0,0.052
@@ -6934,7 +6935,7 @@ TO,PF,Financiamentos - Microcrédito,2025-05-31,13533127.78,1797.0,0.0908
 TO,PF,Financiamentos - Microcrédito,2025-06-30,13282224.299999999,1787.0,0.0953
 TO,PF,Financiamentos - Microcrédito,2025-07-31,13180094.31,1776.0,0.1033
 TO,PF,Financiamentos - Microcrédito,2025-08-31,12998167.57,1763.0,0.1136
-TO,PF,Financiamentos - Microcrédito,2025-09-30,12782912.59,1746.0,0.1271
+TO,PF,Financiamentos - Microcrédito,2025-09-30,12742626.1,1738.0,0.1282
 TO,PF,Financiamentos - Microcrédito,2025-10-31,12957905.31,1732.0,0.1372
 TO,PF,Financiamentos - Microcrédito,2025-11-30,12586160.91,1655.0,0.1295
 TO,PF,Financiamentos - Microcrédito,2025-12-31,13417259.870000001,1671.0,0.1281
@@ -7068,7 +7069,7 @@ TO,PJ,Financiamentos - Microcrédito,2025-05-31,172543.96,3.0,0.0769
 TO,PJ,Financiamentos - Microcrédito,2025-06-30,221326.5,4.0,0.0604
 TO,PJ,Financiamentos - Microcrédito,2025-07-31,215706.47,2.0,0.059
 TO,PJ,Financiamentos - Microcrédito,2025-08-31,211222.69999999998,3.0,0.0602
-TO,PJ,Financiamentos - Microcrédito,2025-09-30,204670.59,3.0,0.0621
+TO,PJ,Financiamentos - Microcrédito,2025-09-30,204670.59,2.0,0.0621
 TO,PJ,Financiamentos - Microcrédito,2025-10-31,196885.49,3.0,0.0574
 TO,PJ,Financiamentos - Microcrédito,2025-11-30,193453.07,3.0,0.0585
 TO,PJ,Financiamentos - Microcrédito,2025-12-31,190261.07,4.0,0.0594
