@@ -1,5 +1,6 @@
 terraform {
-  required_version = "= 1.17.1"
+  # precisa do 1.6 ou mais por causa do bloco import abaixo
+  required_version = ">= 1.6.0, < 2.0.0"
 
   required_providers {
     aiven = {
@@ -10,6 +11,14 @@ terraform {
 }
 
 provider "aiven" {}
+
+# o servico ja existe na aiven, entao aqui a gente so traz ele pro estado do
+# terraform (nao cria nada). sem isso o plan de quem clonar o repo ia propor
+# criar um servico novo
+import {
+  to = aiven_pg.microcredit
+  id = "${var.aiven_project_name}/${var.service_name}"
+}
 
 resource "aiven_pg" "microcredit" {
   project                = var.aiven_project_name
