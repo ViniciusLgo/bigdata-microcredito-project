@@ -8,7 +8,7 @@ Integrantes: Vinicius Lago Cruz, Roberto Luis Jr., Guilherme Chaves e Maria Fern
 
 A fase 2 está pronta: os scripts baixam e tratam os dados, os CSVs finais estão no repositório e o banco está modelado. A carga na Aiven já foi feita antes, mas ainda precisamos entrar de novo no banco e guardar uma conferência atual.
 
-Na fase 3 já entraram a carga que pode rodar mais de uma vez, os testes dela, o Terraform e a análise territorial das ODS 5 e 18. Falta o guia de segurança das credenciais, a conferência final do banco e testar o README do zero com alguém que não escreveu ele. O que cada item do enunciado exige, e onde está a prova, fica em [docs/CHECKLIST_ENTREGA.md](docs/CHECKLIST_ENTREGA.md). O jeito de trabalhar com branches e revisão está no [CONTRIBUTING.md](CONTRIBUTING.md).
+Na fase 3 já entraram a carga que pode rodar mais de uma vez, os testes dela, o Terraform, o guia de segurança e a análise territorial das ODS 5 e 18. Faltam a conferência final do banco com a versão nova dos dados, o dashboard e testar o README do zero com alguém que não escreveu ele. O jeito de trabalhar com branches e revisão está no [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## O que o projeto faz
 
@@ -35,7 +35,7 @@ Em [data/manifesto-fontes.csv](data/manifesto-fontes.csv) está a lista de tudo 
 
 Os ZIPs do SCR.data não vão para o Git porque somam quase 1 GB. Para refazer o download, baixe um ZIP por ano (2021 a 2026) pelo endereço acima e coloque em `data/zip/`. Cada ZIP tem os CSVs mensais daquele ano, separados por ponto e vírgula.
 
-Na versão que conferimos em 03/11/2026, o SCR ficou com 598.002 linhas depois do filtro e 7.080 linhas finais (3.618 de PF e 3.462 de PJ). A SGS ficou com 136 linhas finais.
+A professora mandou uma versão atualizada do `scrdata_2025.zip`, e o grupo passou a usar essa. Só o CSV de setembro/2025 mudou: o BCB republicou o mês com valores um pouco diferentes (84 linhas mudaram e 1 linha nova apareceu no resultado final). Com essa versão, o SCR ficou com 598.000 linhas depois do filtro e 7.081 linhas finais (3.618 de PF e 3.463 de PJ). A SGS ficou com 136 linhas finais.
 
 ## Estrutura do repositório
 
@@ -51,13 +51,16 @@ sql/
   limpar.sql           apaga as tabelas, só usado com a flag --limpar
 terraform/             infraestrutura como código (serviço PostgreSQL na Aiven)
 tests/
-  test_carga.py        testes da carga, rodam só em Postgres local
+  test_tratamento.py   testes da conversão dos números, rodam sem banco
+  test_carga.py        testes da carga, precisam de um Postgres local
 analise/
+  baixar_ibge.py       baixa do IBGE o perfil por UF, com sexo e raça cruzados
   ods_cruzamento.py    cruza o microcrédito com o IBGE para as ODS 5 e 18
-  montar_ibge.py       monta a tabela do IBGE usada no cruzamento
+  montar_ibge.py       primeira versão da tabela do IBGE, com os totais digitados
 data/
   manifesto-fontes.csv       origem, versão e hash de cada arquivo
-  ibge_ocupacao_uf_2022.csv  base do IBGE por UF usada na análise das ODS
+  ibge_sexo_raca_uf_2022.csv base do IBGE por UF, sexo e cor ou raça (análise das ODS)
+  ibge_ocupacao_uf_2022.csv  totais do IBGE por UF (primeira versão)
   zip/                       ZIPs originais do SCR.data (fora do Git)
   raw/                       JSONs da SGS e o CSV filtrado (o CSV fica fora do Git)
   processed/                 CSVs finais, prontos para a carga
@@ -66,9 +69,29 @@ docs/
   DICIONARIO_DADOS.md   campos, tipos, chaves, origem e unidades
   DECISOES_TECNICAS.md  decisões de tratamento e modelagem, com as justificativas
   ODS_ANALISE.md        resultado do cruzamento com o IBGE
-  CHECKLIST_ENTREGA.md  cada item do enunciado e o arquivo que comprova
+  SEGURANCA.md          como cuidamos de senhas, tokens e LGPD
   evidencias/           saídas das execuções, sem credenciais
 ```
+
+## Arquitetura
+
+```
+FONTES ABERTAS                 PROCESSAMENTO (Python)               ARMAZENAMENTO               USO
+
+SCR.data (BCB)  ZIP com CSV --> etl/filtrar_scr.py  (chunks) --+
+SGS (BCB)       API em JSON --> etl/extrair_sgs.py ------------+--> etl/tratar.py --> data/processed/*.csv
+IBGE (Censo)    API em JSON --> analise/baixar_ibge.py             (tipos, PF/PJ,           |
+                                         |                          agregação)             v
+                                         v                                          etl/carregar.py
+                              analise/ods_cruzamento.py                                      |
+                              (ODS 5 e 18, sem banco)                                        v
+                                                                      PostgreSQL na Aiven (criado com Terraform)
+                                                                                             |
+                                                                                             v
+                                                                              dashboard (ainda não feito)
+```
+
+O banco é o PostgreSQL gratuito da Aiven, descrito em `terraform/`. O dashboard vai ler direto dele.
 
 ## Tratamento dos dados
 
@@ -78,17 +101,46 @@ Cada decisão e o motivo dela estão em [docs/DECISOES_TECNICAS.md](docs/DECISOE
 
 ## Modelagem do banco
 
-Usamos um esquema estrela simplificado no PostgreSQL (Aiven, plano gratuito), com duas dimensões e duas tabelas fato. Escolhemos assim porque os dados já chegam agregados e o dashboard vai filtrar por ano, UF e modalidade, então um modelo todo normalizado seria exagero.
+Usamos um esquema estrela simplificado no PostgreSQL (Aiven, plano gratuito), com duas dimensões, duas tabelas fato e uma tabela de perfil do IBGE. Escolhemos assim porque os dados já chegam agregados e o dashboard vai filtrar por ano, UF e modalidade, então um modelo todo normalizado seria exagero.
 
 | Tabela | Cada linha é | Linhas esperadas |
 |---|---|---|
 | `dim_uf` | uma UF | 27 |
 | `dim_modalidade` | uma modalidade por segmento (PF ou PJ) | 4 |
-| `fato_credito_regional` | UF, segmento, modalidade e mês | 7.080 |
+| `fato_credito_regional` | UF, segmento, modalidade e mês | 7.081 |
 | `fato_microcredito_nacional` | série e mês | 136 |
-| total | | 7.247 |
+| `perfil_ocupados_uf` | UF, ano, sexo e cor ou raça (Censo 2022) | 270 |
+| total | | 7.518 |
 
-A `fato_credito_regional` se liga às duas dimensões por chave estrangeira. A `fato_microcredito_nacional` não se liga a nenhuma, porque é a série nacional da SGS, com outra fonte e outra granularidade. Não há dado de pessoa nem identificação de quem tomou o crédito. Os campos e tipos estão em [docs/DICIONARIO_DADOS.md](docs/DICIONARIO_DADOS.md) e o SQL está em [sql/schema.sql](sql/schema.sql).
+A `fato_credito_regional` se liga às duas dimensões por chave estrangeira. A `fato_microcredito_nacional` não se liga a nenhuma, porque é a série nacional da SGS, com outra fonte e outra granularidade. A `perfil_ocupados_uf` se liga só à `dim_uf` e guarda quantas pessoas trabalham por conta própria ou como empregador em cada estado, por sexo e cor ou raça. Ela vem do IBGE, não se junta ao crédito linha a linha e serve para os filtros do dashboard e para a análise das ODS. Não há dado de pessoa nem identificação de quem tomou o crédito. Os campos e tipos estão em [docs/DICIONARIO_DADOS.md](docs/DICIONARIO_DADOS.md) e o SQL está em [sql/schema.sql](sql/schema.sql).
+
+## Os 5 V's do Big Data no nosso projeto
+
+| V | Como aparece aqui |
+|---|---|
+| Volume | Cada mês do SCR.data tem uns 100 MB e cerca de 300 mil linhas, e são 67 meses. O banco gratuito da Aiven aguenta 1 GB, então filtramos (27 UFs e só microcrédito) e agregamos. Das 598.000 linhas filtradas ficaram 7.081 no banco, que ocupa uns 10 MB. |
+| Variedade | CSV do SCR, JSON da API SGS e JSON da API do IBGE, todos de fontes diferentes e com formatos de número diferentes (o SCR usa vírgula decimal e a SGS usa ponto). |
+| Velocidade | Processamos em lote, rodando os scripts quando precisamos. O BCB atualiza os dados uma vez por mês, então não há fluxo contínuo. Não usamos agendamento automático. |
+| Veracidade | Convertemos os tipos, conferimos UF, PF/PJ, campos vazios e chave repetida antes de carregar, e declaramos o que não dá para confiar (1.085 linhas com número de operações negativo e unidade de valor não explicada pelo BCB). O BCB também corrige dados antigos: setembro/2025 foi republicado. |
+| Valor | Mostrar onde o microcrédito está concentrado no país e cruzar isso com o perfil de gênero e raça de cada estado, ligando o tema às ODS 5 e 18. |
+
+## Tipos de dados
+
+| Dado | Tipo | Por quê |
+|---|---|---|
+| CSVs do SCR.data, CSVs tratados e tabelas do banco | estruturado | linhas e colunas fixas |
+| Respostas da API SGS e da API do IBGE | semiestruturado | JSON, com campos aninhados e valores como texto |
+| Dado não estruturado (texto livre, imagem, áudio) | não usamos | a base é toda numérica e categórica |
+
+## Por que PostgreSQL e não um banco não relacional
+
+Os dados são estruturados, já chegam agregados e se relacionam: cada linha da fato regional aponta para uma UF e uma modalidade. As perguntas do dashboard são somas e filtros por ano, UF e modalidade, que o SQL resolve bem. O plano gratuito da Aiven para PostgreSQL atende o volume com folga.
+
+Um banco não relacional como o OpenSearch serve mais para busca em texto e registros de log, e não temos texto livre. Por isso não implementamos essa camada, que é opcional no guia.
+
+## LGPD
+
+Usamos só dados abertos e já agregados pelo Banco Central e pelo IBGE. Não há nome, CPF, endereço nem nenhum dado que identifique uma pessoa, e o menor nível é a soma por UF, tipo de cliente, modalidade e mês. Por isso não existe como reidentificar alguém, e não precisamos anonimizar nada. Mais detalhes em [docs/SEGURANCA.md](docs/SEGURANCA.md).
 
 ## Infraestrutura (Terraform)
 
@@ -148,9 +200,9 @@ Sobre a carga, cada flag faz uma coisa:
 - `python etl/carregar.py --criar-schema` cria só as tabelas que faltam e depois carrega;
 - `python etl/carregar.py --limpar` é a única que apaga as tabelas, pede para digitar APAGAR e não carrega nada.
 
-Os CSVs são conferidos antes de abrir a conexão (arquivo, colunas, UF, PF/PJ, campos da chave vazios e chave repetida). A carga pode rodar mais de uma vez: registro novo é inserido, registro que mudou é atualizado e registro igual fica como está. No final o script mostra quantos foram de cada tipo. Se a conexão cair no meio, o que já foi salvo continua no banco e é só rodar de novo.
+Os CSVs (os dois tratados e o do perfil do IBGE) são conferidos antes de abrir a conexão: arquivo, colunas, UF, PF/PJ, campos da chave vazios e chave repetida. A carga pode rodar mais de uma vez: registro novo é inserido, registro que mudou é atualizado e registro igual fica como está. No final o script mostra quantos foram de cada tipo. Se a conexão cair no meio, o que já foi salvo continua no banco e é só rodar de novo.
 
-Os testes da carga precisam de um Postgres descartável, porque apagam e recriam as tabelas. Eles só rodam se a variável `TESTE_PG_URL` apontar para `localhost`, então nunca encostam na Aiven:
+Os testes da conversão dos números não precisam de banco. Os da carga precisam de um Postgres descartável, porque apagam e recriam as tabelas, e só rodam se a variável `TESTE_PG_URL` apontar para `localhost`, então nunca encostam na Aiven. Sem a variável, os de banco são pulados e os outros rodam:
 
 ```powershell
 docker run -d --name pg-teste -e POSTGRES_PASSWORD=teste -p 55432:5432 postgres:17
@@ -158,9 +210,10 @@ $env:TESTE_PG_URL = "postgres://postgres:teste@localhost:55432/postgres?sslmode=
 python -m unittest discover -s tests -v
 ```
 
-A análise das ODS não precisa de banco, só dos CSVs versionados:
+A análise das ODS não precisa de banco. O `baixar_ibge.py` busca o perfil do IBGE na API pública e o `ods_cruzamento.py` faz o cruzamento:
 
 ```bash
+python analise/baixar_ibge.py
 python analise/ods_cruzamento.py
 ```
 
@@ -189,12 +242,13 @@ Resumo de [docs/ODS_ANALISE.md](docs/ODS_ANALISE.md), com dados de 2022:
 - O microcrédito é concentrado. As 9 UFs do Nordeste ficam com 62,1% da carteira nacional, com mediana de R$ 1.236 por ocupado (conta própria ou empregador), contra R$ 167 a R$ 240 nas outras regiões.
 - ODS 18: UFs com mais pessoas pretas e pardas têm mais microcrédito por ocupado (Spearman 0,455, p = 0,017). Sem o Nordeste, a relação perde força (0,358, p = 0,145). O que aparece é onde a oferta está, e não o acesso de cada grupo racial.
 - ODS 5: não achamos associação com a participação de mulheres (Spearman −0,227, p = 0,255). A nossa base não tem sexo, então só dá para olhar o território.
+- ODS 5 e 18 juntas: com a participação de mulheres pretas e pardas (sexo e raça cruzados no IBGE) a relação é um pouco mais forte (Spearman 0,501, p = 0,008), mas também some sem o Nordeste (0,319, p = 0,197).
 - Fora das ODS, o achado mais forte foi que onde há mais microcrédito por ocupado a inadimplência é menor (Spearman −0,871, p < 0,0001). O Piauí tem R$ 2.297 por ocupado e 5,9% de inadimplência, e o Rio de Janeiro tem R$ 113 e 22,4%.
 
 ## Limitações
 
 - A base não tem sexo, gênero, cor ou raça. Por isso a análise das ODS é territorial: cruza a carteira por UF com o Censo 2022 do IBGE. Ela descreve estados, não quem pegou o crédito, e concluir sobre pessoas a partir de médias por UF seria falácia ecológica.
-- 1.084 das 7.080 linhas (15,3%) têm `quantidade_operacoes` negativa (mínimo −32). A metodologia do BCB não explica essa regra. Mantivemos os valores como vieram e usamos a carteira ativa como indicador principal.
+- 1.085 das 7.081 linhas (15,3%) têm `quantidade_operacoes` negativa (mínimo −32). A metodologia do BCB não explica essa regra. Mantivemos os valores como vieram e usamos a carteira ativa como indicador principal.
 - A metodologia do SCR.data não diz a unidade de `carteira_ativa`. Tratamos como reais pela ordem de grandeza.
 - Só a filtragem usa chunks. O tratamento abre o CSV intermediário inteiro, então o pipeline é em lote com leitura em partes, e não processamento distribuído.
 - O `extrair_sgs.py` não fixa a data final, então cada execução pode trazer meses novos. Para reproduzir a versão analisada, use os JSONs do repositório.
@@ -208,5 +262,5 @@ Resumo de [docs/ODS_ANALISE.md](docs/ODS_ANALISE.md), com dados de 2022:
 | [docs/DICIONARIO_DADOS.md](docs/DICIONARIO_DADOS.md) | o que é cada campo em cada camada |
 | [docs/DECISOES_TECNICAS.md](docs/DECISOES_TECNICAS.md) | por que o tratamento é assim e o que ele não permite afirmar |
 | [docs/ODS_ANALISE.md](docs/ODS_ANALISE.md) | cruzamento com o IBGE para as ODS 5 e 18, com método e limites |
-| [docs/CHECKLIST_ENTREGA.md](docs/CHECKLIST_ENTREGA.md) | item do enunciado e o arquivo que comprova |
+| [docs/SEGURANCA.md](docs/SEGURANCA.md) | senhas, tokens, arquivos ignorados e LGPD |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | como o grupo trabalha com branches e revisão |
