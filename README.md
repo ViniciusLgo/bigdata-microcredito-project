@@ -8,7 +8,7 @@ Integrantes: Vinicius Lago Cruz, Roberto Luis Jr., Guilherme Chaves e Maria Fern
 
 A fase 2 está pronta: os scripts baixam e tratam os dados, os CSVs finais estão no repositório e o banco está modelado. A carga na Aiven já foi feita antes, mas ainda precisamos entrar de novo no banco e guardar uma conferência atual.
 
-Na fase 3 já entraram a carga que pode rodar mais de uma vez, os testes dela, o Terraform, o guia de segurança e a análise territorial das ODS 5 e 18. O banco foi conferido em 16/11/2026 com a versão nova dos dados (7.518 linhas, evidência em [docs/evidencias/banco-fase3.txt](docs/evidencias/banco-fase3.txt)). Faltam o dashboard e testar o README do zero com alguém que não escreveu ele. O jeito de trabalhar com branches e revisão está no [CONTRIBUTING.md](CONTRIBUTING.md).
+Na fase 3 já entraram a carga que pode rodar mais de uma vez, os testes dela, o Terraform, o guia de segurança e a análise territorial das ODS 5 e 18. O serviço do banco foi criado pelo Terraform em 16/11/2026 (evidência em [docs/evidencias/terraform.txt](docs/evidencias/terraform.txt)) e conferido com a versão nova dos dados (7.518 linhas, evidência em [docs/evidencias/banco-fase3.txt](docs/evidencias/banco-fase3.txt)). Faltam o dashboard e testar o README do zero com alguém que não escreveu ele. O jeito de trabalhar com branches e revisão está no [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## O que o projeto faz
 

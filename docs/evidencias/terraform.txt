@@ -1,0 +1,20 @@
+Evidencia do Terraform (recurso aiven_pg) - 16/11/2026
+Projeto: bigdata-microcredito-project | servico: (nome omitido) | plano: free-1-1gb | PostgreSQL 18
+O token da Aiven ficou so na variavel de ambiente AIVEN_TOKEN, nunca em arquivo.
+
+1) terraform plan, antes de criar (o projeto estava sem nenhum servico)
+   Plan: 1 to add, 0 to change, 0 to destroy.
+
+2) terraform apply
+   aiven_pg.microcredit: Creation complete after 5m41s
+   Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+   Outputs: database_name = defaultdb | host e porta (omitidos aqui) | service_uri = <sensitive>
+
+3) terraform plan, depois de criado
+   No changes. Your infrastructure matches the configuration.
+
+4) terraform state list
+   aiven_pg.microcredit
+
+Depois da criacao, o servico estava vazio. As tabelas e os dados vieram do Python:
+   python etl/carregar.py --criar-schema   (ver banco-fase3.txt)
