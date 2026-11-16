@@ -14,6 +14,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from contas import agregar, fmt_num, fmt_reais, participacao_grupo, spearman
+
 BASE = os.path.join(os.path.dirname(__file__), "..")
 
 REGIAO = {
@@ -42,7 +44,7 @@ RESSALVA = (
 )
 
 
-# ---------- ler os dados ----------
+# ler os dados
 
 def pegar_url():
     url = os.environ.get("AIVEN_PG_URL")
@@ -132,68 +134,14 @@ def carregar_dados(url):
     return {"regional": regional, "perfil": perfil, "nacional": nacional}, fonte, avisos
 
 
-# ---------- contas ----------
-
-def fmt_num(v, casas=0):
-    s = f"{v:,.{casas}f}"
-    return s.replace(",", "X").replace(".", ",").replace("X", ".")
-
-
-def fmt_reais(v):
-    if v >= 1e9:
-        return "R$ " + fmt_num(v / 1e9, 2) + " bi"
-    if v >= 1e6:
-        return "R$ " + fmt_num(v / 1e6, 1) + " mi"
-    return "R$ " + fmt_num(v)
-
-
-def agregar(df, por, ocupados):
-    # soma por grupo. a inadimplencia e ponderada pela carteira (media simples
-    # das taxas estaria errada) e as operacoes negativas ficam de fora porque
-    # o bcb nao explica o que elas sao
-    d = df.copy()
-    d["inadimplido"] = d["taxa_inadimplencia"] * d["valor_carteira_ativa"]
-    d["ops_validas"] = d["quantidade_operacoes"].where(d["quantidade_operacoes"] >= 0)
-    g = d.groupby(por, as_index=False).agg(
-        carteira=("valor_carteira_ativa", "sum"),
-        inadimplido=("inadimplido", "sum"),
-        operacoes=("ops_validas", "sum"),
-    )
-    g["inadimplencia"] = g["inadimplido"] / g["carteira"] * 100
-
-    # carteira por ocupado so faz sentido por uf ou por regiao
-    g["carteira_por_ocupado"] = float("nan")
-    if "uf" in por:
-        g["carteira_por_ocupado"] = g["carteira"] / g["uf"].map(ocupados)
-    elif "regiao" in por:
-        ufs = d.groupby("regiao")["uf"].unique()
-        pop = g["regiao"].map(lambda r: sum(ocupados[u] for u in ufs[r]))
-        g["carteira_por_ocupado"] = g["carteira"] / pop
-    return g
-
-
-def participacao_grupo(perfil, sexo, cores):
-    # quantos % dos ocupados de cada uf sao do grupo escolhido (sexo e cor)
-    total = perfil.groupby("uf")["ocupados"].sum()
-    grupo = perfil.copy()
-    if sexo != "Todos":
-        grupo = grupo[grupo["sexo"] == sexo]
-    if cores:
-        grupo = grupo[grupo["cor_raca"].isin(cores)]
-    return (grupo.groupby("uf")["ocupados"].sum() / total).rename("part_grupo").reset_index()
-
-
-def spearman(x, y):
-    # spearman = correlacao dos postos
-    return x.rank().corr(y.rank())
-
+# ajuste dos graficos
 
 def ajustar(fig):
     fig.update_layout(separators=",.", margin=dict(t=40, b=10, l=10, r=10), legend_title_text="")
     return fig
 
 
-# ---------- tela ----------
+# tela
 
 st.set_page_config(page_title="Microcrédito e inclusão financeira regional", layout="wide")
 st.title("Microcrédito e inclusão financeira regional")
@@ -315,7 +263,7 @@ with aba2:
     if regiao_sel != "(todas)":
         uf_sel = st.selectbox("Detalhar a UF", ["(nenhuma)"] + list(rank["uf"]))
         if uf_sel != "(nenhuma)":
-            det = agregar(filtrado[filtrado["uf"] == uf_sel], ["data_referencia", "modalidade", "segmento"], ocupados)
+            det = agregar(filtrado[filtrado["uf"] == uf_sel], ["uf", "data_referencia", "modalidade", "segmento"], ocupados)
             det["grupo"] = det["modalidade"] + " · " + det["segmento"]
             fig = px.line(det, x="data_referencia", y=metrica, color="grupo",
                           labels={"data_referencia": "", metrica: metrica_nome}, title=f"{uf_sel} por modalidade e segmento")

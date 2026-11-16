@@ -53,6 +53,7 @@ terraform/             infraestrutura como código (serviço PostgreSQL na Aiven
 dashboard/             painel em Streamlit (veja dashboard/README.md)
 tests/
   test_tratamento.py   testes da conversão dos números, rodam sem banco
+  test_dashboard.py    testes das contas do dashboard, rodam sem banco
   test_carga.py        testes da carga, precisam de um Postgres local
 analise/
   baixar_ibge.py       baixa do IBGE o perfil por UF, com sexo e raça cruzados
