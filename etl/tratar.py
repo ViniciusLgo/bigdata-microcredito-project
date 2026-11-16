@@ -18,11 +18,20 @@ SERIES_SGS = {
 }
 
 
-def numero_br(valor):
-    # o bcb manda valor monetario tipo "1.234,56", precisa trocar o separador
+def numero_scr(valor):
+    # o csv do scr manda numero tipo "1.234,56" (ponto no milhar e virgula
+    # no decimal), entao tira o ponto e troca a virgula
     if pd.isna(valor) or str(valor).strip() == "":
         return None
     return float(str(valor).replace(".", "").replace(",", "."))
+
+
+def numero_sgs(valor):
+    # o json da sgs manda tipo "123.45" (ponto no decimal), ai nao pode tirar
+    # o ponto senao 123.45 vira 12345. converte direto
+    if pd.isna(valor) or str(valor).strip() == "":
+        return None
+    return float(str(valor).strip())
 
 
 def tratar_sgs():
@@ -36,7 +45,7 @@ def tratar_sgs():
                 "serie_id": serie_id,
                 "descricao_serie": nome,
                 "data_referencia": datetime.strptime(item["data"], "%d/%m/%Y").date(),
-                "valor": numero_br(item["valor"]),
+                "valor": numero_sgs(item["valor"]),
             })
     df = pd.DataFrame(linhas)
     destino = os.path.join(PASTA_PROC, "fato_microcredito_nacional.csv")
@@ -57,7 +66,7 @@ def tratar_scr():
     # segmento etc) fica fora da agregacao final pra nao gerar milhares de
     # combinacoes desnecessarias (decisao que ja tinha sido tomada na etapa 1)
     for col in ["numero_de_operacoes", "carteira_ativa", "carteira_inadimplencia"]:
-        df[col] = df[col].apply(numero_br)
+        df[col] = df[col].apply(numero_scr)
 
     df["data_referencia"] = pd.to_datetime(df["data_base"].str.strip('"')).dt.date
     df["modalidade"] = df["modalidade"].str.strip('"') + " - " + df["submodalidade"].str.strip('"')
