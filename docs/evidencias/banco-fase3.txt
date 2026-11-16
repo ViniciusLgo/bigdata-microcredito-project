@@ -1,0 +1,63 @@
+Conferencia do banco na Aiven (somente leitura) - 16/11/2026
+Servico: (nome omitido) | projeto: bigdata-microcredito-project | banco: defaultdb
+Servico criado pelo Terraform (ver terraform.txt), vazio. Carga feita com: python etl/carregar.py --criar-schema
+Segunda carga, para provar que e repetivel: python etl/carregar.py
+  resultado da segunda carga: 0 novas, 0 atualizadas, tudo igual
+    dim_uf 27 | dim_modalidade 4 | fato_credito_regional 7081 | fato_microcredito_nacional 136 | perfil_ocupados_uf 270
+Comando de conferencia: python etl/verificar_banco.py
+
+== tabelas, campos e tipos ==
+
+dim_modalidade
+  modalidade_id            integer            NOT NULL
+  nome_modalidade          character varying(150) NOT NULL
+  segmento                 character varying(2) NOT NULL
+
+dim_uf
+  uf_id                    integer            NOT NULL
+  sigla_uf                 character varying(2) NOT NULL
+  nome_uf                  character varying(40) NOT NULL
+  regiao                   character varying(20) NOT NULL
+
+fato_credito_regional
+  id                       integer            NOT NULL
+  uf_id                    integer            NOT NULL
+  modalidade_id            integer            NOT NULL
+  data_referencia          date               NOT NULL
+  valor_carteira_ativa     numeric(15,2)      NULL
+  taxa_inadimplencia       numeric(6,4)       NULL
+  quantidade_operacoes     integer            NULL
+
+fato_microcredito_nacional
+  id                       integer            NOT NULL
+  serie_id                 integer            NOT NULL
+  descricao_serie          character varying(200) NOT NULL
+  data_referencia          date               NOT NULL
+  valor                    numeric(15,2)      NOT NULL
+
+perfil_ocupados_uf
+  id                       integer            NOT NULL
+  uf_id                    integer            NOT NULL
+  ano                      integer            NOT NULL
+  sexo                     character varying(10) NOT NULL
+  cor_raca                 character varying(10) NOT NULL
+  ocupados                 integer            NOT NULL
+
+== relacionamentos (chaves estrangeiras) ==
+  fato_credito_regional.modalidade_id -> dim_modalidade.modalidade_id
+  fato_credito_regional.uf_id -> dim_uf.uf_id
+  perfil_ocupados_uf.uf_id -> dim_uf.uf_id
+
+== quantidade de linhas ==
+  dim_modalidade                 4
+  dim_uf                         27
+  fato_credito_regional          7081
+  fato_microcredito_nacional     136
+  perfil_ocupados_uf             270
+  total                          7518
+
+tamanho do banco: 9534 kB (limite do plano gratis: 1 GB)
+
+== fato_credito_regional por segmento ==
+  PF: 3618 linhas, de 2021-01-31 ate 2026-07-31
+  PJ: 3463 linhas, de 2021-01-31 ate 2026-07-31
