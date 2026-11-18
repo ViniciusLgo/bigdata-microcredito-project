@@ -4,13 +4,14 @@ Painel em Streamlit que mostra o microcrédito por região, UF, segmento (PF e P
 
 ## O que tem
 
-- 6 indicadores no topo. Quatro gerais: carteira ativa do último mês (com a variação de 12 meses), inadimplência, carteira por ocupado e quanto da carteira está nas 3 maiores UFs. Dois de gênero e raça: a participação do grupo escolhido na lateral (por exemplo, mulheres pretas e pardas) entre os ocupados das UFs filtradas, e quantas vezes a carteira por ocupado é maior nas UFs com mais desse grupo do que nas demais;
-- filtros na lateral: período, região, UF, segmento, modalidade e o perfil da UF (sexo, cor ou raça e participação mínima do grupo);
-- um seletor de métrica (carteira ativa, inadimplência, operações ou carteira por ocupado) que muda todos os gráficos;
-- aba Evolução: linhas no tempo, agrupadas por região, UF, segmento ou modalidade, e as séries nacionais da SGS;
-- aba Ranking e detalhe: barras por região, e dali dá para abrir as UFs da região e depois uma UF por modalidade e segmento (drill-down);
-- aba ODS 5 e 18: dispersão entre a participação do grupo escolhido e o microcrédito por ocupado, com a correlação, a checagem sem o Nordeste e a ressalva da falácia ecológica;
-- aba Dados: a tabela filtrada, com botão para baixar em CSV.
+Uma página só, de cima para baixo. Cada seção é uma pergunta, com um gráfico e uma frase dizendo o que está sendo comparado:
+
+1. Os números principais: saldo, mudança em 12 meses, inadimplência e a parte do Nordeste;
+2. Como o saldo mudou desde 2021, no Brasil todo ou por região;
+3. Em quais estados está o microcrédito, no total ou por pessoa que trabalha por conta própria, com um detalhe por estado;
+4. Gênero e raça: compara os estados com mais e com menos mulheres, pessoas pretas e pardas entre os ocupados, com e sem o Nordeste, e explica a ressalva de que a comparação é entre estados e não entre pessoas.
+
+Os filtros ficam no topo: ano, região, tipo de cliente (PF e PJ) e, em "Mais filtros", modalidade e estados.
 
 ## Rodar no seu computador
 

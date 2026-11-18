@@ -227,7 +227,7 @@ sha256sum data/processed/*.csv data/raw/*.json
 
 ## Dashboard
 
-O painel fica em `dashboard/app.py` e lê do banco da Aiven (ou dos CSVs, se não houver a variável `AIVEN_PG_URL`). Ele tem 6 indicadores (dois deles de gênero e raça), filtros por período, região, UF, segmento, modalidade e perfil do IBGE, um seletor de métrica, detalhe por região e UF e a aba das ODS 5 e 18 com a ressalva. Para rodar:
+O painel fica em `dashboard/app.py` e lê do banco da Aiven (ou dos CSVs, se não houver a variável `AIVEN_PG_URL`). É uma página só, de cima para baixo, com uma pergunta por seção: os números principais, a evolução desde 2021, os estados (total e por pessoa) e gênero e raça nas ODS 5 e 18, com a ressalva. Para rodar:
 
 ```powershell
 python -m pip install -r dashboard/requirements.txt
