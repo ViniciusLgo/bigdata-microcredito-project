@@ -36,3 +36,8 @@ terraform/.terraformrc
 terraform/terraform.rc
 terraform/*.log
 terraform/.private/
+
+
+# Credenciais locais do Streamlit
+.streamlit/secrets.toml
+.deps/
