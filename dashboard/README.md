@@ -2,6 +2,8 @@
 
 Painel em Streamlit para apresentar a evolução da carteira de microcrédito, as diferenças entre estados e o contexto territorial das ODS 5 e 18. Utiliza o SCR.data e as séries SGS do Banco Central, além do perfil dos ocupados do Censo 2022 do IBGE.
 
+Publicado em: [microcredito-bigdata.streamlit.app](https://microcredito-bigdata.streamlit.app/).
+
 ## Organização do painel
 
 | Seção | Conteúdo |
