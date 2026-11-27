@@ -227,7 +227,9 @@ sha256sum data/processed/*.csv data/raw/*.json
 
 ## Dashboard
 
-O painel fica em `dashboard/app.py`, com quatro seções: Panorama, Evolução e estados, Contexto ODS e Fontes e dados. Usa filtros mensais, região, UF, PF/PJ e modalidade; o contexto ODS compara a carteira média de 2022 com o Censo do mesmo ano, com filtros de sexo e cor/raça do território. As quatro métricas ODS descrevem participação do grupo e diferenças de carteira por ocupado entre conjuntos de UFs, nunca crédito recebido pelas pessoas do grupo. Quantidade de operações não é usada nos gráficos por conter valores negativos sem interpretação confirmada. A leitura usa as três bases da Aiven quando válidas, ou o conjunto completo dos CSVs com aviso explícito. Para rodar:
+O painel está publicado em [microcredito-bigdata.streamlit.app](https://microcredito-bigdata.streamlit.app/).
+
+O código fica em `dashboard/app.py`, com quatro seções: Panorama, Evolução e estados, Contexto ODS e Fontes e dados. Usa filtros mensais, região, UF, PF/PJ e modalidade; o contexto ODS compara a carteira média de 2022 com o Censo do mesmo ano, com filtros de sexo e cor/raça do território. As quatro métricas ODS descrevem participação do grupo e diferenças de carteira por ocupado entre conjuntos de UFs, nunca crédito recebido pelas pessoas do grupo. Quantidade de operações não é usada nos gráficos por conter valores negativos sem interpretação confirmada. A leitura usa as três bases da Aiven quando válidas, ou o conjunto completo dos CSVs com aviso explícito. Para rodar:
 
 ```powershell
 python -m pip install -r dashboard/requirements.txt
