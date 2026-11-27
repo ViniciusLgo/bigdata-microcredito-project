@@ -227,7 +227,7 @@ sha256sum data/processed/*.csv data/raw/*.json
 
 ## Dashboard
 
-O painel fica em `dashboard/app.py` e lê do banco da Aiven (ou dos CSVs, se não houver a variável `AIVEN_PG_URL`). Ele tem 6 indicadores (dois deles de gênero e raça), filtros por período, região, UF, segmento, modalidade e perfil do IBGE, um seletor de métrica, detalhe por região e UF e a aba das ODS 5 e 18 com a ressalva. Para rodar:
+O painel fica em `dashboard/app.py`, com quatro seções: Panorama, Evolução e estados, Contexto ODS e Fontes e dados. Usa filtros mensais, região, UF, PF/PJ e modalidade; o contexto ODS compara a carteira média de 2022 com o Censo do mesmo ano, com filtros de sexo e cor/raça do território. As quatro métricas ODS descrevem participação do grupo e diferenças de carteira por ocupado entre conjuntos de UFs, nunca crédito recebido pelas pessoas do grupo. Quantidade de operações não é usada nos gráficos por conter valores negativos sem interpretação confirmada. A leitura usa as três bases da Aiven quando válidas, ou o conjunto completo dos CSVs com aviso explícito. Para rodar:
 
 ```powershell
 python -m pip install -r dashboard/requirements.txt
@@ -277,3 +277,4 @@ Resumo de [docs/ODS_ANALISE.md](docs/ODS_ANALISE.md), com dados de 2022:
 | [docs/ODS_ANALISE.md](docs/ODS_ANALISE.md) | cruzamento com o IBGE para as ODS 5 e 18, com método e limites |
 | [docs/SEGURANCA.md](docs/SEGURANCA.md) | senhas, tokens, arquivos ignorados e LGPD |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | como o grupo trabalha com branches e revisão |
+

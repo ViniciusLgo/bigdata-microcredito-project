@@ -1,322 +1,274 @@
-# app.py
-# Dashboard do projeto (Streamlit). Mostra o microcredito por UF, regiao,
-# segmento e modalidade, e cruza com o perfil de sexo e raca do IBGE por UF
-# pras ODS 5 e 18.
-#
-# os dados vem do banco da Aiven quando existe a variavel AIVEN_PG_URL (no
-# terminal) ou o segredo AIVEN_PG_URL (no Streamlit Cloud). sem isso ele le os
-# csvs do repositorio, assim da pra testar sem banco.
-#
-# uso: streamlit run dashboard/app.py
-
+"""Painel de microcrédito: saldos mensais e contexto territorial das ODS."""
+import math
 import os
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from contas import (agregar, fmt_num, fmt_reais, participacao_grupo, participacao_ponderada,
-                    razao_alta_baixa, rotulo_grupo as montar_rotulo, spearman)
+from contas import (
+    agregar, carteira_media_anual_uf, filtrar_meses, fmt_num, fmt_reais,
+    participacao_grupo, participacao_ponderada, razao_alta_baixa,
+    rotulo_grupo, spearman, variacao_carteira_anual,
+)
+from dados import REGIAO, carregar_dados
 
-BASE = os.path.join(os.path.dirname(__file__), "..")
-
-REGIAO = {
-    "AC": "Norte", "AM": "Norte", "AP": "Norte", "PA": "Norte", "RO": "Norte",
-    "RR": "Norte", "TO": "Norte",
-    "AL": "Nordeste", "BA": "Nordeste", "CE": "Nordeste", "MA": "Nordeste",
-    "PB": "Nordeste", "PE": "Nordeste", "PI": "Nordeste", "RN": "Nordeste",
-    "SE": "Nordeste",
-    "DF": "Centro-Oeste", "GO": "Centro-Oeste", "MS": "Centro-Oeste", "MT": "Centro-Oeste",
-    "ES": "Sudeste", "MG": "Sudeste", "RJ": "Sudeste", "SP": "Sudeste",
-    "PR": "Sul", "RS": "Sul", "SC": "Sul",
-}
-
-METRICAS = {
-    "Carteira ativa (R$)": "carteira",
-    "Inadimplência (%)": "inadimplencia",
-    "Operações (sem as negativas)": "operacoes",
-    "Carteira por ocupado (R$)": "carteira_por_ocupado",
-}
-
+st.set_page_config(page_title="Microcrédito no Brasil", page_icon="📊", layout="wide")
+CORES = {"Nordeste": "#187a70", "Norte": "#6993b8", "Sudeste": "#263e68", "Sul": "#b47c32", "Centro-Oeste": "#9b7aa8"}
+METRICAS = {"Carteira ativa": ("carteira", "R$"), "Inadimplência": ("inadimplencia", "%"), "Carteira por ocupado": ("carteira_por_ocupado", "R$ por ocupado")}
 RESSALVA = (
     "Os dados de microcrédito do SCR.data são agregados por UF e não têm sexo, gênero, "
     "cor ou raça. O cruzamento com o IBGE descreve o território, não o perfil de quem "
-    "pegou o crédito. Concluir algo sobre pessoas a partir de médias por estado é "
-    "falácia ecológica."
+    "pegou o crédito. Concluir algo sobre pessoas a partir de médias por estado é falácia ecológica."
 )
+st.markdown("""<style>
+.block-container {max-width: 1440px; padding-top: 2.3rem; padding-bottom: 3rem;}
+h1 {letter-spacing: -.045em; font-weight: 700 !important;}
+h2,h3 {letter-spacing: -.02em;}
+[data-testid="stMetric"] {border: 1px solid #dce3e9; border-radius: 8px; padding: 1rem 1.1rem; background: #fff; min-height: 128px;}
+[data-testid="stMetricLabel"] {color: #475569;}
+[data-testid="stMetricValue"] {font-size: 1.8rem; color: #183449;}
+[data-testid="stSidebar"] {border-right: 1px solid #dce3e9;}
+[data-baseweb="tab-list"] {gap: 1.6rem; border-bottom: 1px solid #dce3e9;}
+[data-baseweb="tab"] {font-size: 1rem;}
+</style>""", unsafe_allow_html=True)
 
 
-# ler os dados
-
-def pegar_url():
-    url = os.environ.get("AIVEN_PG_URL")
-    if not url:
-        try:
-            url = st.secrets["AIVEN_PG_URL"]
-        except Exception:
-            url = None
-    return url
+def numero(valor, casas=1, sufixo=""):
+    return fmt_num(valor, casas) + sufixo if pd.notna(valor) and math.isfinite(float(valor)) else "Indisponível"
 
 
-def consulta(conn, sql):
-    cur = conn.cursor()
-    cur.execute(sql)
-    colunas = [c[0] for c in cur.description]
-    return pd.DataFrame(cur.fetchall(), columns=colunas)
+def reais(valor):
+    return fmt_reais(valor) if pd.notna(valor) and math.isfinite(float(valor)) else "Indisponível"
 
 
-SQL_REGIONAL = """
-    SELECT u.sigla_uf AS uf, u.regiao, m.segmento, m.nome_modalidade AS modalidade,
-           f.data_referencia, f.valor_carteira_ativa, f.taxa_inadimplencia,
-           f.quantidade_operacoes
-    FROM fato_credito_regional f
-    JOIN dim_uf u USING (uf_id)
-    JOIN dim_modalidade m USING (modalidade_id)
-"""
-
-SQL_PERFIL = """
-    SELECT u.sigla_uf AS uf, p.ano, p.sexo, p.cor_raca, p.ocupados
-    FROM perfil_ocupados_uf p
-    JOIN dim_uf u USING (uf_id)
-"""
-
-SQL_NACIONAL = """
-    SELECT serie_id, descricao_serie, data_referencia, valor
-    FROM fato_microcredito_nacional
-"""
-
-
-def csv_regional():
-    df = pd.read_csv(os.path.join(BASE, "data", "processed", "fato_credito_regional.csv"))
-    df["regiao"] = df["uf"].map(REGIAO)
-    return df
-
-
-def csv_perfil():
-    return pd.read_csv(os.path.join(BASE, "data", "ibge_sexo_raca_uf_2022.csv"))
-
-
-def csv_nacional():
-    return pd.read_csv(os.path.join(BASE, "data", "processed", "fato_microcredito_nacional.csv"))
-
-
-@st.cache_data(ttl=3600, show_spinner="carregando os dados...")
-def carregar_dados(url):
-    avisos = []
-    fonte = "arquivos CSV do repositório"
-    regional = perfil = nacional = None
-
-    if url:
-        try:
-            import psycopg2
-            conn = psycopg2.connect(url, connect_timeout=10)
-            regional = consulta(conn, SQL_REGIONAL)
-            nacional = consulta(conn, SQL_NACIONAL)
-            fonte = "banco PostgreSQL (Aiven)"
-            try:
-                perfil = consulta(conn, SQL_PERFIL)
-            except Exception:
-                # a tabela de perfil pode ainda nao ter sido carregada
-                conn.rollback()
-                avisos.append("A tabela perfil_ocupados_uf ainda não está no banco, usei o CSV do IBGE.")
-            conn.close()
-        except Exception as erro:
-            avisos.append(f"O banco não respondeu ({type(erro).__name__}), usei os CSVs do repositório.")
-            regional = nacional = None
-
-    if regional is None:
-        regional, nacional = csv_regional(), csv_nacional()
-    if perfil is None or perfil.empty:
-        perfil = csv_perfil()
-
-    regional["data_referencia"] = pd.to_datetime(regional["data_referencia"])
-    nacional["data_referencia"] = pd.to_datetime(nacional["data_referencia"])
-    for col in ["valor_carteira_ativa", "taxa_inadimplencia", "quantidade_operacoes"]:
-        regional[col] = pd.to_numeric(regional[col])
-    return {"regional": regional, "perfil": perfil, "nacional": nacional}, fonte, avisos
-
-
-# ajuste dos graficos
-
-def ajustar(fig):
-    fig.update_layout(separators=",.", margin=dict(t=40, b=10, l=10, r=10), legend_title_text="")
+def grafico(fig, altura=380):
+    fig.update_layout(template="plotly_white", height=altura, separators=",.",
+                      margin=dict(t=18, b=25, l=5, r=15), font=dict(family="Arial", size=14, color="#334155"),
+                      legend_title_text="", legend=dict(orientation="h", y=1.12, x=0),
+                      paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(gridcolor="#edf0f4", zeroline=False)
     return fig
 
 
-# tela
+def escopo(df, regioes, ufs, segmentos, modalidades):
+    d = df.copy()
+    for col, valores in [("regiao", regioes), ("uf", ufs), ("segmento", segmentos), ("modalidade", modalidades)]:
+        if valores:
+            d = d[d[col].isin(valores)]
+    return d
 
-st.set_page_config(page_title="Microcrédito e inclusão financeira regional", layout="wide")
-st.title("Microcrédito e inclusão financeira regional")
-st.caption("Tema 05 · dados abertos do Banco Central (SCR.data e SGS) e do IBGE (Censo 2022)")
 
-dados, fonte, avisos = carregar_dados(pegar_url())
-regional, perfil, nacional = dados["regional"], dados["perfil"], dados["nacional"]
+def url_banco():
+    if os.environ.get("AIVEN_PG_URL"):
+        return os.environ["AIVEN_PG_URL"]
+    try:
+        return st.secrets.get("AIVEN_PG_URL")
+    except (FileNotFoundError, KeyError):
+        return None
+
+
+@st.cache_data(ttl=3600, show_spinner="Lendo as bases do projeto…")
+def dados_painel(url):
+    return carregar_dados(url)
+
+
+try:
+    dados, fonte, avisos = dados_painel(url_banco())
+except (ValueError, OSError):
+    st.error("Não foi possível carregar as bases. Confira os CSVs em data/processed e o perfil do IBGE em data/.")
+    st.stop()
+regional, nacional, perfil = dados["regional"], dados["nacional"], dados["perfil"]
 ocupados = perfil.groupby("uf")["ocupados"].sum().to_dict()
 
+st.caption("BIG DATA & ANALYTICS  /  TEMA 05")
+st.title("Microcrédito no Brasil")
+st.write("Evolução da carteira, diferenças entre estados e contexto territorial de gênero e raça.")
 for aviso in avisos:
     st.warning(aviso)
 
-# filtros
-st.sidebar.header("Filtros")
-st.sidebar.caption(f"Fonte dos dados: {fonte}")
+with st.sidebar:
+    st.header("Recorte da análise")
+    meses = sorted(regional["data_referencia"].dt.strftime("%Y-%m").unique())
+    inicio, fim = st.select_slider("Período mensal", options=meses, value=(meses[0], meses[-1]),
+                                  format_func=lambda m: f"{m[5:]}/{m[:4]}")
+    regioes = st.multiselect("Região", list(CORES))
+    possiveis = sorted(regional.loc[regional["regiao"].isin(regioes), "uf"].unique()) if regioes else sorted(regional["uf"].unique())
+    ufs = st.multiselect("Estado (UF)", possiveis)
+    segmentos = st.multiselect("Tipo de cliente", ["PF", "PJ"], help="PF: pessoa física. PJ: pessoa jurídica.")
+    modalidades = st.multiselect("Modalidade", sorted(regional["modalidade"].unique()))
+    st.caption("Seleção vazia inclui todas as opções. Os filtros territoriais também se aplicam à seção ODS; o período ODS é fixo em 2022.")
+    st.divider()
+    st.caption(f"Fonte carregada: {fonte}")
+    st.caption(f"SCR: {regional.data_referencia.min():%m/%Y}–{regional.data_referencia.max():%m/%Y} · SGS: {nacional.data_referencia.min():%m/%Y}–{nacional.data_referencia.max():%m/%Y} · IBGE: Censo 2022")
+    if st.button("Atualizar leitura", use_container_width=True):
+        dados_painel.clear()
+        st.rerun()
 
-anos = sorted(regional["data_referencia"].dt.year.unique())
-ano_ini, ano_fim = st.sidebar.select_slider("Período (anos)", options=anos, value=(anos[0], anos[-1]))
-regioes = st.sidebar.multiselect("Região", sorted(regional["regiao"].unique()), default=[])
-ufs_possiveis = sorted(regional[regional["regiao"].isin(regioes)]["uf"].unique()) if regioes else sorted(regional["uf"].unique())
-ufs = st.sidebar.multiselect("UF", ufs_possiveis, default=[])
-segmentos = st.sidebar.multiselect("Segmento", sorted(regional["segmento"].unique()), default=[])
-modalidades = st.sidebar.multiselect("Modalidade", sorted(regional["modalidade"].unique()), default=[])
-
-st.sidebar.subheader("Perfil da UF (IBGE, 2022)")
-sexo = st.sidebar.radio("Sexo", ["Todos", "Mulheres", "Homens"], index=1)
-cores = st.sidebar.multiselect("Cor ou raça", ["Branca", "Preta", "Parda", "Amarela", "Indígena"],
-                               default=["Preta", "Parda"])
-minimo = st.sidebar.slider("Participação mínima do grupo na UF (%)", 0, 100, 0)
-
-rotulo_grupo = montar_rotulo(sexo, cores)
-part = participacao_grupo(perfil, sexo, cores)
-
-# o que vem de fora do periodo (usado pra comparar com 12 meses antes)
-base = regional.copy()
-if regioes:
-    base = base[base["regiao"].isin(regioes)]
-if ufs:
-    base = base[base["uf"].isin(ufs)]
-if segmentos:
-    base = base[base["segmento"].isin(segmentos)]
-if modalidades:
-    base = base[base["modalidade"].isin(modalidades)]
-ufs_do_perfil = part[part["part_grupo"] * 100 >= minimo]["uf"]
-base = base[base["uf"].isin(ufs_do_perfil)]
-
-filtrado = base[(base["data_referencia"].dt.year >= ano_ini) & (base["data_referencia"].dt.year <= ano_fim)]
-
+base = escopo(regional, regioes, ufs, segmentos, modalidades)
+filtrado = filtrar_meses(base, inicio, fim)
 if filtrado.empty:
-    st.error("Nenhum dado com esses filtros. Tire algum filtro para continuar.")
+    st.info("Não há registros neste recorte. Amplie o período ou remova algum filtro.")
     st.stop()
-
-metrica_nome = st.radio("Métrica analisada", list(METRICAS), horizontal=True)
-metrica = METRICAS[metrica_nome]
-
-# indicadores (kpis) do ultimo mes do periodo
 ultimo = filtrado["data_referencia"].max()
 agora = filtrado[filtrado["data_referencia"] == ultimo]
-antes = base[base["data_referencia"].dt.to_period("M") == (ultimo.to_period("M") - 12)]
-
-tot = agregar(agora.assign(tudo="Brasil"), ["tudo"], ocupados).iloc[0]
-tot_antes = agregar(antes.assign(tudo="Brasil"), ["tudo"], ocupados).iloc[0] if not antes.empty else None
+total = agregar(agora.assign(total="Recorte"), ["total"], ocupados).iloc[0]
 por_uf = agregar(agora, ["uf"], ocupados).sort_values("carteira", ascending=False)
-pop_total = sum(ocupados[u] for u in agora["uf"].unique())
-top3 = por_uf["carteira"].head(3).sum() / por_uf["carteira"].sum() * 100
+pop = sum(ocupados[u] for u in agora["uf"].unique())
+yoy = variacao_carteira_anual(base, ultimo)
+delta = numero(yoy["variacao_pct"], 1, "% em 12 meses") if yoy["comparavel"] else None
+st.caption(f"{len(por_uf)} UFs no recorte · Indicadores de {ultimo:%m/%Y} · Série de {inicio[5:]}/{inicio[:4]} a {fim[5:]}/{fim[:4]}")
 
-# uma linha por UF com a carteira por ocupado e a participacao do grupo escolhido
-pontos = agregar(agora, ["uf"], ocupados).merge(part, on="uf")
-pontos["regiao"] = pontos["uf"].map(REGIAO)
-pontos["part_pct"] = pontos["part_grupo"] * 100
-part_total = participacao_ponderada(perfil, agora["uf"].unique(), sexo, cores)
-razao = razao_alta_baixa(pontos)
+panorama, evolucao, ods, fontes = st.tabs(["Panorama", "Evolução e estados", "Contexto ODS", "Fontes e dados"])
 
-c1, c2, c3, c4 = st.columns(4)
-delta = None
-if tot_antes is not None:
-    delta = f"{(tot['carteira'] / tot_antes['carteira'] - 1) * 100:+.1f}% em 12 meses".replace(".", ",")
-c1.metric(f"Carteira ativa em {ultimo:%m/%Y}", fmt_reais(tot["carteira"]), delta)
-c2.metric("Inadimplência", fmt_num(tot["inadimplencia"], 1) + "%",
-          help="Ponderada pela carteira: soma do valor inadimplente dividida pela soma da carteira.")
-c3.metric("Carteira por ocupado", "R$ " + fmt_num(tot["carteira"] / pop_total),
-          help="Carteira dividida pelos ocupados por conta própria e empregadores das UFs (Censo 2022).")
-c4.metric("As 3 maiores UFs", fmt_num(top3, 1) + "% da carteira",
-          help="Quanto da carteira está nas 3 UFs com maior saldo. Mostra a concentração.")
+with panorama:
+    a, b, c, d = st.columns(4)
+    a.metric("Carteira ativa", reais(total["carteira"]), delta, delta_color="off",
+             help="Saldo no fim do mês. A unidade em reais é uma hipótese documentada pelo projeto.")
+    b.metric("Inadimplência ponderada", numero(total["inadimplencia"], 2, "%"),
+             help="Ponderação pela carteira. Aproximação a partir de taxas já arredondadas na base tratada.")
+    c.metric("Carteira por ocupado", reais(total["carteira"] / pop) if pop else "Indisponível",
+             help="Saldo atual / ocupados por conta própria ou empregadores do Censo 2022. Não é valor recebido por pessoa.")
+    d.metric("Concentração nas 3 maiores UFs", numero(por_uf["carteira"].head(3).sum() / total["carteira"] * 100, 1, "%"))
+    if not yoy["comparavel"]:
+        st.caption("Variação anual indisponível: " + yoy["motivo"])
+    st.caption("Carteira ativa é saldo, não concessão mensal. Valores regionais tratados como reais por inferência; denominador populacional fixo no Censo 2022.")
+    st.divider()
+    left, right = st.columns([1.3, 1])
+    with left:
+        st.subheader("Onde está a carteira")
+        rank = por_uf.head(10).sort_values("carteira")
+        fig = px.bar(rank, x="carteira", y="uf", orientation="h", labels={"carteira": "Carteira ativa (R$)", "uf": "UF"}, color_discrete_sequence=["#187a70"])
+        fig.update_xaxes(title="Carteira ativa (R$)")
+        st.plotly_chart(grafico(fig, 410), width="stretch")
+        st.caption(f"Até 10 maiores UFs entre as selecionadas · {ultimo:%m/%Y}")
+    with right:
+        st.subheader("Distribuição regional")
+        reg = agregar(agora, ["regiao"], ocupados).sort_values("carteira", ascending=False)
+        reg["Participação (%)"] = reg["carteira"] / reg["carteira"].sum() * 100
+        fig = px.bar(reg, x="regiao", y="Participação (%)", color="regiao", color_discrete_map=CORES, text_auto=".1f")
+        fig.update_layout(showlegend=False)
+        st.plotly_chart(grafico(fig, 410), width="stretch")
+        lider = reg.iloc[0]
+        st.caption(f"{lider['regiao']}: {numero(lider['Participação (%)'], 1, '%')} da carteira do recorte selecionado.")
+    st.info("A análise de gênero e raça está em Contexto ODS. Ela compara características dos estados e não identifica quem recebeu o crédito.")
 
-i1, i2, _, _ = st.columns(4)
-i1.metric(f"{rotulo_grupo} entre os ocupados", fmt_num(part_total * 100, 1) + "%",
-          help="Entre quem trabalha por conta própria ou como empregador nas UFs filtradas (Censo 2022, IBGE). "
-               "Muda com o sexo e a cor ou raça escolhidos na lateral.")
-i2.metric("Carteira por ocupado: UFs com mais x menos o grupo",
-          fmt_num(razao, 1) + "x" if razao else "sem dados",
-          help="Mediana da carteira por ocupado nas UFs onde o grupo tem mais participação (acima da mediana), "
-               "dividida pela mediana nas demais. Mostra onde a oferta está, não quem tem acesso, e o Nordeste "
-               "pesa muito nesse número.")
-
-aba1, aba2, aba3, aba4 = st.tabs(["Evolução", "Ranking e detalhe", "ODS 5 e 18", "Dados"])
-
-# ---- evolucao no tempo
-with aba1:
-    agrupar_por = st.selectbox("Agrupar por", ["Região", "UF", "Segmento (PF/PJ)", "Modalidade"])
-    coluna = {"Região": "regiao", "UF": "uf", "Segmento (PF/PJ)": "segmento", "Modalidade": "modalidade"}[agrupar_por]
+with evolucao:
+    st.subheader("Evolução do microcrédito")
+    l, r = st.columns([2, 1])
+    metrica_nome = l.radio("Métrica", list(METRICAS), horizontal=True)
+    metrica, unidade = METRICAS[metrica_nome]
+    agrupamentos = {"Região": "regiao", "UF": "uf"}
+    if metrica != "carteira_por_ocupado":
+        agrupamentos.update({"Tipo de cliente": "segmento", "Modalidade": "modalidade"})
+    escolha = r.selectbox("Comparar por", list(agrupamentos))
+    coluna = agrupamentos[escolha]
     serie = agregar(filtrado, ["data_referencia", coluna], ocupados)
-    if serie[metrica].isna().all():
-        st.info("Carteira por ocupado só existe quando o agrupamento é por região ou UF.")
+    fig = px.line(serie, x="data_referencia", y=metrica, color=coluna, color_discrete_map=CORES,
+                  labels={metrica: f"{metrica_nome} ({unidade})", "data_referencia": "Mês"})
+    st.plotly_chart(grafico(fig), width="stretch")
+    st.caption("Ausência de registro não significa zero. Carteira por ocupado utiliza o denominador fixo do Censo 2022.")
+    st.subheader(f"Detalhamento em {ultimo:%m/%Y}")
+    regiao = st.selectbox("Abrir região", ["Todas"] + sorted(agora["regiao"].unique()))
+    detalhe = agora if regiao == "Todas" else agora[agora["regiao"] == regiao]
+    ranking = agregar(detalhe, ["uf"], ocupados).sort_values(metrica, ascending=False)
+    fig = px.bar(ranking, x="uf", y=metrica, labels={metrica: f"{metrica_nome} ({unidade})"}, color_discrete_sequence=["#263e68"])
+    st.plotly_chart(grafico(fig, 300), width="stretch")
+    uf = st.selectbox("Abrir modalidades de uma UF", ["Selecione"] + sorted(detalhe["uf"].unique()))
+    if uf != "Selecione":
+        det = agregar(filtrado[filtrado["uf"] == uf], ["data_referencia", "uf", "modalidade", "segmento"], ocupados)
+        det["Modalidade / cliente"] = det["modalidade"] + " · " + det["segmento"]
+        st.plotly_chart(grafico(px.line(det, x="data_referencia", y=metrica, color="Modalidade / cliente",
+                                       labels={metrica: f"{metrica_nome} ({unidade})"})), width="stretch")
+    with st.expander("Contexto nacional · séries SGS"):
+        st.caption("Mesmo período mensal selecionado. Filtros de UF, região, PF/PJ e modalidade não se aplicam às séries nacionais. Somente PF e recursos direcionados; universo diferente do SCR regional.")
+        n = filtrar_meses(nacional, inicio, fim)
+        for sid, titulo in [(20618, "Saldo da carteira · microempreendedores"), (20712, "Concessões mensais · microcrédito total")]:
+            st.write(f"**{titulo}**")
+            s = n[n["serie_id"] == sid].sort_values("data_referencia")
+            if s.empty:
+                st.info("Série sem dados neste período.")
+            else:
+                st.plotly_chart(grafico(px.line(s, x="data_referencia", y="valor", labels={"valor": "R$ milhões"},
+                                               color_discrete_sequence=["#187a70"]), 240), width="stretch")
+        st.caption(f"A base SGS vai até {nacional.data_referencia.max():%m/%Y}; o regional vai até {regional.data_referencia.max():%m/%Y}. As séries completas podem ser baixadas em Fontes e dados.")
+
+with ods:
+    st.subheader("Gênero, raça e distribuição territorial")
+    st.write("ODS 5 · Igualdade de gênero  /  ODS 18 · Igualdade étnico-racial (iniciativa brasileira)")
+    st.info(RESSALVA)
+    st.caption("Referência fixa: 2022. Carteira média dos saldos mensais de 2022 e perfil do Censo do mesmo ano. Filtros de território, cliente e modalidade são preservados; o período mensal da lateral não altera esta seção.")
+    c1, c2 = st.columns([1, 2])
+    sexo = c1.selectbox("Sexo no perfil territorial", ["Mulheres", "Homens", "Todos"])
+    cores = c2.multiselect("Cor ou raça no perfil territorial", ["Branca", "Preta", "Parda", "Amarela", "Indígena"], default=["Preta", "Parda"])
+    minimo = st.slider("Participação mínima do grupo na UF (%)", 0, 100, 0)
+    st.caption("Nenhuma cor/raça selecionada inclui todas. Não há faixa etária na base preparada: o universo é de ocupados com 14 anos ou mais, por conta própria ou empregadores.")
+    grupo = rotulo_grupo(sexo, cores)
+    part = participacao_grupo(perfil, sexo, cores)
+    anual = carteira_media_anual_uf(base, ocupados, 2022)
+    pontos = anual.merge(part, on="uf")
+    pontos["part_pct"] = pontos["part_grupo"] * 100
+    pontos = pontos[pontos["cobertura_completa"] & (pontos["part_pct"] >= minimo)].copy()
+    pontos["regiao"] = pontos["uf"].map(REGIAO)
+    if pontos.empty:
+        st.info("Nenhuma UF tem dados completos de 2022 para este recorte. Amplie os filtros territoriais ou de modalidade.")
     else:
-        fig = px.line(serie, x="data_referencia", y=metrica, color=coluna,
-                      labels={"data_referencia": "", metrica: metrica_nome})
-        st.plotly_chart(ajustar(fig), width="stretch")
-    if metrica == "carteira":
-        st.caption("Carteira ativa é um saldo no fim de cada mês, não o valor concedido no mês.")
-    if metrica == "operacoes":
-        negativas = (filtrado["quantidade_operacoes"] < 0).sum()
-        st.caption(f"{negativas} linhas com número de operações negativo ficaram de fora (o BCB não explica esse valor).")
-
-    with st.expander("Séries nacionais do Banco Central (SGS)"):
-        st.caption("Valores em milhões de reais, só pessoa física, crédito direcionado. "
-                   "Não é o mesmo universo do recorte por UF.")
-        fig = px.line(nacional, x="data_referencia", y="valor", color="descricao_serie",
-                      labels={"data_referencia": "", "valor": "R$ milhões"})
-        st.plotly_chart(ajustar(fig), width="stretch")
-
-# ---- ranking e detalhe (drill-down)
-with aba2:
-    st.write(f"Posição em {ultimo:%m/%Y}. Escolha uma região para abrir as UFs e depois uma UF para abrir as modalidades.")
-    regiao_sel = st.selectbox("Detalhar a região", ["(todas)"] + sorted(agora["regiao"].unique()))
-
-    if regiao_sel == "(todas)":
-        rank = agregar(agora, ["regiao"], ocupados).sort_values(metrica, ascending=False)
-        fig = px.bar(rank, x="regiao", y=metrica, labels={"regiao": "", metrica: metrica_nome})
-    else:
-        rank = agregar(agora[agora["regiao"] == regiao_sel], ["uf"], ocupados).sort_values(metrica, ascending=False)
-        fig = px.bar(rank, x="uf", y=metrica, labels={"uf": "", metrica: metrica_nome},
-                     title=f"UFs da região {regiao_sel}")
-    st.plotly_chart(ajustar(fig), width="stretch")
-
-    if regiao_sel != "(todas)":
-        uf_sel = st.selectbox("Detalhar a UF", ["(nenhuma)"] + list(rank["uf"]))
-        if uf_sel != "(nenhuma)":
-            det = agregar(filtrado[filtrado["uf"] == uf_sel], ["uf", "data_referencia", "modalidade", "segmento"], ocupados)
-            det["grupo"] = det["modalidade"] + " · " + det["segmento"]
-            fig = px.line(det, x="data_referencia", y=metrica, color="grupo",
-                          labels={"data_referencia": "", metrica: metrica_nome}, title=f"{uf_sel} por modalidade e segmento")
-            st.plotly_chart(ajustar(fig), width="stretch")
-
-# ---- ods 5 e 18
-with aba3:
-    st.warning(RESSALVA)
-    if len(pontos) < 3:
-        st.info("Poucas UFs com esses filtros para comparar.")
-    else:
-        # carteira e operacoes seguem o tamanho da UF, entao aqui uso a carteira
-        # por ocupado. a inadimplencia ja e uma taxa e fica como esta
-        if metrica == "inadimplencia":
-            y, y_nome = "inadimplencia", "Inadimplência (%)"
+        mediana = pontos["part_pct"].median()
+        alta = pontos.loc[pontos["part_pct"] > mediana, "carteira_por_ocupado"]
+        baixa = pontos.loc[pontos["part_pct"] <= mediana, "carteira_por_ocupado"]
+        razao = razao_alta_baixa(pontos)
+        p = participacao_ponderada(perfil, pontos["uf"].unique(), sexo, cores)
+        st.write(f"**{grupo}** · {len(pontos)} UFs comparáveis")
+        a, b, c, d = st.columns(4)
+        a.metric("Participação do grupo", numero(p * 100, 1, "%"), help="Participação entre os ocupados do conjunto de UFs, ponderada pela população ocupada.")
+        b.metric("Carteira/ocupado · maior presença", reais(alta.median()), help="Mediana da carteira por ocupado nas UFs acima da mediana de participação do grupo.")
+        c.metric("Carteira/ocupado · menor presença", reais(baixa.median()), help="Mediana da carteira por ocupado nas demais UFs.")
+        d.metric("Razão maior / menor presença", numero(razao, 2, "×") if razao is not None else "Indisponível", help="Compara as duas medianas. Exige ao menos quatro UFs e grupos válidos; não mede crédito recebido pelo grupo.")
+        st.caption(f"Corte entre grupos de UFs: {numero(mediana, 1, '%')} de participação. Não são valores destinados às pessoas do grupo.")
+        fig = px.scatter(pontos, x="part_pct", y="carteira_por_ocupado", color="regiao", color_discrete_map=CORES,
+                         text="uf", hover_data={"carteira_media": ":.2f", "regiao": True},
+                         labels={"part_pct": "Participação do grupo entre os ocupados (%)", "carteira_por_ocupado": "Carteira média por ocupado (R$)"})
+        fig.update_traces(textposition="top center", marker_size=11)
+        fig.update_xaxes(title="Participação do grupo entre os ocupados (%)")
+        st.plotly_chart(grafico(fig, 440), width="stretch")
+        rho = spearman(pontos["part_pct"], pontos["carteira_por_ocupado"])
+        if pd.isna(rho):
+            st.caption("Correlação não calculável: são necessárias UFs suficientes e variação nos dois indicadores.")
         else:
-            y, y_nome = "carteira_por_ocupado", "Carteira por ocupado (R$)"
-        fig = px.scatter(pontos, x="part_pct", y=y, color="regiao", text="uf", log_y=(y != "inadimplencia"),
-                         labels={"part_pct": "Participação do grupo entre os ocupados da UF (%)", y: y_nome})
-        fig.update_traces(textposition="top center")
-        st.plotly_chart(ajustar(fig), width="stretch")
-        rho = spearman(pontos["part_pct"], pontos[y])
-        st.write(f"Grupo escolhido: **{rotulo_grupo}**. Correlação de Spearman entre a participação do grupo "
-                 f"e {y_nome.lower()}: **{fmt_num(rho, 2)}** com {len(pontos)} UFs.")
+            st.write(f"Correlação de Spearman: **{numero(rho, 2)}** · {len(pontos)} UFs.")
         sem_ne = pontos[pontos["regiao"] != "Nordeste"]
         if len(sem_ne) >= 3 and len(sem_ne) < len(pontos):
-            st.write(f"Sem as UFs do Nordeste: **{fmt_num(spearman(sem_ne['part_pct'], sem_ne[y]), 2)}** "
-                     f"com {len(sem_ne)} UFs. O Nordeste tem a maior parte da carteira do país e muda bastante o resultado.")
-        st.caption("Perfil: pessoas de 14 anos ou mais ocupadas como empregador ou conta própria, Censo 2022 (IBGE). "
-                   "Correlação não é causa, e com poucas UFs um estado atípico muda o resultado.")
+            st.caption(f"Análise de sensibilidade sem Nordeste: {numero(spearman(sem_ne['part_pct'], sem_ne['carteira_por_ocupado']), 2)} · {len(sem_ne)} UFs. Compare a estabilidade da associação ao retirar essa região.")
+        st.caption("Correlação não implica causalidade. O denominador inclui pessoas ocupadas, enquanto a carteira pode incluir PF e PJ. UFs sem os 12 meses completos são excluídas desta comparação.")
+        st.download_button("Baixar comparação ODS", pontos.to_csv(index=False).encode("utf-8"), "microcredito_ods_2022.csv", "text/csv")
 
-# ---- dados
-with aba4:
-    st.write(f"{len(filtrado)} linhas com os filtros atuais.")
-    tabela = filtrado.sort_values(["data_referencia", "uf"])
-    st.dataframe(tabela, width="stretch", hide_index=True)
-    st.download_button("Baixar em CSV", tabela.to_csv(index=False).encode("utf-8"),
-                       file_name="microcredito_filtrado.csv", mime="text/csv")
+with fontes:
+    st.subheader("Dados abertos, leitura transparente")
+    st.write(f"Fonte utilizada nesta sessão: **{fonte}**.")
+    st.dataframe(pd.DataFrame([
+        {"Base": "SCR.data / BCB", "Registros": len(regional), "Referência": f"{regional.data_referencia.min():%m/%Y}–{regional.data_referencia.max():%m/%Y}", "O que descreve": "Saldos por UF, cliente e modalidade"},
+        {"Base": "SGS / BCB", "Registros": len(nacional), "Referência": f"{nacional.data_referencia.min():%m/%Y}–{nacional.data_referencia.max():%m/%Y}", "O que descreve": "Saldo e concessões nacionais, em R$ milhões"},
+        {"Base": "IBGE / Censo 2022", "Registros": len(perfil), "Referência": "2022", "O que descreve": "Perfil dos ocupados por UF, sexo e cor/raça"},
+    ]), hide_index=True, width="stretch")
+    negativas = int((regional["quantidade_operacoes"] < 0).sum())
+    st.warning(f"Quantidade de operações: {fmt_num(negativas)} registros negativos na base regional. O significado não foi confirmado; esse campo fica disponível na tabela original, mas não é usado como KPI nem como métrica dos gráficos.")
+    st.markdown("""**Como interpretar**
+- Carteira ativa é saldo ao fim do mês; análises anuais usam média dos saldos, não soma.
+- Inadimplência é ponderada pela carteira e aproximada a partir das taxas arredondadas no ETL.
+- A unidade monetária do SCR é tratada como reais por inferência do projeto; SGS informa milhões de reais.
+- Meses ou combinações ausentes não são preenchidos como zero.
+- O IBGE descreve o território em 2022; não revela sexo ou raça de tomadores de crédito.
+- A base preparada não permite filtros por idade nem conclusões individuais de acesso ao crédito.
+""")
+    st.markdown("[Banco Central · SCR.data](https://www.bcb.gov.br/estabilidadefinanceira/scrdata) · [IBGE · tabela 10261](https://sidra.ibge.gov.br/tabela/10261) · [Dicionário e metodologia do projeto](https://github.com/ViniciusLgo/bigdata-microcredito-project/tree/main/docs)")
+    st.subheader("Registros do recorte selecionado")
+    st.caption(f"{fmt_num(len(filtrado))} registros · CSV mantém as colunas e valores originais tratados.")
+    tabela = filtrado.sort_values(["data_referencia", "uf", "segmento", "modalidade"])
+    st.dataframe(tabela, hide_index=True, width="stretch", height=320)
+    a, b = st.columns(2)
+    a.download_button("Baixar dados do recorte", tabela.to_csv(index=False).encode("utf-8"), "microcredito_recorte.csv", "text/csv")
+    b.download_button("Baixar séries nacionais completas", nacional.to_csv(index=False).encode("utf-8"), "microcredito_sgs.csv", "text/csv")
+
+st.divider()
+st.caption("Projeto acadêmico · UCSal · Big Data & Analytics · Fontes públicas: Banco Central e IBGE")
